@@ -1,0 +1,36 @@
+# 🔹 Angular (Front)
+front/node_modules
+front/dist
+front/tmp
+front/out-tsc
+front/.angular/cache
+front/.vscode/*
+front/coverage
+
+# 🔹 Express (Back)
+back/node_modules
+back/.env
+back/logs
+back/tmp
+back/dist
+back/.vscode/*
+back/coverage
+
+# 🔹 General Node.js
+node_modules
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# 🔹 IDEs y editores
+.idea/
+.project
+.classpath
+.settings/
+*.sublime-workspace
+.vscode/
+.history/
+
+# 🔹 Archivos del sistema
+.DS_Store
+Thumbs.db
