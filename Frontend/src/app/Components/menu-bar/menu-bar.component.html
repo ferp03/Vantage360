@@ -1,0 +1,15 @@
+<div class="container">
+    <div>
+        <nav>
+            <ul>
+                <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
+                <li><a routerLink="/about" routerLinkActive="active">About</a></li>
+                <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="login-container">
+        <a *ngIf="!isLogged" routerLink="/login">Log in</a>
+        <a *ngIf="isLogged" (click)="logout()">Log out</a>
+    </div>
+</div>
