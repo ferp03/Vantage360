@@ -22,21 +22,34 @@ router.post('/login', async (req, res) => {
     // Obtener el username desde tabla `usuarios`
     const user = authData.user;
     const { data: usuario, error: usuarioError } = await supabase
-      .from('usuarios')
-      .select('username')
-      .eq('id', user.id)
+      .from('empleado')
+      .select(`
+        empleado_id,
+        usuario,
+        empleado_rol:empleado_rol (
+          rol:rol (
+            nombre
+          )
+        )
+      `)
+      .eq('empleado_id', user.id)
       .single();
-  
+
     if (usuarioError || !usuario) {
       console.log('No se pudo obtener el username del usuario.')
       return res.status(500).json({success: false, error: 'No se pudo obtener el username del usuario.' });
     }
     
+    console.log(usuario);
+    const roles = usuario.empleado_rol.map(er => er.rol.nombre);
+    console.log(roles); // ['delivery lead', 'employee', ...]
+
     console.log('acceso autorizado');
     return res.status(200).json({
       success: true,
       token: authData.session.access_token,
-      username: usuario.username
+      username: usuario.username,
+      roles: roles
     });
   });
   
@@ -48,9 +61,9 @@ router.post('/login', async (req, res) => {
   
     // Validar que el username no exista en la tabla usuarios
     const { data: existingUsername, error: usernameCheckError } = await supabase
-      .from('usuarios')
-      .select('id')
-      .eq('username', username)
+      .from('empleado')
+      .select('empleado_id')
+      .eq('usuario', username)
       .single();
   
     if (existingUsername) {
@@ -88,22 +101,34 @@ router.post('/login', async (req, res) => {
   
     // Insertar en tabla usuarios
     const { error: insertError } = await supabase
-      .from('usuarios')
+      .from('empleado')
       .insert({
-        id: user.id,
-        username,
-        email
+        empleado_id: user.id,
+        usuario: username,
+        correo: email
       });
   
     if (insertError) {
       console.log(insertError.message)
       return res.status(500).json({success: false, error: insertError.message });
     }
+
+    const { error: rolError } = await supabase
+      .from('empleado_rol')
+      .insert({
+        empleado_id: user.id,
+        rol_id: 3
+      });
+
+    if (rolError){
+      console.log(rolError.message);
+      return res.status(500).json({success: false, error: rolError.message });
+    }
   
-    console.log('Usuario registrado correctamente');
+    console.log('Usuario registrado correctamente con rol empleado');
     return res.status(200).json({
       success: true,
-      message: 'Usuario registrado correctamente',
+      message: 'Usuario registrado correctamente con rol empleado',
       user_id: user.id
     });
   });
