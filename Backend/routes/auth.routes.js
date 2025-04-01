@@ -1,7 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
 const { supabaseAnon } = require('../supabase');
+dotenv.config();
+
 const supabase = supabaseAnon;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
@@ -44,12 +49,18 @@ router.post('/login', async (req, res) => {
     const roles = usuario.empleado_rol.map(er => er.rol.nombre);
     console.log(roles); // ['delivery lead', 'employee', ...]
 
+    const payload = {
+      id: user.id,
+      username: usuario.usuario,
+      roles: roles
+    };
+
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '2h' });
+
     console.log('acceso autorizado');
     return res.status(200).json({
       success: true,
-      token: authData.session.access_token,
-      username: usuario.username,
-      roles: roles
+      token: token
     });
   });
   
