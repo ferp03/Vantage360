@@ -1,0 +1,59 @@
+<div class="contenedor-detalle">
+  <div class="caja-info">
+    <div class="izquierda">
+      <div class="izquierda-superior">
+        <h3>Cameron Williamson</h3>
+        <p class="rol">Sr. Web Development</p>
+
+        <p><strong>Email:</strong> cameron&#64;webdev.com</p>
+        <p><strong>Ubicación:</strong> Monterrey, MX</p>
+        <p><strong>Teléfono:</strong> +52 81 9999 1234</p>
+        <p><strong>Desde:</strong> Julio 2020</p>
+        <p><strong>Capacidad:</strong> 95%</p>
+      </div>
+
+      <div class="izquierda-habilidades">
+        <div class="habilidades">
+          <h4>Habilidades</h4>
+          <div class="etiquetas-habilidad">
+            <span>React</span>
+            <span>Angular</span>
+            <span>UI/UX</span>
+            <span>TypeScript</span>
+            <span>Figma</span>
+            <span>Adobe</span>
+          </div>
+
+          <h4>Cursos y Certificados</h4>
+          <ul>
+            <li>Angular Avanzado - Platzi</li>
+            <li>Código Limpio - Udemy</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="derecha">
+    </div>
+    <button class="boton-editar">Editar</button>
+  </div>
+
+  <div class="carrera">
+    <h3>Trayectoria Laboral</h3>
+    <div class="linea-tiempo">
+      <div class="elemento-tiempo" *ngFor="let experiencia of experiencias">
+        <h4>{{ experiencia.titulo }}</h4>
+        <p>{{ experiencia.empresa }}</p>
+        <small>
+            {{ experiencia.inicio | date: 'dd/MM/yyyy' }} -
+            {{ experiencia.fin ? (experiencia.fin | date: 'dd/MM/yyyy') : 'Presente' }}
+        </small>          
+        <p>{{ experiencia.descripcion }}</p>
+      </div>
+    </div>
+  
+    <div class="boton-editar-trayectoria">
+      <button class="boton-editar">Editar</button>
+    </div>
+  </div>
+  

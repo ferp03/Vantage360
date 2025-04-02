@@ -1,0 +1,130 @@
+.contenedor-detalle {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-height: 100vh;
+    width: 100vw;
+    background: linear-gradient(135deg, #000000, #1a1a1a);
+    color: white;
+    padding: 3rem;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  
+  .caja-info {
+    display: flex;
+    gap: 2rem;
+    background: white;
+    color: black;
+    border-radius: 15px;
+    padding: 2rem;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  
+  .izquierda {
+    flex: 1 1 100%;
+    min-width: 300px;
+    max-width: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .izquierda-superior {
+    flex: 1 1 45%;
+    min-width: 250px;
+  }
+  
+  .izquierda-habilidades {
+    flex: 1 1 45%;
+    min-width: 250px;
+  }
+  
+  .rol {
+    color: gray;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+  
+  .habilidades {
+    background: #f5f5f5;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+  }
+  
+  .etiquetas-habilidad {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 1rem 0;
+  }
+  
+  .etiquetas-habilidad span {
+    background: #d3d3d3;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  
+  .derecha {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  .carrera {
+    margin-top: 2rem;
+    background: white;
+    color: black;
+    border-radius: 15px;
+    padding: 2rem;
+    position: relative;
+  }
+  
+  .linea-tiempo {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-top: 1rem;
+  }
+  
+  .elemento-tiempo {
+    min-width: 220px;
+    background: #eee;
+    padding: 1rem;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+  
+  .boton-editar {
+    align-self: flex-end;
+    margin-top: 1rem;
+    margin-left: auto;
+    background-color: #000;
+    color: white;
+    padding: 0.5rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+  }
+  
+  .boton-editar-trayectoria {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 0.2rem;
+    margin-top: 1rem;
+  }
+
+  .boton-editar:hover {
+    background-color: #333;
+  }
+  
+  
