@@ -32,29 +32,32 @@
           </div>
   
           <p><strong>Desde:</strong> Julio 2020</p>
-          <p><strong>Capacidad:</strong> 95%</p>
+          <p><strong>Cargabilidad:</strong> 95%</p>
         </div>
   
         <div class="izquierda-habilidades">
-          <div class="habilidades">
-            <h4>Habilidades</h4>
-            <div class="etiquetas-habilidad">
-              <span>React</span>
-              <span>Angular</span>
-              <span>UI/UX</span>
-              <span>TypeScript</span>
-              <span>Figma</span>
-              <span>Adobe</span>
+            <div class="habilidades">
+              <div class="encabezado-habilidades">
+                <h4>Habilidades</h4>
+                <button *ngIf="editandoInfo" class="boton-agregar-habilidad">+</button>
+              </div>
+              <div class="etiquetas-habilidad">
+                <span>React</span>
+                <span>Angular</span>
+                <span>UI/UX</span>
+                <span>TypeScript</span>
+                <span>Figma</span>
+                <span>Adobe</span>
+              </div>
+              
+              <h4>Cursos y Certificados</h4>
+              <ul>
+                <li>Angular Avanzado - Platzi</li>
+                <li>Código Limpio - Udemy</li>
+              </ul>
             </div>
-  
-            <h4>Cursos y Certificados</h4>
-            <ul>
-              <li>Angular Avanzado - Platzi</li>
-              <li>Código Limpio - Udemy</li>
-            </ul>
           </div>
         </div>
-      </div>
   
       <div class="derecha"></div>
       <button class="boton-editar" (click)="toggleEditarInfo()">
@@ -63,64 +66,49 @@
     </div>
 
     <div class="carrera">
-      <h3>Trayectoria Laboral</h3>
-      <div class="linea-tiempo">
-        <div class="elemento-tiempo" *ngFor="let experiencia of experiencias; let i = index">
-          <button class="boton-editar-cuadro" (click)="toggleEditarTrayectoria(i)">
-            {{ editandoIndice === i ? 'Guardar' : 'Editar' }}
-          </button>
-  
-          <div *ngIf="editandoIndice !== i">
-            <h4>{{ experiencia.titulo }}</h4>
-            <p>{{ experiencia.empresa }}</p>
-            <small>
-              {{ experiencia.inicio | date: 'dd/MM/yyyy' }} -
-              {{ experiencia.fin ? (experiencia.fin | date: 'dd/MM/yyyy') : 'Presente' }}
-            </small>
-            <p>{{ experiencia.descripcion }}</p>
-          </div>
-
-          <div *ngIf="editandoIndice === i">
-            <p>
-              <strong>Título:</strong>
-              <input [(ngModel)]="experiencia.titulo" />
-              <span class="error" *ngIf="errores[i] && !experiencia.titulo">Campo requerido</span>
-            </p>
-  
-            <p>
-              <strong>Empresa:</strong>
-              <input [(ngModel)]="experiencia.empresa" />
-              <span class="error" *ngIf="errores[i] && !experiencia.empresa">Campo requerido</span>
-            </p>
-  
-            <p>
-              <strong>Inicio:</strong>
-              <input type="date" [(ngModel)]="experiencia.inicio" />
-              <span class="error" *ngIf="errores[i] && !experiencia.inicio">Campo requerido</span>
-            </p>
-  
-            <p>
-              <strong>Fin:</strong>
-              <input type="date" [(ngModel)]="experiencia.fin" />
-              <span class="error" *ngIf="errores[i] && !experiencia.fin">Campo requerido</span>
-            </p>
-  
-            <p>
-              <strong>Descripción:</strong>
-              <textarea [(ngModel)]="experiencia.descripcion"></textarea>
-              <span class="error" *ngIf="errores[i] && !experiencia.descripcion">Campo requerido</span>
-            </p>
-  
-            <button *ngIf="experiencia.esNueva" class="boton-cancelar" (click)="cancelarNuevaExperiencia(i)">
-              Cancelar
+        <h3>Trayectoria Laboral</h3>
+      
+        <div class="linea-tiempo">
+          <div class="elemento-tiempo" *ngFor="let experiencia of experiencias; let i = index">
+            
+            <button
+              *ngIf="editandoTrayectoria"
+              class="boton-editar-cuadro"
+              (click)="toggleEditarTrayectoria(i)"
+            >
+              {{ editandoIndice === i ? 'Guardar' : 'Editar' }}
             </button>
+      
+            <div *ngIf="editandoIndice !== i">
+              <h4>{{ experiencia.titulo }}</h4>
+              <p>{{ experiencia.empresa }}</p>
+              <small>
+                {{ experiencia.inicio | date: 'dd/MM/yyyy' }} -
+                {{ experiencia.fin ? (experiencia.fin | date: 'dd/MM/yyyy') : 'Presente' }}
+              </small>
+              <p>{{ experiencia.descripcion }}</p>
+            </div>
+      
+            <div *ngIf="editandoIndice === i">
+              <p><strong>Título:</strong> <input [(ngModel)]="experiencia.titulo" /></p>
+              <p><strong>Empresa:</strong> <input [(ngModel)]="experiencia.empresa" /></p>
+              <p><strong>Inicio:</strong> <input type="date" [(ngModel)]="experiencia.inicio" /></p>
+              <p><strong>Fin:</strong> <input type="date" [(ngModel)]="experiencia.fin" /></p>
+              <p><strong>Descripción:</strong> <textarea [(ngModel)]="experiencia.descripcion"></textarea></p>
+      
+              <button *ngIf="experiencia.esNueva" class="boton-cancelar" (click)="cancelarNuevaExperiencia(i)">Cancelar</button>
+            </div>
+          </div>
+      
+          <div class="elemento-tiempo agregar-tarjeta" *ngIf="editandoTrayectoria">
+            <button class="boton-agregar" (click)="agregarExperiencia()">+</button>
           </div>
         </div>
-  
-        <div class="elemento-tiempo agregar-tarjeta">
-          <button class="boton-agregar" (click)="agregarExperiencia()">+</button>
+      
+        <div class="boton-editar-trayectoria-global">
+          <button (click)="editandoTrayectoria = !editandoTrayectoria" class="boton-editar">
+            {{ editandoTrayectoria ? 'Guardar' : 'Editar'}}
+          </button>
         </div>
       </div>
-    </div>
-  </div>
-  
+      

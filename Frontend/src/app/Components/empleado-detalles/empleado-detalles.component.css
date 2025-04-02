@@ -190,4 +190,62 @@
     display: block;
     margin-top: 2px;
   }
+
+  .boton-agregar-habilidad {
+    background-color: #000;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .boton-agregar-habilidad:hover {
+    background-color: #333;
+  }
+  .encabezado-habilidades {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  
+  .encabezado-habilidades h4 {
+    margin: 0;
+  }
+  
+  .boton-agregar-habilidad {
+    background-color: #000;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+  
+  .boton-agregar-habilidad:hover {
+    background-color: #333;
+  }
+  
+  .boton-editar-trayectoria-global {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
   

@@ -28,6 +28,7 @@ export class EmpleadoDetallesComponent {
   };
 
   editandoInfo = false;
+  editandoTrayectoria = false; 
   editandoIndice: number | null = null;
   errores: { [index: number]: boolean } = {};
 
@@ -71,6 +72,8 @@ export class EmpleadoDetallesComponent {
   }
 
   toggleEditarTrayectoria(index: number) {
+    if (!this.editandoTrayectoria) return;
+
     const exp = this.experiencias[index];
 
     if (this.editandoIndice === index) {
