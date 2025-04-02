@@ -3,12 +3,10 @@
       <div class="izquierda">
         <div class="izquierda-superior">
           <h3>Cameron Williamson</h3>
-          <p class="rol">Sr. Web Development</p>
   
           <div *ngIf="!editandoInfo">
             <p><strong>Email:</strong> {{ info.email }}</p>
-            <p><strong>Ubicación:</strong> {{ info.ubicacion }}</p>
-            <p><strong>Teléfono:</strong> {{ info.telefono }}</p>
+            <p><strong>Usuario:</strong> {{ info.usuario }}</p>
           </div>
   
           <div *ngIf="editandoInfo">
@@ -19,15 +17,9 @@
             </p>
   
             <p>
-              <strong>Ubicación:</strong>
-              <input [(ngModel)]="info.ubicacion" />
-              <span class="error" *ngIf="erroresInfo.ubicacion">Campo requerido</span>
-            </p>
-  
-            <p>
-              <strong>Teléfono:</strong>
-              <input [(ngModel)]="info.telefono" />
-              <span class="error" *ngIf="erroresInfo.telefono">Campo requerido</span>
+              <strong>Usuario:</strong>
+              <input [(ngModel)]="info.usuario" />
+              <span class="error" *ngIf="erroresInfo.usuario">Campo requerido</span>
             </p>
           </div>
   

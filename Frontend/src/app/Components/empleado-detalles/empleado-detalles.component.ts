@@ -17,14 +17,12 @@ interface ExperienciaLaboral {
 export class EmpleadoDetallesComponent {
   info = {
     email: 'cameron@webdev.com',
-    ubicacion: 'Monterrey, MX',
-    telefono: '+52 81 9999 1234'
+    usuario: 'Monterrey, MX',
   };
 
   erroresInfo = {
     email: false,
-    ubicacion: false,
-    telefono: false
+    usuario: false,
   };
 
   editandoInfo = false;
@@ -59,10 +57,9 @@ export class EmpleadoDetallesComponent {
   toggleEditarInfo() {
     if (this.editandoInfo) {
       this.erroresInfo.email = !this.info.email.trim();
-      this.erroresInfo.ubicacion = !this.info.ubicacion.trim();
-      this.erroresInfo.telefono = !this.info.telefono.trim();
+      this.erroresInfo.usuario = !this.info.usuario.trim();
 
-      const tieneErrores = this.erroresInfo.email || this.erroresInfo.ubicacion || this.erroresInfo.telefono;
+      const tieneErrores = this.erroresInfo.email || this.erroresInfo.usuario;
       if (tieneErrores) return;
 
       this.editandoInfo = false;

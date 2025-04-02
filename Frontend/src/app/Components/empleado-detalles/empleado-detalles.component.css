@@ -45,13 +45,7 @@
     flex: 1 1 45%;
     min-width: 250px;
   }
-  
-  .rol {
-    color: gray;
-    margin-bottom: 1rem;
-    line-height: 1.5;
-  }
-  
+   
   .habilidades {
     background: #f5f5f5;
     padding: 1rem 1.5rem;
@@ -191,22 +185,6 @@
     margin-top: 2px;
   }
 
-  .boton-agregar-habilidad {
-    background-color: #000;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
   .boton-agregar-habilidad:hover {
     background-color: #333;
   }
