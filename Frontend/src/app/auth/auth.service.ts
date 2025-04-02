@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { catchError, tap, map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,6 @@ export class AuthService {
       tap(res => {
         if (res.success) {
           localStorage.setItem('token', res.token);
-          localStorage.setItem('username', res.username);
           this.authState.next(true);
         }
       }),
@@ -46,5 +46,25 @@ export class AuthService {
 
   authStatus(): Observable<boolean>{
     return this.authState.asObservable();
+  }
+
+  private getDecodedToken(): any | null {
+    const token = localStorage.getItem('token');
+    try {
+      return token ? jwtDecode(token) : null;
+    } catch (e) {
+      console.error('Token inválido', e);
+      return null;
+    }
+  }
+  
+  get username(): string | null {
+    const decoded = this.getDecodedToken();
+    return decoded?.username || null;
+  }
+  
+  get roles(): string[] {
+    const decoded = this.getDecodedToken();
+    return decoded?.roles || [];
   }
 }

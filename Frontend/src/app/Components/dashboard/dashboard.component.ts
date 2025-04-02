@@ -28,11 +28,14 @@ export class DashboardComponent implements OnInit{
   currentPage: number = 1;
   itemsPerPage: number = 5;
 
-  constructor(private apiService: ApiService){}
+  
+
+  constructor(private apiService: ApiService, private authService: AuthService){}
 
   ngOnInit(): void {
     this.fetchCategories();
     this.fetchChuck();
+    alert(this.authService.roles)
   }
 
   fetchChuck(): void {

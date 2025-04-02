@@ -50,15 +50,15 @@ export class LoginComponent {
       next: (response: any) => {
         console.log(response)
         if(response.success){
-          // this.login();
           this.mensaje = 'Se mandó un correo para verificar tu cuenta'
-          this.router.navigate(['/login']);
+          this.isSignUp = false;
+          this.isLogin = true;
         }else{
           this.mensaje = response.error;
           console.log(this.mensaje);
         }
       }, error: (err) => {
-        this.mensaje = err.error?.error || 'Hubo un error al intentar iniciar sesión';
+        this.mensaje = err.error?.error || 'Hubo un error al intentar al crear la cuenta';
         console.log(this.mensaje);
       }
     });
