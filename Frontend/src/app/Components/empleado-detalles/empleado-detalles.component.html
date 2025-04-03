@@ -1,106 +1,156 @@
 <div class="contenedor-detalle">
-    <div class="caja-info">
-      <div class="izquierda">
-        <div class="izquierda-superior">
-          <h3>Cameron Williamson</h3>
-  
-          <div *ngIf="!editandoInfo">
-            <p><strong>Email:</strong> {{ info.email }}</p>
-            <p><strong>Usuario:</strong> {{ info.usuario }}</p>
-          </div>
-  
-          <div *ngIf="editandoInfo">
-            <p>
-              <strong>Email:</strong>
-              <input [(ngModel)]="info.email" />
-              <span class="error" *ngIf="erroresInfo.email">Campo requerido</span>
-            </p>
-  
-            <p>
-              <strong>Usuario:</strong>
-              <input [(ngModel)]="info.usuario" />
-              <span class="error" *ngIf="erroresInfo.usuario">Campo requerido</span>
-            </p>
-          </div>
-  
-          <p><strong>Desde:</strong> Julio 2020</p>
-          <p><strong>Cargabilidad:</strong> 95%</p>
+  <div class="caja-info">
+    <div class="izquierda">
+      <div class="izquierda-superior">
+        <h3>Cameron Williamson</h3>
+
+        <div *ngIf="!editandoInfo">
+          <p><strong>Email:</strong> {{ info.email }}</p>
+          <p><strong>Usuario:</strong> {{ info.usuario }}</p>
         </div>
-  
-        <div class="izquierda-habilidades">
-            <div class="habilidades">
-              <div class="encabezado-habilidades">
-                <h4>Habilidades</h4>
-                <button *ngIf="editandoInfo" class="boton-agregar-habilidad">+</button>
-              </div>
-              <div class="etiquetas-habilidad">
-                <span>React</span>
-                <span>Angular</span>
-                <span>UI/UX</span>
-                <span>TypeScript</span>
-                <span>Figma</span>
-                <span>Adobe</span>
-              </div>
-              
-              <h4>Cursos y Certificados</h4>
-              <ul>
-                <li>Angular Avanzado - Platzi</li>
-                <li>Código Limpio - Udemy</li>
-              </ul>
-            </div>
-          </div>
+
+        <div *ngIf="editandoInfo">
+          <p>
+            <strong>Email:</strong>
+            <input [(ngModel)]="info.email" [class.error-input]="erroresInfo.email" />
+            <span class="error" *ngIf="erroresInfo.email">Campo requerido</span>
+            <span class="error" *ngIf="!erroresInfo.email && erroresInfo.formatoEmail">Correo no válido</span>
+          </p>
+
+          <p>
+            <strong>Usuario:</strong>
+            <input [(ngModel)]="info.usuario" [class.error-input]="erroresInfo.usuario" />
+            <span class="error" *ngIf="erroresInfo.usuario">Campo requerido</span>
+          </p>
         </div>
-  
-      <div class="derecha"></div>
-      <button class="boton-editar" (click)="toggleEditarInfo()">
-        {{ editandoInfo ? 'Guardar' : 'Editar' }}
-      </button>
+
+        <p><strong>Desde:</strong> Julio 2020</p>
+        <p><strong>Cargabilidad:</strong> 95%</p>
+
+        <button *ngIf="editandoInfo" class="boton-cambiar-pass" (click)="mostrarModalContrasena = true">
+          Cambiar contraseña
+        </button>
+      </div>
+
+      <div class="izquierda-habilidades">
+        <div class="habilidades">
+          <div class="encabezado-habilidades">
+            <h4>Habilidades</h4>
+            <button *ngIf="editandoInfo" class="boton-agregar-habilidad">+</button>
+          </div>
+
+          <div class="etiquetas-habilidad">
+            <span *ngFor="let habilidad of habilidades">{{ habilidad }}</span>
+          </div>
+
+          <h4>Cursos y Certificados</h4>
+          <ul>
+            <li *ngFor="let curso of cursos">
+              {{ curso.nombre }} - {{ curso.plataforma }}
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
 
-    <div class="carrera">
-        <h3>Trayectoria Laboral</h3>
-      
-        <div class="linea-tiempo">
-          <div class="elemento-tiempo" *ngFor="let experiencia of experiencias; let i = index">
-            
-            <button
-              *ngIf="editandoTrayectoria"
-              class="boton-editar-cuadro"
-              (click)="toggleEditarTrayectoria(i)"
-            >
-              {{ editandoIndice === i ? 'Guardar' : 'Editar' }}
-            </button>
-      
-            <div *ngIf="editandoIndice !== i">
-              <h4>{{ experiencia.titulo }}</h4>
-              <p>{{ experiencia.empresa }}</p>
-              <small>
-                {{ experiencia.inicio | date: 'dd/MM/yyyy' }} -
-                {{ experiencia.fin ? (experiencia.fin | date: 'dd/MM/yyyy') : 'Presente' }}
-              </small>
-              <p>{{ experiencia.descripcion }}</p>
-            </div>
-      
-            <div *ngIf="editandoIndice === i">
-              <p><strong>Título:</strong> <input [(ngModel)]="experiencia.titulo" /></p>
-              <p><strong>Empresa:</strong> <input [(ngModel)]="experiencia.empresa" /></p>
-              <p><strong>Inicio:</strong> <input type="date" [(ngModel)]="experiencia.inicio" /></p>
-              <p><strong>Fin:</strong> <input type="date" [(ngModel)]="experiencia.fin" /></p>
-              <p><strong>Descripción:</strong> <textarea [(ngModel)]="experiencia.descripcion"></textarea></p>
-      
-              <button *ngIf="experiencia.esNueva" class="boton-cancelar" (click)="cancelarNuevaExperiencia(i)">Cancelar</button>
-            </div>
-          </div>
-      
-          <div class="elemento-tiempo agregar-tarjeta" *ngIf="editandoTrayectoria">
-            <button class="boton-agregar" (click)="agregarExperiencia()">+</button>
-          </div>
+    <div class="derecha"></div>
+
+    <button class="boton-editar" (click)="toggleEditarInfo()">
+      {{ editandoInfo ? 'Guardar' : 'Editar' }}
+    </button>
+  </div>
+
+  <div class="carrera">
+    <h3>Trayectoria Laboral</h3>
+
+    <div class="linea-tiempo">
+      <div
+        class="elemento-tiempo"
+        *ngFor="let experiencia of experiencias; let i = index"
+      >
+        <button
+          *ngIf="editandoTrayectoria"
+          class="boton-editar-cuadro"
+          (click)="toggleEditarTrayectoria(i)"
+        >
+          {{ editandoIndice === i ? 'Guardar' : 'Editar' }}
+        </button>
+
+        <div *ngIf="editandoIndice !== i">
+          <h4>{{ experiencia.titulo }}</h4>
+          <p>{{ experiencia.empresa }}</p>
+          <small>
+            {{ experiencia.inicio | date: 'dd/MM/yyyy' }} -
+            {{ experiencia.fin ? (experiencia.fin | date: 'dd/MM/yyyy') : 'Presente' }}
+          </small>
+          <p>{{ experiencia.descripcion }}</p>
         </div>
-      
-        <div class="boton-editar-trayectoria-global">
-          <button (click)="editandoTrayectoria = !editandoTrayectoria" class="boton-editar">
-            {{ editandoTrayectoria ? 'Guardar' : 'Editar'}}
+
+        <div *ngIf="editandoIndice === i">
+          <p>
+            <strong>Título:</strong>
+            <input [(ngModel)]="experiencia.titulo" [class.error-input]="errores[i].titulo" />
+            <span class="error" *ngIf="errores[i].titulo">Campo requerido</span>
+          </p>
+          <p>
+            <strong>Empresa:</strong>
+            <input [(ngModel)]="experiencia.empresa" [class.error-input]="errores[i].empresa" />
+            <span class="error" *ngIf="errores[i].empresa">Campo requerido</span>
+          </p>
+          <p>
+            <strong>Inicio:</strong>
+            <input type="date" [(ngModel)]="experiencia.inicio" [class.error-input]="errores[i].inicio" />
+            <span class="error" *ngIf="errores[i].inicio">Campo requerido</span>
+          </p>
+          <p>
+            <strong>Fin:</strong>
+            <input type="date" [(ngModel)]="experiencia.fin" [class.error-input]="errores[i].fin" />
+            <span class="error" *ngIf="errores[i].fin">Campo requerido</span>
+          </p>
+          <p>
+            <strong>Descripción:</strong>
+            <textarea [(ngModel)]="experiencia.descripcion" [class.error-input]="errores[i].descripcion"></textarea>
+            <span class="error" *ngIf="errores[i].descripcion">Campo requerido</span>
+          </p>
+          <button *ngIf="experiencia.esNueva" class="boton-cancelar" (click)="cancelarNuevaExperiencia(i)">
+            Cancelar
           </button>
         </div>
       </div>
+
+      <div class="elemento-tiempo agregar-tarjeta" *ngIf="editandoTrayectoria && !existeExperienciaNueva()">
+        <button class="boton-agregar-exp" (click)="agregarExperiencia()">+</button>
+      </div>
+    </div>
+
+    <div class="boton-editar-trayectoria-global">
+      <button (click)="guardarTrayectoria()" class="boton-editar">
+        {{ editandoTrayectoria ? 'Guardar' : 'Editar' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="modal" *ngIf="mostrarModalContrasena">
+    <div class="modal-contenido">
+      <h3>Cambiar contraseña</h3>
+
+      <label>Contraseña actual:</label>
+      <input type="password" [(ngModel)]="contrasenaActual" />
+      <span class="error" *ngIf="erroresPass.actual">Campo requerido</span>
+
+      <label>Nueva contraseña:</label>
+      <input type="password" [(ngModel)]="nuevaContrasena" />
+      <span class="error" *ngIf="erroresPass.nueva">La contraseña debe tener al menos 8 caracteres</span>
       
+
+      <label>Confirmar nueva contraseña:</label>
+      <input type="password" [(ngModel)]="confirmarContrasena" />
+      <span class="error" *ngIf="erroresPass.confirmar">Las contraseñas no coinciden</span>
+
+      <div class="acciones-modal">
+        <button (click)="confirmarCambioContrasena()">Confirmar</button>
+        <button class="cancelar" (click)="cerrarModalContrasena()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
