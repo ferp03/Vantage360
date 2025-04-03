@@ -13,6 +13,7 @@ import { AboutComponent } from './Components/about/about.component';
 import { ContactComponent } from './Components/contact/contact.component';
 import { ForgotPasswordComponent } from './Components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './Components/reset-password/reset-password.component';
+import { DisponibilidadComponent } from './Components/disponibilidad/disponibilidad.component'; // Añadir componente
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { ResetPasswordComponent } from './Components/reset-password/reset-passwo
     AboutComponent,
     ContactComponent,
     ForgotPasswordComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    DisponibilidadComponent // Declarar componente
   ],
   imports: [
     BrowserModule,

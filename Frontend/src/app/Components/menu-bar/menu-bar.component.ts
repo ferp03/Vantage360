@@ -15,7 +15,14 @@ export class MenuBarComponent {
       this.isLogged = status;
     });
   }
+  
   logout(): void{
     this.auth.logout()
+  }
+  
+  // Verificar si el usuario tiene rol de administrador
+  esAdmin(): boolean {
+    const roles = this.auth.roles;
+    return roles.includes('delivery lead') || roles.includes('people lead');
   }
 }

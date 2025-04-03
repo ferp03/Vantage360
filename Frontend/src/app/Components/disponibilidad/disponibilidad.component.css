@@ -1,0 +1,458 @@
+.dashboard-bg {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    min-width: 100vw;
+    background: linear-gradient(135deg, #2c3e50, #1e272e);
+    overflow-y: auto;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    position: inherit;
+    height: 90vh;
+    width: 100vw;
+    bottom: 0;
+    padding: 20px;
+  }
+  
+  .titulo {
+    align-self: center;
+    margin-bottom: 20px;
+  }
+  
+  .titulo h2 {
+    color: white;
+    font-size: 24px;
+  }
+  
+  /* Filtros avanzados */
+  .filtros-avanzados {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 15px 0;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+  }
+  
+  .filtro-item {
+    margin-right: 15px;
+    margin-bottom: 10px;
+  }
+  
+  .filtro-item label {
+    color: white;
+    margin-right: 8px;
+    font-size: 14px;
+  }
+  
+  .filtro-item select, .filtro-item input {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+  }
+  
+  .filtro-item.checkbox {
+    display: flex;
+    align-items: center;
+  }
+  
+  .filtro-item.checkbox label {
+    margin-left: 5px;
+  }
+  
+  .btn-limpiar {
+    padding: 8px 15px;
+    background-color: #4a6572;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn-limpiar:hover {
+    background-color: #5a7682;
+  }
+  
+  /* Tabla de empleados */
+  .tabla-container {
+    margin-top: 20px;
+    overflow-x: auto;
+    max-height: calc(100vh - 300px);
+  }
+  
+  .tabla-empleados {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .tabla-empleados th {
+    background-color: #344955;
+    color: white;
+    text-align: left;
+    padding: 12px 15px;
+  }
+  
+  .tabla-empleados td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .tabla-empleados tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .tabla-empleados tr.disponible {
+    background-color: rgba(233, 253, 240, 0.5);
+  }
+  
+  .tabla-empleados tr.no-disponible {
+    background-color: rgba(253, 233, 233, 0.5);
+  }
+  
+  /* Estilos para información de empleado */
+  .empleado-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #6c7ae0;
+    margin-right: 10px;
+  }
+  
+  .nombre {
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .usuario {
+    color: #666;
+    font-size: 12px;
+    margin: 0;
+  }
+  
+  /* Chips para roles y habilidades */
+  .chip {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: #e0e0e0;
+    border-radius: 16px;
+    font-size: 12px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+  }
+  
+  .chip.small {
+    padding: 2px 6px;
+    font-size: 11px;
+  }
+  
+  /* Barra de cargabilidad */
+  .cargabilidad-barra {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .cargabilidad-valor {
+    position: absolute;
+    height: 100%;
+    background: linear-gradient(90deg, #4caf50, #f44336);
+    border-radius: 4px;
+  }
+  
+  .cargabilidad-barra span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: bold;
+    color: #000;
+  }
+  
+  /* Estado de disponibilidad */
+  .estado {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  .disponible-badge {
+    background-color: #e6f7e6;
+    color: #388e3c;
+  }
+  
+  .no-disponible-badge {
+    background-color: #ffebee;
+    color: #d32f2f;
+  }
+  
+  /* Botones de acción */
+  .btn-accion {
+    padding: 6px 12px;
+    background-color: #344955;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn-accion:hover {
+    background-color: #4a6572;
+  }
+  
+  /* Paginación */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+  }
+  
+  .pagination button {
+    padding: 8px 15px;
+    background-color: #344955;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .pagination button:hover:not(:disabled) {
+    background-color: #4a6572;
+  }
+  
+  .pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .pagination span {
+    color: white;
+  }
+  
+  /* Modal de edición */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal {
+    width: 400px;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #344955;
+    color: white;
+  }
+  
+  .modal-header h3 {
+    margin: 0;
+  }
+  
+  .btn-cerrar {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .modal-content {
+    padding: 20px;
+  }
+  
+  .empleado-detalle {
+    margin-bottom: 20px;
+  }
+  
+  .empleado-detalle .nombre {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+  
+  .empleado-detalle .correo {
+    color: #666;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form-group select, .form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px 20px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+  }
+  
+  .btn-cancelar, .btn-guardar {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+  
+  .btn-cancelar {
+    background-color: #e0e0e0;
+  }
+  
+  .btn-guardar {
+    background-color: #344955;
+    color: white;
+  }
+  
+  .btn-guardar:hover {
+    background-color: #4a6572;
+  }
+  
+  /* Mensajes de carga y error */
+  .cargando, .error-mensaje {
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+  }
+  
+  .cargando {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+  
+  .error-mensaje {
+    background-color: #ffebee;
+    color: #d32f2f;
+  }
+  
+  /* Formulario de búsqueda (reutilizado del dashboard) */
+  .form button {
+    border: none;
+    background: none;
+    color: #8b8ba7;
+  }
+  
+  .form {
+    --timing: 0.3s;
+    --width-of-input: 200px;
+    --height-of-input: 40px;
+    --border-height: 2px;
+    --input-bg: #fff;
+    --border-color: #2f2ee9;
+    --border-radius: 30px;
+    --after-border-radius: 1px;
+    position: relative;
+    width: var(--width-of-input);
+    height: var(--height-of-input);
+    display: flex;
+    align-items: center;
+    padding-inline: 0.8em;
+    border-radius: var(--border-radius);
+    transition: border-radius 0.5s ease;
+    background: var(--input-bg,#fff);
+  }
+  
+  .input {
+    font-size: 0.9rem;
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    padding-inline: 0.5em;
+    padding-block: 0.7em;
+    border: none;
+  }
+  
+  .form:before {
+    content: "";
+    position: absolute;
+    background: var(--border-color);
+    transform: scaleX(0);
+    transform-origin: center;
+    width: 100%;
+    height: var(--border-height);
+    left: 0;
+    bottom: 0;
+    border-radius: 1px;
+    transition: transform var(--timing) ease;
+  }
+  
+  .form:focus-within {
+    border-radius: var(--after-border-radius);
+  }
+  
+  input:focus {
+    outline: none;
+  }
+  
+  .form:focus-within:before {
+    transform: scale(1);
+  }
+  
+  .reset {
+    border: none;
+    background: none;
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  input:not(:placeholder-shown) ~ .reset {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .form svg {
+    width: 17px;
+    margin-top: 3px;
+  }
