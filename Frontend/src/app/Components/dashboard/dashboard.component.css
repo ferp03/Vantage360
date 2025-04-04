@@ -235,8 +235,3 @@ button:hover {
     opacity: 1;
     visibility: visible;
   }
-  /* sizing svg icons */
-  .form svg {
-    width: 17px;
-    margin-top: 3px;
-  }

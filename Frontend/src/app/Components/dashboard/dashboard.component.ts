@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 import { ApiService } from 'src/app/services/api.service';
 
@@ -16,6 +15,7 @@ interface Joke {
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
+  
 })
 
 export class DashboardComponent implements OnInit{  
@@ -28,9 +28,10 @@ export class DashboardComponent implements OnInit{
   currentPage: number = 1;
   itemsPerPage: number = 5;
 
-  
-
-  constructor(private apiService: ApiService, private authService: AuthService){}
+  constructor(
+    private apiService: ApiService, 
+    private authService: AuthService,
+  ) {}
 
   ngOnInit(): void {
     this.fetchCategories();
