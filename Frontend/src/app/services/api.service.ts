@@ -15,8 +15,8 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/login`, {email, password});
   }
 
-  signup(username: string, email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/signup`, {username, email, password});
+  signup(name: string, patlastname:string, matlastname: string, username: string, email: string, password: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/signup`, {name, patlastname, matlastname, username, email, password});
   }
 
   forgot_password(email: string): Observable<any> {

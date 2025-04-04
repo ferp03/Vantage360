@@ -54,8 +54,8 @@ router.post('/login', async (req, res) => {
   });
   
   router.post('/signup', async (req, res) => {
-    const { username, email, password } = req.body;
-    if (!username || !email || !password) {
+    const { name, patlastname, matlastname, username, email, password } = req.body;
+    if (!name || !patlastname ||!username || !email || !password) {
       return res.status(400).json({success: false, error: 'Faltan campos requeridos' });
     }
   
@@ -105,7 +105,12 @@ router.post('/login', async (req, res) => {
       .insert({
         empleado_id: user.id,
         usuario: username,
-        correo: email
+        correo: email,
+        contraseña: password,
+        nombre: name,
+        apellido_paterno: patlastname,
+        apellido_materno: matlastname || null,
+        fecha_ingreso: new Date().toISOString().split('T')[0],
       });
   
     if (insertError) {
