@@ -35,7 +35,6 @@ export class DashboardComponent implements OnInit{
   ngOnInit(): void {
     this.fetchCategories();
     this.fetchChuck();
-    alert(this.authService.roles)
   }
 
   fetchChuck(): void {
