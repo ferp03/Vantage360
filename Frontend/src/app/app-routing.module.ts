@@ -8,7 +8,8 @@ import { AuthGuard } from './auth/auth.guard';
 import { ContactComponent } from './Components/contact/contact.component';
 import { ForgotPasswordComponent } from './Components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './Components/reset-password/reset-password.component';
-import { DisponibilidadComponent } from './Components/disponibilidad/disponibilidad.component'; // Importar componente
+import { RegistroHabilidadesComponent } from './Components/registro-habilidades/registro-habilidades.component';
+import { DisponibilidadComponent } from './Components/disponibilidad/disponibilidad.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -23,7 +24,8 @@ const routes: Routes = [
       { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
       { path: 'contact', component: ContactComponent, canActivate: [AuthGuard] },
       // Añadir ruta para disponibilidad
-      { path: 'disponibilidad', component: DisponibilidadComponent, canActivate: [AuthGuard] }
+      { path: 'disponibilidad', component: DisponibilidadComponent, canActivate: [AuthGuard] },
+      { path: 'registro-habilidades', component: RegistroHabilidadesComponent, canActivate: [AuthGuard] },
     ]
   },
 

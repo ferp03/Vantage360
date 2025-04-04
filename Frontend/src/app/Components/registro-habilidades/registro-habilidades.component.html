@@ -1,0 +1,53 @@
+<div class="skills-container">
+  <div class="skills-box">
+    <h2>Registro de Habilidades</h2>
+    <form #skillsForm (ngSubmit)="onSubmit()" id="skillsForm">
+        <!-- Campo Nombre -->
+        <div class="form-group">
+          <label for="skillName">Nombre</label>
+          <input type="text" id="skillName" name="skillName" 
+                 placeholder="Ej: JavaScript, Python..." required>
+        </div>
+        <!-- Campo Categoria -->
+        <div class="form-group" id="categoryField">
+          <label for="skillCategory">Categoría</label>
+          <select id="skillCategory" name="skillCategory" required>
+            <option value="" disabled selected>Selecciona una categoría</option>
+            <option value="Lenguaje de programación">Lenguaje de programación</option>
+            <option value="Base de datos">Base de datos</option>
+            <option value="FrontEnd">FrontEnd</option>
+            <option value="BackEnd">BackEnd</option>
+            <option value="DevOps">DevOps</option>
+            <option value="Testing">Testing</option>
+            <option value="Diseño">Diseño</option>
+            <option value="Otra">Otra</option>
+          </select>
+        </div>
+  
+        <!-- Campo Nivel -->
+        <div class="form-group">
+          <label for="skillLevel">Nivel</label>
+          <select id="skillLevel" name="skillLevel" required>
+            <option value="" disabled selected>Selecciona tu nivel</option>
+            <option value="Básico">Básico</option>
+            <option value="Intermedio">Intermedio</option>
+            <option value="Avanzado">Avanzado</option>
+          </select>
+        </div>
+  
+        <!-- Campo Descripcion -->
+        <div class="form-group">
+          <label for="skillDescription">Descripción</label>
+          <textarea id="skillDescription" name="skillDescription" 
+                    placeholder="¿En qué lo has aplicado? Ej: Proyectos personal, Backend, ..." 
+                    required></textarea>
+        </div>
+  
+        <button type="submit">Registrar Habilidad</button>
+      </form>
+      <div class="back-button-container">
+        <button class="back-button"> ← Volver</button>
+      </div>
+    </div>
+    <div #toast class="toast">Habilidad registrada</div>
+</div>
