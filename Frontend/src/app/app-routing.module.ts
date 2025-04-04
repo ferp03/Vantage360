@@ -21,10 +21,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
-      { path: 'about', component: AboutComponent, canActivate: [AuthGuard] },
-      { path: 'contact', component: ContactComponent, canActivate: [AuthGuard] },
-      // Añadir ruta para disponibilidad
-      { path: 'disponibilidad', component: DisponibilidadComponent, canActivate: [AuthGuard] },
+      { path: 'empleados', component: DisponibilidadComponent, canActivate: [AuthGuard] },
       { path: 'registro-habilidades', component: RegistroHabilidadesComponent, canActivate: [AuthGuard] },
     ]
   },
