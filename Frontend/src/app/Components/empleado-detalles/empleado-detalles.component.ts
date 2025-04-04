@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from 'src/app/services/api.service';
+import { ActivatedRoute } from '@angular/router';
 
 interface ExperienciaLaboral {
+  historial_id?: number;
   titulo: string;
   empresa: string;
   inicio: string;
@@ -29,83 +32,140 @@ interface Curso {
 })
 export class EmpleadoDetallesComponent implements OnInit {
   info = {
-    email: 'cameron@webdev.com',
-    usuario: 'Monterrey, MX',
+    nombre: '',
+    correo: '',
+    usuario: '',
+    desde: '',
+    cargabilidad: ''
   };
 
   erroresInfo = {
-    email: false,
+    correo: false,
     usuario: false,
     formatoEmail: false,
   };
 
   habilidades: string[] = [];
   cursos: Curso[] = [];
+  experiencias: ExperienciaLaboral[] = [];
 
   editandoInfo = false;
   editandoTrayectoria = false;
   editandoIndice: number | null = null;
   errores: { [index: number]: ErroresExperiencia } = {};
 
-  experiencias: ExperienciaLaboral[] = [
-    {
-      titulo: 'Desarrollador ITSM Path',
-      empresa: 'V360 Software',
-      inicio: '2022-01-01',
-      fin: '2024-04-01',
-      descripcion: 'Desarrollo de interfaces SPA con Angular.'
-    },
-    {
-      titulo: 'Proyecto interno Accenture',
-      empresa: 'Accenture',
-      inicio: '2021-07-08',
-      fin: '2022-12-31',
-      descripcion: 'Desarrollo de interfaces para plataforma interna.'
-    },
-    {
-      titulo: 'Proyecto interno Oracle',
-      empresa: 'Oracle',
-      inicio: '2020-03-01',
-      fin: '2021-06-30',
-      descripcion: 'Dashboards internos y migración de componentes.'
-    }
-  ];
+  mostrarModalContrasena = false;
+  contrasenaActual = '';
+  nuevaContrasena = '';
+  confirmarContrasena = '';
+
+  erroresPass = {
+    actual: false,
+    nueva: false,
+    confirmar: false,
+  };
+
+  private empleadoId: string | null = null;
+
+  constructor(
+    private apiService: ApiService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
+    this.empleadoId = this.route.snapshot.paramMap.get('id');
+    this.cargarInfoBasica();
     this.cargarHabilidades();
     this.cargarCursos();
+    this.cargarTrayectoria();
+  }
+
+  cargarInfoBasica() {
+    if (!this.empleadoId) return;
+
+    this.apiService.getEmpleadoInfo(this.empleadoId).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.info = {
+            nombre: res.data.nombre,
+            correo: res.data.correo,
+            usuario: res.data.usuario,
+            desde: this.formatearFecha(res.data.desde),
+            cargabilidad: res.data.cargabilidad
+          };
+        }
+      },
+      error: (err) => console.error('Error al obtener info:', err)
+    });
   }
 
   cargarHabilidades() {
-    this.habilidades = [
-      'React',
-      'Angular',
-      'UI/UX',
-      'TypeScript',
-      'Figma',
-      'Adobe'
-    ];
+    if (!this.empleadoId) return;
+
+    this.apiService.getEmpleadoHabilidades(this.empleadoId).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.habilidades = res.data;
+        }
+      },
+      error: (err) => console.error('Error al obtener habilidades:', err)
+    });
   }
 
   cargarCursos() {
-    this.cursos = [
-      { nombre: 'Angular Avanzado', plataforma: 'Platzi' },
-      { nombre: 'Código Limpio', plataforma: 'Udemy' }
-    ];
+    if (!this.empleadoId) return;
+
+    this.apiService.getEmpleadoCertificaciones(this.empleadoId).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.cursos = res.data;
+        }
+      },
+      error: (err) => console.error('Error al obtener certificaciones:', err)
+    });
+  }
+
+  cargarTrayectoria() {
+    if (!this.empleadoId) return;
+
+    this.apiService.getEmpleadoTrayectoria(this.empleadoId).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.experiencias = res.data; 
+        }
+      },
+      error: (err) => console.error('Error al obtener trayectoria:', err)
+    });
+  }
+
+  formatearFecha(fecha: string): string {
+    const opciones = { year: 'numeric', month: 'long' } as const;
+    const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES', opciones);
+    return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
   }
 
   toggleEditarInfo() {
-    const emailTrim = this.info.email.trim();
+    const correoTrim = this.info.correo.trim();
     const usuarioTrim = this.info.usuario.trim();
 
-    this.erroresInfo.email = !emailTrim;
+    this.erroresInfo.correo = !correoTrim;
     this.erroresInfo.usuario = !usuarioTrim;
-    this.erroresInfo.formatoEmail = emailTrim ? !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrim) : false;
+    this.erroresInfo.formatoEmail = correoTrim ? !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoTrim) : false;
 
-    const tieneErrores =
-      this.erroresInfo.email || this.erroresInfo.usuario || this.erroresInfo.formatoEmail;
+    if (this.erroresInfo.correo || this.erroresInfo.usuario || this.erroresInfo.formatoEmail) {
+      return;
+    }
 
-    if (tieneErrores) return;
+    if (this.editandoInfo) {
+      if (!this.empleadoId) return;
+      this.apiService.updateEmpleadoInfo(this.empleadoId, {
+        correo: this.info.correo,
+        usuario: this.info.usuario
+      }).subscribe({
+        next: () => console.log('Info básica actualizada.'),
+        error: (err) => console.error('Error actualizando info básica:', err)
+      });
+    }
 
     this.editandoInfo = !this.editandoInfo;
   }
@@ -114,24 +174,53 @@ export class EmpleadoDetallesComponent implements OnInit {
     if (!this.editandoTrayectoria) return;
 
     const exp = this.experiencias[index];
+    this.errores[index] = {
+      titulo: !exp.titulo?.trim(),
+      empresa: !exp.empresa?.trim(),
+      inicio: !exp.inicio?.trim(),
+      fin: !exp.fin?.trim(),
+      descripcion: !exp.descripcion?.trim()
+    };
 
     if (this.editandoIndice === index) {
-      if (!this.errores[index]) this.errores[index] = {};
+      if (Object.values(this.errores[index]).some(e => e)) {
+        return;
+      }
 
-      this.errores[index].titulo = !exp.titulo?.trim();
-      this.errores[index].empresa = !exp.empresa?.trim();
-      this.errores[index].inicio = !exp.inicio?.trim();
-      this.errores[index].fin = !exp.fin?.trim();
-      this.errores[index].descripcion = !exp.descripcion?.trim();
+      const payload = {
+        titulo_puesto: exp.titulo,
+        empresa: exp.empresa,
+        descripcion: exp.descripcion,
+        fecha_inicio: exp.inicio,
+        fecha_fin: exp.fin
+      };
 
-      const tieneErrores = Object.values(this.errores[index]).some(e => e);
-      if (tieneErrores) return;
+      if (exp.esNueva) {
+        if (!this.empleadoId) return;
 
-      delete exp.esNueva;
+        this.apiService.createExperiencia(this.empleadoId, payload).subscribe({
+          next: (res) => {
+            console.log('Experiencia creada:', res);
+            exp.historial_id = res.data?.historial_id;
+            delete exp.esNueva;
+          },
+          error: (err) => {
+            console.error('Error al crear experiencia:', err);
+          }
+        });
+      } else if (exp.historial_id) {
+        this.apiService.updateExperiencia(exp.historial_id, payload).subscribe({
+          next: () => console.log('Experiencia actualizada.'),
+          error: (err) => console.error('Error al actualizar experiencia:', err)
+        });
+      }
+
       this.editandoIndice = null;
     } else {
       this.editandoIndice = index;
-      if (!this.errores[index]) this.errores[index] = {};
+      if (!this.errores[index]) {
+        this.errores[index] = {};
+      }
     }
   }
 
@@ -145,9 +234,8 @@ export class EmpleadoDetallesComponent implements OnInit {
       esNueva: true
     };
     this.experiencias.push(nueva);
-    const index = this.experiencias.length - 1;
-    this.editandoIndice = index;
-    this.errores[index] = {};
+    this.editandoIndice = this.experiencias.length - 1;
+    this.errores[this.editandoIndice] = {};
   }
 
   cancelarNuevaExperiencia(index: number) {
@@ -159,31 +247,17 @@ export class EmpleadoDetallesComponent implements OnInit {
   }
 
   guardarTrayectoria() {
-    if (this.editandoTrayectoria) {
-      if (this.editandoIndice !== null) {
-        alert('Primero guarda o cancela la experiencia que estás editando.');
-        return;
-      }
-      this.editandoTrayectoria = false;
-    } else {
-      this.editandoTrayectoria = true;
+    if (this.editandoTrayectoria && this.editandoIndice !== null) {
+      alert('Primero guarda o cancela la experiencia que estás editando.');
+      return;
     }
+    this.editandoTrayectoria = !this.editandoTrayectoria;
   }
 
   existeExperienciaNueva(): boolean {
     return this.experiencias.some(exp => exp.esNueva);
   }
 
-  mostrarModalContrasena = false;
-  contrasenaActual = '';
-  nuevaContrasena = '';
-  confirmarContrasena = '';
-
-  erroresPass = {
-    actual: false,
-    nueva: false,
-    confirmar: false,
-  };
 
   cerrarModalContrasena() {
     this.mostrarModalContrasena = false;
@@ -194,20 +268,43 @@ export class EmpleadoDetallesComponent implements OnInit {
   }
 
   confirmarCambioContrasena() {
+    const actualTrim = this.contrasenaActual.trim();
     const nuevaTrim = this.nuevaContrasena.trim();
     const confirmarTrim = this.confirmarContrasena.trim();
-  
-    this.erroresPass.actual = !this.contrasenaActual.trim();
+
+    this.erroresPass.actual = !actualTrim;
     this.erroresPass.nueva = !nuevaTrim || nuevaTrim.length < 8;
-    this.erroresPass.confirmar =
-      !confirmarTrim || nuevaTrim !== confirmarTrim;
-  
-    const tieneErrores =
-      this.erroresPass.actual || this.erroresPass.nueva || this.erroresPass.confirmar;
-  
-    if (tieneErrores) return;
-  
-    alert('¡Contraseña actualizada exitosamente!');
-    this.cerrarModalContrasena();
-  }  
+    this.erroresPass.confirmar = !confirmarTrim || nuevaTrim !== confirmarTrim;
+
+    if (this.erroresPass.actual || this.erroresPass.nueva || this.erroresPass.confirmar) {
+      return;
+    }
+
+    if (!this.empleadoId) return;
+
+    this.apiService.validarContrasena(this.empleadoId, actualTrim).subscribe({
+      next: (res) => {
+        if (!res.success) {
+          this.erroresPass.actual = true;
+          alert('La contraseña actual es incorrecta.');
+          return;
+        }
+
+        this.apiService.cambiarContrasena(this.empleadoId!, nuevaTrim).subscribe({
+          next: () => {
+            alert('¡Contraseña actualizada exitosamente!');
+            this.cerrarModalContrasena();
+          },
+          error: (err) => {
+            console.error('Error al cambiar la contraseña:', err);
+            alert('Error al cambiar la contraseña.');
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error al validar contraseña actual:', err);
+        alert('Error al validar contraseña.');
+      }
+    });
+  }
 }

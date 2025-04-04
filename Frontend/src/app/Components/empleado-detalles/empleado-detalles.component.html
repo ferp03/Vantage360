@@ -1,20 +1,20 @@
 <div class="contenedor-detalle">
-  <div class="caja-info">
-    <div class="izquierda">
+  <div class="caja-info" [ngClass]="{ 'editando': editandoInfo }">
+    <div class="izquierda" [ngClass]="{ 'modo-edicion': editandoInfo }">
       <div class="izquierda-superior">
-        <h3>Cameron Williamson</h3>
+        <h3>{{ info.nombre }}</h3>
 
         <div *ngIf="!editandoInfo">
-          <p><strong>Email:</strong> {{ info.email }}</p>
+          <p><strong>correo:</strong> {{ info.correo }}</p>
           <p><strong>Usuario:</strong> {{ info.usuario }}</p>
         </div>
 
         <div *ngIf="editandoInfo">
           <p>
-            <strong>Email:</strong>
-            <input [(ngModel)]="info.email" [class.error-input]="erroresInfo.email" />
-            <span class="error" *ngIf="erroresInfo.email">Campo requerido</span>
-            <span class="error" *ngIf="!erroresInfo.email && erroresInfo.formatoEmail">Correo no válido</span>
+            <strong>correo:</strong>
+            <input [(ngModel)]="info.correo" [class.error-input]="erroresInfo.correo" />
+            <span class="error" *ngIf="erroresInfo.correo">Campo requerido</span>
+            <span class="error" *ngIf="!erroresInfo.correo && erroresInfo.formatoEmail">Correo no válido</span>
           </p>
 
           <p>
@@ -24,8 +24,8 @@
           </p>
         </div>
 
-        <p><strong>Desde:</strong> Julio 2020</p>
-        <p><strong>Cargabilidad:</strong> 95%</p>
+        <p><strong>Desde:</strong> {{ info.desde }}</p>
+        <p><strong>Cargabilidad:</strong> {{ info.cargabilidad }}%</p>
 
         <button *ngIf="editandoInfo" class="boton-cambiar-pass" (click)="mostrarModalContrasena = true">
           Cambiar contraseña
@@ -46,7 +46,7 @@
           <h4>Cursos y Certificados</h4>
           <ul>
             <li *ngFor="let curso of cursos">
-              {{ curso.nombre }} - {{ curso.plataforma }}
+              {{ curso.nombre }} 
             </li>
           </ul>
         </div>
@@ -60,7 +60,7 @@
     </button>
   </div>
 
-  <div class="carrera">
+  <div class="carrera" [ngClass]="{ 'modo-edicion': editandoTrayectoria }">
     <h3>Trayectoria Laboral</h3>
 
     <div class="linea-tiempo">
@@ -86,7 +86,7 @@
           <p>{{ experiencia.descripcion }}</p>
         </div>
 
-        <div *ngIf="editandoIndice === i">
+        <div *ngIf="editandoIndice === i" class="modo-edicion">
           <p>
             <strong>Título:</strong>
             <input [(ngModel)]="experiencia.titulo" [class.error-input]="errores[i].titulo" />
@@ -141,7 +141,6 @@
       <label>Nueva contraseña:</label>
       <input type="password" [(ngModel)]="nuevaContrasena" />
       <span class="error" *ngIf="erroresPass.nueva">La contraseña debe tener al menos 8 caracteres</span>
-      
 
       <label>Confirmar nueva contraseña:</label>
       <input type="password" [(ngModel)]="confirmarContrasena" />
