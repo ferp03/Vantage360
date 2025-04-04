@@ -1,0 +1,62 @@
+<div class="contenedor-modal" (click)="cerrar()">
+  <div class="contenido-modal" (click)="$event.stopPropagation()">
+    <button class="boton-cerrar" (click)="cerrar()">&times;</button>
+    
+    <h2 class="titulo-modal">Subir Nuevo Certificado</h2>
+    
+    <form [formGroup]="formularioCertificado" (ngSubmit)="onSubmit()" class="formulario-certificado">
+      <!-- Nombre del Certificado -->
+      <div class="grupo-formulario">
+        <label for="nombreCertificado">Nombre del Certificado*</label>
+        <input id="nombreCertificado" type="text" formControlName="name" placeholder="Ej: Python Avanzado">
+        <div class="mensaje-error" *ngIf="erroresFormulario['name']">{{ erroresFormulario['name'] }}</div>
+      </div>
+
+      <!-- Fechas -->
+      <div class="fila-formulario">
+        <div class="grupo-formulario">
+          <label for="fechaEmision">Fecha de Emisión*</label>
+          <input id="fechaEmision" type="date" formControlName="issueDate">
+          <div class="mensaje-error" *ngIf="erroresFormulario['issueDate']">{{ erroresFormulario['issueDate'] }}</div>
+        </div>
+        
+        <div class="grupo-formulario">
+          <label for="fechaVencimiento">Fecha de Vencimiento</label>
+          <input id="fechaVencimiento" type="date" formControlName="expiryDate">
+        </div>
+      </div>
+
+      <!-- ID de Certificado -->
+      <div class="grupo-formulario">
+        <label for="idCertificado">ID/Número de Certificado</label>
+        <input id="idCertificado" type="text" formControlName="certificateId">
+      </div>
+
+      <!-- Subida de Archivo -->
+      <div class="grupo-formulario">
+        <label>Subir Certificado*</label>
+        <div class="area-subida-archivo" [class.invalido]="erroresFormulario['file']">
+          <input type="file" id="archivoCertificado" (change)="alCambiarArchivo($event)" #inputArchivo hidden
+                 accept=".pdf,.jpg,.jpeg,.png">
+          <label for="archivoCertificado" class="etiqueta-archivo">
+            <span class="nombre-archivo">{{ nombreArchivoSeleccionado || 'Selecciona un archivo...' }}</span>
+            <span class="boton-examinar">Examinar</span>
+          </label>
+          <div class="mensaje-error" *ngIf="erroresFormulario['file']">{{ erroresFormulario['file'] }}</div>
+          <small class="hint-archivo">Formatos aceptados: PDF, JPG, PNG (Máx. 5MB)</small>
+        </div>
+      </div>
+
+      <!-- Acciones del Formulario -->
+      <div class="acciones-formulario">
+        <button type="button" class="boton boton-cancelar" (click)="cerrar()" [disabled]="estaEnviando">
+          Cancelar
+        </button>
+        <button type="submit" class="boton boton-enviar" [disabled]="estaEnviando">
+          <span *ngIf="!estaEnviando">Guardar Certificado</span>
+          <span *ngIf="estaEnviando">Enviando...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

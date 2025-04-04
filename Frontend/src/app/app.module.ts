@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -12,6 +13,9 @@ import { AboutComponent } from './Components/about/about.component';
 import { ContactComponent } from './Components/contact/contact.component';
 import { ForgotPasswordComponent } from './Components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './Components/reset-password/reset-password.component';
+import { CursosComponent } from './Components/cursos/cursos.component';
+import { CertificacionesComponent } from './Components/certificaciones/certificaciones.component';
+import { SubirCertificadoComponent } from '../app/Components/subir-certificado/subir-certificado.component';
 import { RegistroHabilidadesComponent } from './Components/registro-habilidades/registro-habilidades.component';
 import { DisponibilidadComponent } from './Components/disponibilidad/disponibilidad.component'; // Añadir componente
 
@@ -26,6 +30,9 @@ import { DisponibilidadComponent } from './Components/disponibilidad/disponibili
     ContactComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
+    CursosComponent,
+    CertificacionesComponent,
+    SubirCertificadoComponent,
     RegistroHabilidadesComponent,
     DisponibilidadComponent
   ],
@@ -33,7 +40,8 @@ import { DisponibilidadComponent } from './Components/disponibilidad/disponibili
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
