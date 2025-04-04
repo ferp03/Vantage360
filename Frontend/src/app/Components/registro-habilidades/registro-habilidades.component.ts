@@ -7,9 +7,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./registro-habilidades.component.css']
 })
 export class RegistroHabilidadesComponent {
+
   constructor(private router: Router) {}
 
   /* goBackToProfile(): void {
-    this.router.navigate(['/profile']);
-  }  */
+    this.router.navigate(['/empleado-detalles']);
+  } */
 }
