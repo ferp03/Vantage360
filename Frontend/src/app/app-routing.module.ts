@@ -8,6 +8,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { ContactComponent } from './Components/contact/contact.component';
 import { ForgotPasswordComponent } from './Components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './Components/reset-password/reset-password.component';
+import { EmpleadoDetallesComponent } from './Components/empleado-detalles/empleado-detalles.component';
 import { CursosComponent } from './Components/cursos/cursos.component';
 import { CertificacionesComponent } from './Components/certificaciones/certificaciones.component';
 import { SubirCertificadoComponent } from './Components/subir-certificado/subir-certificado.component';
@@ -28,7 +29,8 @@ const routes: Routes = [
       { path: 'registro-habilidades', component: RegistroHabilidadesComponent, canActivate: [AuthGuard] },
       { path: 'courses', component: CursosComponent, canActivate: [AuthGuard] },
       { path: 'certificates', component: CertificacionesComponent, canActivate: [AuthGuard]},
-      { path: 'register-certificate', component: SubirCertificadoComponent, canActivate: [AuthGuard]}
+      { path: 'register-certificate', component: SubirCertificadoComponent, canActivate: [AuthGuard] },
+      { path: 'empleado-detalles/:id', component: EmpleadoDetallesComponent, canActivate: [AuthGuard]}
     ]
   },
 

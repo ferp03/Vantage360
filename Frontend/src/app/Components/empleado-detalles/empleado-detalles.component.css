@@ -1,0 +1,352 @@
+.contenedor-detalle {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #000000, #1a1a1a);
+  color: white;
+  padding: 5rem;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.caja-info {
+  display: flex;
+  gap: 2rem;
+  background: white;
+  color: black;
+  border-radius: 15px;
+  padding: 2rem;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.izquierda {
+  flex: 1 1 100%;
+  min-width: 300px;
+  max-width: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.izquierda-superior {
+  flex: 1 1 45%;
+  min-width: 250px;
+}
+
+.izquierda-habilidades {
+  flex: 1 1 45%;
+  min-width: 250px;
+}
+
+.habilidades {
+  background: #f5f5f5;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+}
+
+.etiquetas-habilidad {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 1rem 0;
+}
+
+.etiquetas-habilidad span {
+  background: #d3d3d3;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.etiquetas-habilidad span:hover {
+  background: #333;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.derecha {
+  flex: 1;
+  min-width: 300px;
+}
+
+.boton-editar,
+.boton-cambiar-pass,
+.boton-agregar,
+.boton-editar-cuadro {
+  align-self: flex-end;
+  background-color: #000;
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.boton-editar:hover,
+.boton-cambiar-pass:hover,
+.boton-agregar:hover,
+.boton-editar-cuadro:hover {
+  background-color: #333;
+  transform: scale(1.05);
+}
+
+.carrera {
+  margin-top: 2rem;
+  background: white;
+  color: black;
+  border-radius: 15px;
+  padding: 2rem;
+  position: relative;
+}
+
+.linea-tiempo {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-top: 1rem;
+}
+
+.elemento-tiempo {
+  position: relative;
+  width: 300px;
+  max-width: 300px;
+  background: #eee;
+  padding: 2.5rem 1rem 1rem 1rem;
+  border-radius: 10px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.elemento-tiempo:hover {
+  background: #f0f0f0;
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.boton-editar-cuadro {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 0.75rem;
+}
+
+.boton-agregar-exp {
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.agregar-tarjeta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ddd;
+  border: 2px dashed #aaa;
+}
+
+.boton-cancelar {
+  margin-top: 0.5rem;
+  background-color: #aaa;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.2s ease;
+}
+
+.boton-cancelar:hover {
+  background-color: #888;
+}
+
+.error {
+  color: red;
+  font-size: 0.75rem;
+  display: block;
+  margin-top: 2px;
+}
+
+.encabezado-habilidades {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.encabezado-habilidades h4 {
+  margin: 0;
+}
+
+.boton-agregar-habilidad {
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.boton-agregar-habilidad:hover {
+  background-color: #333;
+}
+
+.boton-editar-trayectoria-global {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-contenido {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-contenido h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+.modal-contenido label {
+  font-weight: bold;
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
+  color: #333;
+}
+
+.modal-contenido input {
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.error {
+  color: red;
+  font-size: 0.75rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.acciones-modal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.acciones-modal button {
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #000;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+.acciones-modal button:hover {
+  background-color: #333;
+}
+
+.acciones-modal button.cancelar {
+  background-color: #aaa;
+}
+
+.acciones-modal button.cancelar:hover {
+  background-color: #888;
+}
+
+.caja-info.editando,
+.carrera.modo-edicion {
+  border: 2px dashed #6f42c1;
+  background-color: #faf5ff;
+  transition: all 0.3s ease;
+}
+
+.modo-edicion input,
+.modo-edicion textarea {
+  background-color: #ffffff;
+  border: 1px solid #6f42c1;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: box-shadow 0.2s ease;
+}
+
+.modo-edicion input:focus,
+.modo-edicion textarea:focus {
+  outline: none;
+  border-color: #59359c;
+  box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.25);
+}
+
+.caja-info.editando {
+  border: 2px dashed #6f42c1;
+  background-color: #faf5ff;
+  transition: all 0.3s ease;
+}
+
+
+
+

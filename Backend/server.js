@@ -6,6 +6,7 @@ const fileUpload = require('express-fileupload');
 const authRoutes = require('./routes/auth.routes');
 const chuckRoutes = require('./routes/chuck.routes');
 const dummyRoutes = require('./routes/dummy.routes');
+const perfilRoutes = require('./routes/perfil.routes');
 const updateRoutes = require('./routes/update.routes');
 const availabilityRoutes = require('./routes/availability.routes'); 
 
@@ -22,6 +23,7 @@ app.use(fileUpload());
 app.use(authRoutes);
 app.use(chuckRoutes);
 app.use(dummyRoutes);
+app.use(perfilRoutes);
 app.use(updateRoutes);
 app.use(availabilityRoutes);
 
