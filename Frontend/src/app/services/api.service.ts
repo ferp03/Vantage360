@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../envs/environment';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -31,4 +31,32 @@ export class ApiService {
   fetchCategories(): Observable<any> {
     return this.http.get(`${this.apiUrl}/categories`);
   }
+
+  guardarCertificado(formData: FormData): Observable<any> {
+    // Simulación - remover cuando el backend esté listo
+    console.log('Datos simulados que se enviarían:', {
+      nombre_curso: formData.get('nombre_curso'),
+      archivo: (formData.get('archivo') as File)?.name
+    });
+    
+    return of({ 
+      success: true,
+      data: {
+        id: 'simulado-' + Math.random().toString(36).substring(2),
+        nombre_curso: formData.get('nombre_curso'),
+        institucion: formData.get('institucion'),
+        archivo_url: 'assets/placeholder-certificate.pdf',
+        fecha_emision: new Date().toISOString()
+      }
+    });
+  }
+
+  obtenerCertificados(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/certificados`);
+  }
+
+  eliminarCertificado(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/certificados/${id}`);
+  }
+
 }

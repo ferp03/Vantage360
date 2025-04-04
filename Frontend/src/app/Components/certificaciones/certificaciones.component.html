@@ -1,0 +1,39 @@
+<div class="certifications-dashboard">
+  <header class="dashboard-header">
+    <h1>V360</h1>
+    <h2>Mis Certificados</h2>
+  </header>
+  
+  <section class="certificates-container">
+    <div class="certificate-list">
+      <div class="certificate-item" *ngFor="let cert of certificados">
+        <h3>{{ cert.nombre_curso }}</h3>
+        <p>Institución: {{ cert.institucion }}</p>
+        <p>Fecha: {{ cert.fecha_emision | date }}</p>
+        
+        <div class="certificate-actions">
+          <a [href]="cert.archivo_url" target="_blank" class="btn btn-view">
+            Ver Certificado
+          </a>
+          <button (click)="eliminarCertificado(cert.id)" class="btn btn-delete">
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Botón para agregar nuevo certificado -->
+    <div class="add-certificate-section">
+      <button class="btn-add-certificate" (click)="abrirModal()">
+        <span>+</span> Agregar Nueva Certificación
+      </button>
+    </div>
+    
+    <!-- Modal -->
+    <app-subir-certificado
+      *ngIf="mostrarModal"
+      (cerrarModal)="onCerrarModal()"
+      (certificadoEnviado)="onCertificadoEnviado($event)">
+    </app-subir-certificado>
+  </section>
+</div>

@@ -1,0 +1,236 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    background-color: #0e0d0d;
+  }
+  
+  .modal-content {
+    font-family: 'Segoe UI', sans-serif;
+    background: #1f1f1f;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+    color: white;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .form-row .form-group {
+    flex: 1;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  input[type="text"] {
+    padding: 12px 15px;
+    border: 1px solid #d1d5db; /* Gris más suave */
+    border-radius: 9px; /* Bordes un poco más redondeados */
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background-color: #f9fafb; /* Fondo ligeramente gris */
+  }
+
+  input[type="date"] {
+  width: 90%;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #374151;
+  background-color: #f9fafb;
+  appearance: none; /* Elimina el estilo por defecto del navegador */
+  }
+
+  input[type="date"]::placeholder {
+    color: #1f1f1f;
+  }
+
+  .btn {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .btn-cancel {
+    background-color: #6200ff57;
+    color: white;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #6200fff8;
+  }
+  
+  .btn-submit {
+    background-color: #6200ff57;
+    color: white;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+  }
+  
+  .btn-submit:hover {
+    background-color: #6200fff8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+  }
+  
+  .btn-submit:disabled {
+    background-color: #6200ff57;
+    color: rgb(184, 184, 184);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .input-line {
+    position: relative;
+    padding-top: 1.5px;
+  }
+
+  .input-line:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background-color: #d1d5db;
+    transition: all 0.3s ease;
+  }
+
+  .input-line input {
+    width: 50%;
+    padding: 6px 0;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: white;
+    outline: none;
+  }
+
+  .input-line input:focus + .input-line:after {
+    height: 2px;
+  }
+
+  .input-line.error:after {
+    background-color: #a71515;
+  }
+
+  /* Estilo base para campos de fecha */
+.input-line.date-field {
+  position: relative;
+}
+
+.date-icon {
+  position: absolute;
+  right: 0;
+  bottom: 8px;
+  pointer-events: none;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.input-line input[type="date"] {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  background: transparent;
+  color: white;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.input-line input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+/* Estilo para campo de archivo minimalista */
+.input-line.file-upload {
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.file-upload:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: #d1d5db;
+  transition: all 0.3s ease;
+}
+
+.file-upload:hover:after {
+  background-color: #6200fff8;
+}
+
+.file-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.file-name {
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.file-browse {
+  background: #f3f4f6;
+  color: #2563eb;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.file-browse:hover {
+  background: #e0e7ff;
+}
+
+.file-name:empty:before {
+  content: 'Seleccionar archivo...';
+  color: #9ca3af;
+}

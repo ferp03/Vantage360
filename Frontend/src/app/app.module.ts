@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
@@ -13,6 +14,9 @@ import { AboutComponent } from './Components/about/about.component';
 import { ContactComponent } from './Components/contact/contact.component';
 import { ForgotPasswordComponent } from './Components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './Components/reset-password/reset-password.component';
+import { CursosComponent } from './Components/cursos/cursos.component';
+import { CertificacionesComponent } from './Components/certificaciones/certificaciones.component';
+import { SubirCertificadoComponent } from '../app/Components/subir-certificado/subir-certificado.component';
 
 @NgModule({
   declarations: [
@@ -24,13 +28,17 @@ import { ResetPasswordComponent } from './Components/reset-password/reset-passwo
     AboutComponent,
     ContactComponent,
     ForgotPasswordComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    CursosComponent,
+    CertificacionesComponent,
+    SubirCertificadoComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

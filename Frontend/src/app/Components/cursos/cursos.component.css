@@ -1,0 +1,155 @@
+.courses-dashboard {
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-height: 100vh;
+    width: 100vw;
+    background: linear-gradient(135deg, #000000, #1a1a1a);
+    color: white;
+    padding: 3.6rem;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+  
+  .courses-header {
+    margin-bottom: 30px;
+  }
+  
+  .courses-header h1 {
+    color: white;
+    margin-bottom: 10px;
+  }
+  
+  /* Tarjetas de curso */
+  .courses-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* Tarjetas individuales de curso */
+  .course-card {
+    background: #1f1f1f;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.685);
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .course-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  .course-card h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: white;
+    font-size: 1.2rem;
+  }
+  
+  /* Barra de progreso */
+  .progress-container {
+    margin-bottom: 15px;
+  }
+  
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+  }
+  
+  .progress-bar {
+    height: 10px;
+    background: #ecf0f1;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .progress {
+    height: 100%;
+    background: #6200fff8;
+    border-radius: 5px;
+    transition: width 0.5s ease;
+  }
+  
+  /* Botones */
+  .course-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+  }
+  
+  .btn-primary {
+    background-color: #6200ff57;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #6200fff8;
+  }
+  
+  .btn-secondary {
+    background-color: #6200ff57;
+    color: white;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #6200fff8;
+  }
+  
+  .btn-add-course {
+    background-color: #6200ff57;
+    color: white;
+    padding: 12px 20px;
+    font-size: 1rem;
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .btn-add-course:hover {
+    background-color: #6200fff8;
+  }
+  
+  /* Estado de completado */
+  .completed .progress {
+    background: #2ecc71;
+  }
+  
+  /* Diseño responsive */
+  @media (max-width: 768px) {
+    .courses-dashboard {
+      padding: 3.2rem;
+    }
+    
+    .course-card {
+      padding: 15px;
+    }
+    
+    .course-actions {
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .btn {
+      width: 100%;
+    }
+  }
