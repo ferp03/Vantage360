@@ -6,6 +6,7 @@ interface ExperienciaLaboral {
   historial_id?: number;
   titulo: string;
   empresa: string;
+  titulo_proyecto: string;
   inicio: string;
   fin: string;
   descripcion: string;
@@ -15,9 +16,11 @@ interface ExperienciaLaboral {
 interface ErroresExperiencia {
   titulo?: boolean;
   empresa?: boolean;
+  titulo_proyecto?: boolean;
   inicio?: boolean;
   fin?: boolean;
   descripcion?: boolean;
+  fechaInvalida?: boolean;
 }
 
 interface Curso {
@@ -176,11 +179,15 @@ export class EmpleadoDetallesComponent implements OnInit {
     const exp = this.experiencias[index];
     this.errores[index] = {
       titulo: !exp.titulo?.trim(),
+      titulo_proyecto: !exp.titulo_proyecto?.trim(),
       empresa: !exp.empresa?.trim(),
       inicio: !exp.inicio?.trim(),
       fin: !exp.fin?.trim(),
-      descripcion: !exp.descripcion?.trim()
+      descripcion: !exp.descripcion?.trim(),
+      fechaInvalida: false
     };
+
+    this.validarFechas(index);
 
     if (this.editandoIndice === index) {
       if (Object.values(this.errores[index]).some(e => e)) {
@@ -189,6 +196,7 @@ export class EmpleadoDetallesComponent implements OnInit {
 
       const payload = {
         titulo_puesto: exp.titulo,
+        titulo_proyecto: exp.titulo_proyecto,
         empresa: exp.empresa,
         descripcion: exp.descripcion,
         fecha_inicio: exp.inicio,
@@ -228,6 +236,7 @@ export class EmpleadoDetallesComponent implements OnInit {
     const nueva: ExperienciaLaboral = {
       titulo: '',
       empresa: '',
+      titulo_proyecto: '',
       inicio: '',
       fin: '',
       descripcion: '',
@@ -235,7 +244,7 @@ export class EmpleadoDetallesComponent implements OnInit {
     };
     this.experiencias.push(nueva);
     this.editandoIndice = this.experiencias.length - 1;
-    this.errores[this.editandoIndice] = {};
+    this.errores[this.editandoIndice] = {fechaInvalida: false};
   }
 
   cancelarNuevaExperiencia(index: number) {
@@ -286,25 +295,41 @@ export class EmpleadoDetallesComponent implements OnInit {
       next: (res) => {
         if (!res.success) {
           this.erroresPass.actual = true;
-          alert('La contraseña actual es incorrecta.');
           return;
         }
 
         this.apiService.cambiarContrasena(this.empleadoId!, nuevaTrim).subscribe({
           next: () => {
-            alert('¡Contraseña actualizada exitosamente!');
             this.cerrarModalContrasena();
           },
           error: (err) => {
             console.error('Error al cambiar la contraseña:', err);
-            alert('Error al cambiar la contraseña.');
           }
         });
       },
       error: (err) => {
         console.error('Error al validar contraseña actual:', err);
-        alert('Error al validar contraseña.');
       }
     });
+  }
+
+  validarFechas(index: number): boolean {
+    const exp = this.experiencias[index];
+    
+    if (!exp.inicio || !exp.fin) {
+      return false; 
+    }
+    
+    const fechaInicio = new Date(exp.inicio);
+    const fechaFin = new Date(exp.fin);
+    
+    if (!this.errores[index].fechaInvalida) {
+      this.errores[index].fechaInvalida = false;
+    }
+    
+    const fechaInvalida = fechaFin < fechaInicio;
+    this.errores[index].fechaInvalida = fechaInvalida;
+    
+    return fechaInvalida;
   }
 }

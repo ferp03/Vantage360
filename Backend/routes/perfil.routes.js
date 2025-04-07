@@ -95,7 +95,7 @@ router.get('/empleado/:id/trayectoria', async (req, res) => {
 
   const { data, error } = await supabase
     .from('historial_laboral')
-    .select('historial_id, titulo_puesto, empresa, descripcion, fecha_inicio, fecha_fin')
+    .select('historial_id, titulo_puesto, titulo_proyecto, empresa, descripcion, fecha_inicio, fecha_fin')
     .eq('empleado_id', id)
     .order('fecha_inicio', { ascending: false });
 
@@ -107,6 +107,7 @@ router.get('/empleado/:id/trayectoria', async (req, res) => {
   const trayectoria = data.map(entry => ({
     historial_id: entry.historial_id,
     titulo: entry.titulo_puesto,
+    titulo_proyecto: entry.titulo_proyecto,
     empresa: entry.empresa,
     inicio: entry.fecha_inicio,
     fin: entry.fecha_fin,
@@ -195,38 +196,50 @@ router.put('/empleado/cambiar-contrasena/:id', async (req, res) => {
 // Crear nueva experiencia laboral
 router.post('/empleado/:id/experiencia', async (req, res) => {
   const { id } = req.params;
-  const { titulo_puesto, empresa, descripcion, fecha_inicio, fecha_fin } = req.body;
+  const { titulo_puesto, titulo_proyecto, empresa, descripcion, fecha_inicio, fecha_fin } = req.body;
 
-  if (!titulo_puesto || !empresa || !descripcion || !fecha_inicio || !fecha_fin) {
+  if (!titulo_puesto || !titulo_proyecto || !empresa || !descripcion || !fecha_inicio || !fecha_fin) {
     return res.status(400).json({ success: false, error: 'Faltan campos requeridos' });
   }
 
-  const { data, error } = await supabase
-    .from('historial_laboral')
-    .insert([{
-      empleado_id: id,
-      titulo_puesto,
-      empresa,
-      descripcion,
-      fecha_inicio,
-      fecha_fin
-    }])
-    .single(); 
+  try {
+    // Don't specify historial_id, let Supabase auto-generate it
+    const { data, error } = await supabase
+      .from('historial_laboral')
+      .insert([{
+        empleado_id: id,
+        titulo_puesto,
+        titulo_proyecto,
+        empresa,
+        descripcion,
+        fecha_inicio,
+        fecha_fin
+      }])
+      .select(); // Add this to return the created record with its ID
 
-  if (error) {
-    console.error('Error al crear nueva experiencia:', error.message);
-    return res.status(500).json({ success: false, error: 'Error al crear nueva experiencia' });
+    if (error) {
+      console.error('Error al crear nueva experiencia:', error.message);
+      return res.status(500).json({ success: false, error: 'Error al crear nueva experiencia' });
+    }
+
+    return res.status(201).json({ 
+      success: true, 
+      data: {
+        historial_id: data[0].historial_id
+      }
+    });
+  } catch (err) {
+    console.error('Error inesperado:', err);
+    return res.status(500).json({ success: false, error: 'Error del servidor' });
   }
-
-  return res.status(201).json({ success: true, data });
 });
 
 // Actualizar experiencia laboral existente
 router.put('/empleado/experiencia/:historial_id', async (req, res) => {
   const { historial_id } = req.params;
-  const { titulo_puesto, empresa, descripcion, fecha_inicio, fecha_fin } = req.body;
+  const { titulo_puesto, titulo_proyecto, empresa, descripcion, fecha_inicio, fecha_fin } = req.body;
 
-  if (!titulo_puesto || !empresa || !descripcion || !fecha_inicio || !fecha_fin) {
+  if (!titulo_puesto || !titulo_proyecto || !empresa || !descripcion || !fecha_inicio || !fecha_fin) {
     return res.status(400).json({ success: false, error: 'Faltan campos requeridos' });
   }
 
@@ -234,6 +247,7 @@ router.put('/empleado/experiencia/:historial_id', async (req, res) => {
     .from('historial_laboral')
     .update({ 
       titulo_puesto, 
+      titulo_proyecto,
       empresa, 
       descripcion, 
       fecha_inicio, 
