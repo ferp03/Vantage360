@@ -27,7 +27,7 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
       { path: 'empleados', component: DisponibilidadComponent, canActivate: [AuthGuard] },
       { path: 'registro-habilidades', component: RegistroHabilidadesComponent, canActivate: [AuthGuard] },
-      { path: 'courses', component: CursosComponent, canActivate: [AuthGuard] },
+      { path: 'miscursos', component: CursosComponent, canActivate: [AuthGuard] },
       { path: 'certificates', component: CertificacionesComponent, canActivate: [AuthGuard]},
       { path: 'register-certificate', component: SubirCertificadoComponent, canActivate: [AuthGuard] },
       { path: 'empleado-detalles/:id', component: EmpleadoDetallesComponent, canActivate: [AuthGuard]}

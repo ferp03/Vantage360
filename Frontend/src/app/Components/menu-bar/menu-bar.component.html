@@ -1,16 +1,25 @@
 <div class="container">
     <div>
         <nav>
+            <div>
+            </div>
             <ul>
-                <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
+                <img src="assets/logo_accenture.svg" class="logo">
                 <!-- Añadir enlace a disponibilidad, solo visible para administradores -->
                 <li *ngIf="esAdmin()"><a routerLink="/empleados" routerLinkActive="active">Empleados</a></li>
+                <li><a routerLink="/miscursos" routerLinkActive="active">Mis cursos</a></li>
                 <li><a routerLink="/registro-habilidades" routerLinkActive="active">Registrar Habilidades</a></li>
             </ul>
         </nav>
     </div>
-    <div class="login-container">
-        <a *ngIf="!isLogged" routerLink="/login">Log in</a>
-        <a *ngIf="isLogged" (click)="logout()">Log out</a>
+    <div class="login-container" #menu>
+        <div class="dropdown" [class.show]="menuAbierto">
+            <button class="avatar-button" (click)="toggleMenu()">{{ username?.[0] || "A" }}</button>
+            <div class="dropdown-content" *ngIf="menuAbierto">
+                <a (click)="menuAbierto=false" routerLink="/empleado-detalles/{{empleadoId}}">Mi perfil</a>
+                <hr>
+                <a (click)="logout()">Log out</a>
+            </div>
+        </div>
     </div>
 </div>

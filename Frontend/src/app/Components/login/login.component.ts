@@ -26,7 +26,11 @@ export class LoginComponent {
     this.auth.login(this.email, this.password).subscribe({
       next: (response: any) => {
         if (response.success) {
-          this.router.navigate(['/dashboard']);
+          if(this.auth.roles.includes('delivery lead') || this.auth.roles.includes('people lead')){
+            this.router.navigate(['/empleados']);
+          }else{
+            this.router.navigate(['/miscursos']);
+          }
         } else {
           this.mensaje = response.error;
           console.log(this.mensaje);

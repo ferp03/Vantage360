@@ -67,4 +67,9 @@ export class AuthService {
     const decoded = this.getDecodedToken();
     return decoded?.roles || [];
   }
+
+  get userId(): string | null {
+    const decoded = this.getDecodedToken();
+    return decoded?.id || null;
+  }
 }
