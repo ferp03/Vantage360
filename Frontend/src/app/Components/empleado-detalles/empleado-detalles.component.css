@@ -21,7 +21,7 @@
   color: black;
   border-radius: 15px;
   padding: 2rem;
-  border: 3px solid #6f42c1;
+  border: 3px solid #9668e6;
   flex-wrap: wrap;
   position: relative;
 }
@@ -111,7 +111,7 @@
   color: black;
   border-radius: 15px;
   padding: 2rem;
-  border: 3px solid #6f42c1;
+  border: 3px solid #9668e6;
   position: relative;
 }
 
@@ -322,7 +322,7 @@
 
 .caja-info.editando,
 .carrera.modo-edicion {
-  border: 2px dashed #6f42c1;
+  border: 2px dashed #9668e6;
   background-color: #faf5ff;
   transition: all 0.3s ease;
 }
@@ -330,7 +330,7 @@
 .modo-edicion input,
 .modo-edicion textarea {
   background-color: #ffffff;
-  border: 1px solid #6f42c1;
+  border: 1px solid #9668e6;
   padding: 0.5rem;
   border-radius: 6px;
   transition: box-shadow 0.2s ease;
@@ -339,12 +339,12 @@
 .modo-edicion input:focus,
 .modo-edicion textarea:focus {
   outline: none;
-  border-color: #59359c;
+  border-color: #9668e6;
   box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.25);
 }
 
 .caja-info.editando {
-  border: 2px dashed #6f42c1;
+  border: 2px dashed #9668e6;
   background-color: #faf5ff;
   transition: all 0.3s ease;
 }
