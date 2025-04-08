@@ -1,6 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-registro-habilidades',
@@ -11,7 +12,12 @@ export class RegistroHabilidadesComponent implements OnInit {
   @ViewChild('toast') toast!: ElementRef;
   @ViewChild('skillsForm') skillsForm!: ElementRef;
 
-  empleadoId!: string; 
+  empleadoId!: string;
+
+  skillName: string = '';
+  skillCategory: string = '';
+  skillLevel: string = '';
+  skillDescription: string = '';
 
   constructor(
     private router: Router,
@@ -23,14 +29,15 @@ export class RegistroHabilidadesComponent implements OnInit {
     this.empleadoId = this.route.snapshot.paramMap.get('id') || '';
   }
 
-  onSubmit(): void {
-    const form = this.skillsForm.nativeElement;
-    const skillName = form.querySelector('#skillName').value;
-    const skillCategory = form.querySelector('#skillCategory').value;
-    const skillLevel = form.querySelector('#skillLevel').value;
-    const skillDescription = form.querySelector('#skillDescription').value;
+  onSubmit(form: NgForm): void {
+    if (form.invalid) {
+      Object.keys(form.controls).forEach(key => {
+        form.controls[key].markAsTouched();
+      });
+      return;
+    }
 
-    if (!skillName || !skillCategory || !skillLevel) {
+    if (!this.skillName || !this.skillCategory || !this.skillLevel) {
       console.error('Faltan campos requeridos');
       return;
     }
@@ -38,16 +45,16 @@ export class RegistroHabilidadesComponent implements OnInit {
     this.apiService.agregarHabilidad(
       this.empleadoId,
       {
-        nombre: skillName,
-        categoria: skillCategory,
-        nivel: skillLevel,
-        descripcion: skillDescription
+        nombre: this.skillName,
+        categoria: this.skillCategory,
+        nivel: this.skillLevel,
+        descripcion: this.skillDescription
       }
     ).subscribe({
       next: (res) => {
         if (res.success) {
           console.log('Habilidad creada y asociada al empleado', res.data);
-          form.reset(); 
+          form.resetForm();
           this.showToast();
         } else {
           console.log('Error al agregar la habilidad:', res.error);
@@ -57,6 +64,12 @@ export class RegistroHabilidadesComponent implements OnInit {
         console.error('Error en la petición:', err);
       }
     });
+  }
+  resetForm(): void {
+    this.skillName = '';
+    this.skillCategory = '';
+    this.skillLevel = '';
+    this.skillDescription = '';
   }
 
   showToast(): void {
