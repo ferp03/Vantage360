@@ -127,9 +127,9 @@
       
       <!-- Paginación -->
       <div *ngIf="!cargando && !error && totalPages > 1" class="pagination">
-        <button (click)="prevPage()" [disabled]="currentPage === 1">« Anterior</button>
-        <span>Página {{currentPage}} de {{totalPages}}</span>
-        <button (click)="nextPage()" [disabled]="currentPage === totalPages">Siguiente »</button>
+        <button (click)="prevPage()" [disabled]="currentPage === 1"><img src="/assets/arrow-left-solid.svg" alt="Prev" class="arrows"></button>
+        <span>{{currentPage}} / {{totalPages}}</span>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages"><img src="/assets/arrow-right-solid.svg" alt="Next" class="arrows"></button>
       </div>
       
       <!-- Modal de edición -->

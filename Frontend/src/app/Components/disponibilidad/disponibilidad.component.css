@@ -8,7 +8,7 @@
   left: 0;
   height: 100vh;
   min-width: 100vw;
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  background: linear-gradient(135deg, #000000, #000000);
   overflow-y: auto;
 }
 
@@ -17,7 +17,7 @@
   flex-direction: column;
   position: inherit;
   height: 90vh;
-  width: 100vw;
+  width: 90vw;
   bottom: 0;
   padding: 20px;
 }
@@ -239,15 +239,23 @@
   align-items: center;
   margin-top: 20px;
   gap: 10px;
+  position: fixed;
+  bottom: 20px;
+  width: 90vw;
+  text-align: center;
 }
 
 .pagination button {
-  padding: 8px 15px;
   background-color: #9668e6;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.arrows {
+  padding-top: 2px;
+  height: 20px;
 }
 
 .pagination button:hover:not(:disabled) {
@@ -359,4 +367,42 @@
   padding-block: 0.7em;
   border: none;
   color: white;
+}
+
+.form:before {
+  content: "";
+  position: absolute;
+  background: var(--border-color);
+  transform: scaleX(0);
+  transform-origin: center;
+  width: 100%;
+  height: var(--border-height);
+  left: 0;
+  bottom: 0;
+  border-radius: 1px;
+  transition: transform var(--timing) ease;
+}
+/* Hover on Input */
+.form:focus-within {
+  border-radius: var(--after-border-radius);
+}
+
+input:focus {
+  outline: none;
+}
+/* here is code of animated border */
+.form:focus-within:before {
+  transform: scale(1);
+}
+
+.reset {
+  border: none;
+  background: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+input:not(:placeholder-shown) ~ .reset {
+  opacity: 1;
+  visibility: visible;
 }

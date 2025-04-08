@@ -98,10 +98,18 @@ nav {
   }
   
   a:hover {
-    color: #ddd;
+    color: #9668e6;
   }
 
   .active {
     text-decoration: underline;
+    color: #9668e6;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    transition: text-decoration-color 0.3s ease, color 0.3s ease;
+  }
+
+  .active:hover {
+    text-decoration-color: #9668e6ae;
   }
   
