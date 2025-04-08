@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router} from '@angular/router';
 
 interface ExperienciaLaboral {
   historial_id?: number;
@@ -72,7 +72,8 @@ export class EmpleadoDetallesComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -332,4 +333,11 @@ export class EmpleadoDetallesComponent implements OnInit {
     
     return fechaInvalida;
   }
+
+  irARegistroHabilidades() {
+    if (this.empleadoId) {
+      this.router.navigate(['/registro-habilidades', this.empleadoId]);
+    }
+  }
 }
+

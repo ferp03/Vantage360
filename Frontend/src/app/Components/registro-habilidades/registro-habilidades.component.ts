@@ -1,40 +1,62 @@
-// registro-habilidades.component.ts
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { ApiService } from 'src/app/services/api.service';
 
 @Component({
   selector: 'app-registro-habilidades',
   templateUrl: './registro-habilidades.component.html',
   styleUrls: ['./registro-habilidades.component.css']
 })
-export class RegistroHabilidadesComponent {
+export class RegistroHabilidadesComponent implements OnInit {
   @ViewChild('toast') toast!: ElementRef;
-  @ViewChild('skillsForm') skillsForm!: ElementRef; // Referencia al formulario
+  @ViewChild('skillsForm') skillsForm!: ElementRef;
 
-  constructor(private router: Router) {}
+  empleadoId!: string; 
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,  
+    private apiService: ApiService  
+  ) {}
+
+  ngOnInit(): void {
+    this.empleadoId = this.route.snapshot.paramMap.get('id') || '';
+  }
 
   onSubmit(): void {
-    // 1. Obtener los valores del formulario directamente desde los campos
     const form = this.skillsForm.nativeElement;
     const skillName = form.querySelector('#skillName').value;
     const skillCategory = form.querySelector('#skillCategory').value;
     const skillLevel = form.querySelector('#skillLevel').value;
     const skillDescription = form.querySelector('#skillDescription').value;
 
-    // 2. Mostrar en consola (formato claro)
-    console.log('=== DATOS DE LA HABILIDAD REGISTRADA ===');
-    console.log('Nombre:', skillName);
-    console.log('Categoría:', skillCategory);
-    console.log('Nivel:', skillLevel);
-    console.log('Descripción:', skillDescription);
-    console.log('========================================');
+    if (!skillName || !skillCategory || !skillLevel) {
+      console.error('Faltan campos requeridos');
+      return;
+    }
 
-    // 3. Mostrar notificación (opcional)
-    this.showToast();
-    
-    setTimeout(() => {
-      /* this.router.navigate(['/empleado-detalles']); */
-    }, 1500);
+    this.apiService.agregarHabilidad(
+      this.empleadoId,
+      {
+        nombre: skillName,
+        categoria: skillCategory,
+        nivel: skillLevel,
+        descripcion: skillDescription
+      }
+    ).subscribe({
+      next: (res) => {
+        if (res.success) {
+          console.log('Habilidad creada y asociada al empleado', res.data);
+          form.reset(); 
+          this.showToast();
+        } else {
+          console.log('Error al agregar la habilidad:', res.error);
+        }
+      },
+      error: (err) => {
+        console.error('Error en la petición:', err);
+      }
+    });
   }
 
   showToast(): void {
@@ -45,7 +67,11 @@ export class RegistroHabilidadesComponent {
     }, 1300);
   }
 
-  /* goBack(): void {
-    this.router.navigate(['/empleado-detalles']);
-  } */
+  volver(): void {
+    if (this.empleadoId) {
+      this.router.navigate(['/empleado-detalles', this.empleadoId]);
+    } else {
+      this.router.navigate(['/dashboard']);
+    }
+  }
 }

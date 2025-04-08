@@ -263,4 +263,68 @@ router.put('/empleado/experiencia/:historial_id', async (req, res) => {
   return res.status(200).json({ success: true, message: 'Experiencia actualizada correctamente' });
 });
 
+// Crear nueva habilidad y asociarla a un empleado
+router.post('/empleado/:id/habilidad', async (req, res) => {
+  const { id } = req.params;
+  const { nombre, categoria, nivel, descripcion } = req.body;
+
+  try {
+    let { data: habilidadExiste, error: errorExiste } = await supabase
+      .from('habilidad')
+      .select('habilidad_id')
+      .eq('nombre', nombre)
+      .maybeSingle(); 
+
+    let habilidadId = habilidadExiste ? habilidadExiste.habilidad_id : null;
+
+    if (!habilidadId) {
+      const { data: nuevaHabilidad, error: errorInsert } = await supabase
+        .from('habilidad')
+        .insert([{ nombre, categoria, nivel, descripcion }])
+        .select()
+        .single();
+
+      if (errorInsert || !nuevaHabilidad) {
+        console.error('Error al crear habilidad:', errorInsert);
+        return res.status(500).json({ success: false, error: 'Error creando habilidad' });
+      }
+      habilidadId = nuevaHabilidad.habilidad_id;
+    }
+
+    const { data: relacionExistente, error: errorRelacionExistente } = await supabase
+      .from('empleado_habilidad')
+      .select('*')
+      .eq('empleado_id', id)
+      .eq('habilidad_id', habilidadId)
+      .maybeSingle();
+
+    if (relacionExistente) {
+      return res.status(200).json({
+        success: true,
+        data: { habilidad_id: habilidadId, message: 'Habilidad ya asociada al empleado' }
+      });
+    }
+
+    const { error: errorRelacion } = await supabase
+      .from('empleado_habilidad')
+      .insert([{
+        empleado_id: id,
+        habilidad_id: habilidadId
+      }]);
+
+    if (errorRelacion) {
+      console.error('Error al asociar habilidad:', errorRelacion);
+      return res.status(500).json({ success: false, error: 'Error asociando habilidad al empleado' });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: { habilidad_id: habilidadId, message: 'Habilidad agregada correctamente' }
+    });
+  } catch (error) {
+    console.error('Error inesperado:', error);
+    return res.status(500).json({ success: false, error: 'Error en el servidor' });
+  }
+});
+
 module.exports = router;

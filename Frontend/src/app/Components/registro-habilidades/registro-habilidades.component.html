@@ -1,7 +1,7 @@
 <div class="skills-container">
   <div class="skills-box">
     <h2>Registro de Habilidades</h2>
-    <form #skillsForm (ngSubmit)="onSubmit()" id="skillsForm">
+    <form #skillsForm (submit)="onSubmit(); $event.preventDefault()">
         <!-- Campo Nombre -->
         <div class="form-group">
           <label for="skillName">Nombre</label>
@@ -46,7 +46,7 @@
         <button type="submit">Registrar Habilidad</button>
       </form>
       <div class="back-button-container">
-        <button class="back-button"> ← Volver</button>
+        <button class="back-button" (click)="volver()"> ← Volver</button>
       </div>
     </div>
     <div #toast class="toast">Habilidad registrada</div>
