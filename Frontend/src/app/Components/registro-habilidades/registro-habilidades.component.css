@@ -10,7 +10,7 @@
     margin: 0;
     padding: 0;
     overflow: auto;
-    background: linear-gradient(135deg, #000000, #1e272e);
+    background: linear-gradient(160deg, #000000, #221928);
     font-family: 'Roboto', sans-serif;
   }
   
@@ -25,11 +25,12 @@
   }
   
   .skills-box {
-    background: rgba(255, 255, 255, 0.1);
+    /* background: rgba(35, 35, 50, 0.7); */
     backdrop-filter: blur(10px);
     padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    box-shadow: 1px 2px 6px #B998F7;
+    transition: transform 0.2s, box-shadow 0.2s;
     width: 100%;
     max-width: 450px;
     text-align: center;
@@ -85,7 +86,7 @@
   
   button {
     padding: 14px;
-    background: #470971;
+    background: #9668e6;
     color: white;
     border: none;
     border-radius: 8px;

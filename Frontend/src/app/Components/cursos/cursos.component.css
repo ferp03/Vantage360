@@ -1,5 +1,4 @@
 .courses-dashboard {
-    font-family: 'Segoe UI', sans-serif;
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -7,7 +6,7 @@
     left: 0;
     min-height: 100vh;
     width: 100vw;
-    background: linear-gradient(135deg, #000000, #1a1a1a);
+    background: linear-gradient(160deg, #000000, #221928);
     color: white;
     padding: 3.6rem;
     font-family: Arial, sans-serif;
@@ -33,16 +32,15 @@
   
   /* Tarjetas individuales de curso */
   .course-card {
-    background: #1f1f1f;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.685);
+    box-shadow: 1px 2px 6px #B998F7;
     padding: 20px;
     transition: transform 0.2s, box-shadow 0.2s;
   }
   
   .course-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 10px #B998F7;
   }
   
   .course-card h3 {
@@ -73,7 +71,7 @@
   
   .progress {
     height: 100%;
-    background: #6200fff8;
+    background: #38BDF8;
     border-radius: 5px;
     transition: width 0.5s ease;
   }
@@ -95,25 +93,25 @@
   }
   
   .btn-primary {
-    background-color: #6200ff57;
+    background-color: #9668e6;
     color: white;
   }
   
   .btn-primary:hover {
-    background-color: #6200fff8;
+    background-color: #9668e6ae;
   }
   
   .btn-secondary {
-    background-color: #6200ff57;
+    background-color: #9668e6;
     color: white;
   }
   
   .btn-secondary:hover {
-    background-color: #6200fff8;
+    background-color: #9668e6ae;
   }
   
   .btn-add-course {
-    background-color: #6200ff57;
+    background-color: #9668e6;
     color: white;
     padding: 12px 20px;
     font-size: 1rem;
@@ -126,7 +124,7 @@
   }
   
   .btn-add-course:hover {
-    background-color: #6200fff8;
+    background-color: #9668e6ae;
   }
   
   /* Estado de completado */

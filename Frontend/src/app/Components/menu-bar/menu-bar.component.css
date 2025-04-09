@@ -13,6 +13,8 @@
   padding: 0 20px;
   font-family: 'Roboto', sans-serif;
   box-sizing: border-box;
+  background: linear-gradient(0deg, #000000, #221928);
+
 }
 
 .logo {

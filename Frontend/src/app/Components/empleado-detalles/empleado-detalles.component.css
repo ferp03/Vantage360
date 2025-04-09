@@ -2,13 +2,13 @@
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 0;
   left: 0;
-  min-height: 100vh;
+  bottom: 0;
+  height: 100vh;
   width: 100vw;
-  background: linear-gradient(135deg, #000000, #1a1a1a);
+  background: linear-gradient(160deg, #000000, #221928);
   color: white;
-  padding: 5rem;
+  padding: 4rem;
   font-family: Arial, sans-serif;
   box-sizing: border-box;
   overflow-y: auto;
@@ -17,8 +17,10 @@
 .caja-info {
   display: flex;
   gap: 2rem;
-  background: white;
-  color: black;
+  /* background-color: #1C1C24; */
+  box-shadow: 1px 2px 6px #B998F7;
+  transition: transform 0.2s, box-shadow 0.2s;
+  color: white;
   border-radius: 15px;
   padding: 2rem;
   flex-wrap: wrap;
@@ -47,8 +49,9 @@
 }
 
 .habilidades {
-  background: #f5f5f5;
-  padding: 1rem 1.5rem;
+  /* background: rgba(35, 35, 50, 0.7); */
+  box-shadow: 1px 2px 6px #B998F7;
+  transition: transform 0.2s, box-shadow 0.2s;  padding: 1rem 1.5rem;
   border-radius: 10px;
 }
 
@@ -60,7 +63,7 @@
 }
 
 .etiquetas-habilidad span {
-  background: #d3d3d3;
+  background: #2E2E3A;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 0.85rem;
@@ -79,6 +82,8 @@
 .derecha {
   flex: 1;
   min-width: 300px;
+  box-shadow: 1px 2px 6px #B998F7;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .boton-editar,
@@ -86,7 +91,7 @@
 .boton-agregar,
 .boton-editar-cuadro {
   align-self: flex-end;
-  background-color: #000;
+  background-color: #9668e6;
   color: white;
   padding: 0.5rem 1.2rem;
   border: none;
@@ -100,15 +105,17 @@
 .boton-cambiar-pass:hover,
 .boton-agregar:hover,
 .boton-editar-cuadro:hover {
-  background-color: #333;
+  background-color: #9668e6ae;
   transform: scale(1.05);
 }
 
 .carrera {
   margin-top: 2rem;
-  background: white;
-  color: black;
+  /* background: #1C1C24; */
+  color: white;
   border-radius: 15px;
+  box-shadow: 1px 2px 6px #B998F7;
+  transition: transform 0.2s, box-shadow 0.2s;
   padding: 2rem;
   position: relative;
 }
@@ -117,14 +124,22 @@
   display: flex;
   gap: 1rem;
   overflow-x: auto;
-  padding-top: 1rem;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  padding: 1rem 0.5rem 1rem 0.5rem;
+}
+
+.linea-tiempo::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
 }
 
 .elemento-tiempo {
   position: relative;
   width: 300px;
   max-width: 300px;
-  background: #eee;
+  /* background: rgba(35, 35, 50, 0.7); */
+  box-shadow: 1px 2px 6px #B998F7;
+  transition: transform 0.2s, box-shadow 0.2s;
   padding: 2.5rem 1rem 1rem 1rem;
   border-radius: 10px;
   flex-shrink: 0;
@@ -135,7 +150,7 @@
 }
 
 .elemento-tiempo:hover {
-  background: #f0f0f0;
+  background: #333;
   transform: translateY(-5px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   cursor: pointer;
@@ -149,7 +164,7 @@
 }
 
 .boton-agregar-exp {
-  background-color: #000;
+  background-color: #9668e6;
   color: white;
   border: none;
   border-radius: 50%;
@@ -168,7 +183,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ddd;
+  background: #333;
   border: 2px dashed #aaa;
 }
 
@@ -207,7 +222,7 @@
 }
 
 .boton-agregar-habilidad {
-  background-color: #000;
+  background-color: #9668e6;
   color: white;
   border: none;
   border-radius: 50%;
@@ -321,7 +336,6 @@
 .caja-info.editando,
 .carrera.modo-edicion {
   border: 2px dashed #6f42c1;
-  background-color: #faf5ff;
   transition: all 0.3s ease;
 }
 
@@ -340,13 +354,6 @@
   border-color: #59359c;
   box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.25);
 }
-
-.caja-info.editando {
-  border: 2px dashed #6f42c1;
-  background-color: #faf5ff;
-  transition: all 0.3s ease;
-}
-
 
 
 
