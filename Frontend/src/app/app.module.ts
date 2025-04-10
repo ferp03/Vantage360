@@ -18,7 +18,8 @@ import { CursosComponent } from './Components/cursos/cursos.component';
 import { CertificacionesComponent } from './Components/certificaciones/certificaciones.component';
 import { SubirCertificadoComponent } from '../app/Components/subir-certificado/subir-certificado.component';
 import { RegistroHabilidadesComponent } from './Components/registro-habilidades/registro-habilidades.component';
-import { DisponibilidadComponent } from './Components/disponibilidad/disponibilidad.component'; // Añadir componente
+import { DisponibilidadComponent } from './Components/disponibilidad/disponibilidad.component';
+import { MenucurycertComponent } from './Components/menucurycert/menucurycert.component'; // Añadir componente
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { DisponibilidadComponent } from './Components/disponibilidad/disponibili
     CertificacionesComponent,
     SubirCertificadoComponent,
     RegistroHabilidadesComponent,
-    DisponibilidadComponent
+    DisponibilidadComponent,
+    MenucurycertComponent
   ],
   imports: [
     BrowserModule,
