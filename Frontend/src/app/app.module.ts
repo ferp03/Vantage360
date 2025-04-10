@@ -19,6 +19,7 @@ import { CertificacionesComponent } from './Components/certificaciones/certifica
 import { SubirCertificadoComponent } from '../app/Components/subir-certificado/subir-certificado.component';
 import { RegistroHabilidadesComponent } from './Components/registro-habilidades/registro-habilidades.component';
 import { DisponibilidadComponent } from './Components/disponibilidad/disponibilidad.component'; // Añadir componente
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { DisponibilidadComponent } from './Components/disponibilidad/disponibili
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CommonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
