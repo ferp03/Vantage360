@@ -30,7 +30,8 @@ const routes: Routes = [
       { path: 'miscursos', component: CursosComponent, canActivate: [AuthGuard] },
       { path: 'certificates', component: CertificacionesComponent, canActivate: [AuthGuard]},
       { path: 'register-certificate', component: SubirCertificadoComponent, canActivate: [AuthGuard] },
-      { path: 'empleado-detalles/:id', component: EmpleadoDetallesComponent, canActivate: [AuthGuard]}
+      { path: 'empleado-detalles/:id', component: EmpleadoDetallesComponent, canActivate: [AuthGuard]},
+      { path: 'registro-habilidades/:id', component: RegistroHabilidadesComponent, canActivate: [AuthGuard]}
     ]
   },
 

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-disponibilidad',
@@ -10,29 +11,33 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class DisponibilidadComponent implements OnInit {
   empleados: any[] = [];
   empleadosFiltrados: any[] = [];
+
+  // Ahora incluimos habilidad en los filtros
   filtros = {
-    habilidad: '',
-    certificacion: '',
     rol: '',
+    habilidad: '',
     soloDisponibles: false
   };
-  
-  habilidadesUnicas: string[] = [];
-  certificacionesUnicas: string[] = [];
+
   rolesUnicos: string[] = [];
-  
+  habilidadesUnicas: string[] = [];
+
   searchText: string = '';
   currentPage: number = 1;
   itemsPerPage: number = 7;
   cargando: boolean = true;
   error: string = '';
-  
-  // Para actualización manual
+
+  // Para el modal de actualización
   empleadoSeleccionado: any = null;
   nuevoEstado: string = '';
   nuevaCargabilidad: number | null = null;
 
-  constructor(private apiService: ApiService, private authService: AuthService) {}
+  constructor(
+    private apiService: ApiService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.cargarEmpleados();
@@ -45,8 +50,8 @@ export class DisponibilidadComponent implements OnInit {
         if (res.success) {
           this.empleados = res.empleados;
           this.empleadosFiltrados = [...this.empleados];
-          
-          // Extraer listas únicas para filtros
+
+          // Extraer roles y habilidades únicas
           this.extraerFiltrosUnicos();
           
           this.cargando = false;
@@ -64,23 +69,17 @@ export class DisponibilidadComponent implements OnInit {
   }
 
   extraerFiltrosUnicos(): void {
-    // Extraer habilidades únicas
-    const todasHabilidades = this.empleados.flatMap(emp => 
-      emp.habilidades.map((h: any) => h.nombre)
-    );
-    this.habilidadesUnicas = [...new Set(todasHabilidades)];
-
-    // Extraer certificaciones únicas
-    const todasCertificaciones = this.empleados.flatMap(emp => 
-      emp.certificaciones.map((c: any) => c.nombre)
-    );
-    this.certificacionesUnicas = [...new Set(todasCertificaciones)];
-
-    // Extraer roles únicos
-    const todosRoles = this.empleados.flatMap(emp => 
+    // Roles únicos
+    const todosRoles = this.empleados.flatMap(emp =>
       emp.roles.map((r: any) => r.nombre)
     );
     this.rolesUnicos = [...new Set(todosRoles)];
+
+    // Habilidades únicas
+    const todasHabilidades = this.empleados.flatMap(emp =>
+      emp.habilidades.map((h: any) => h.nombre)
+    );
+    this.habilidadesUnicas = [...new Set(todasHabilidades)];
   }
 
   aplicarFiltros(): void {
@@ -89,51 +88,55 @@ export class DisponibilidadComponent implements OnInit {
       if (this.filtros.soloDisponibles && !emp.disponible) {
         return false;
       }
-      
-      // Filtro por habilidad
-      if (this.filtros.habilidad && 
-          !emp.habilidades.some((h: any) => h.nombre === this.filtros.habilidad)) {
-        return false;
-      }
-      
-      // Filtro por certificación
-      if (this.filtros.certificacion && 
-          !emp.certificaciones.some((c: any) => c.nombre === this.filtros.certificacion)) {
-        return false;
-      }
-      
+
       // Filtro por rol
-      if (this.filtros.rol && 
-          !emp.roles.some((r: any) => r.nombre === this.filtros.rol)) {
+      if (
+        this.filtros.rol &&
+        !emp.roles.some((r: any) => r.nombre === this.filtros.rol)
+      ) {
         return false;
       }
-      
-      // Filtro por texto de búsqueda
+
+      // Filtro por habilidad
+      if (
+        this.filtros.habilidad &&
+        !emp.habilidades.some((h: any) => h.nombre === this.filtros.habilidad)
+      ) {
+        return false;
+      }
+
+      // Filtro por texto de búsqueda (usuario, correo o nombre completo)
       if (this.searchText) {
         const searchLower = this.searchText.toLowerCase();
         const fullName = `${emp.nombre} ${emp.apellido_paterno} ${emp.apellido_materno}`.toLowerCase();
-        
-        return emp.usuario.toLowerCase().includes(searchLower) || 
-               emp.correo.toLowerCase().includes(searchLower) || 
-               fullName.includes(searchLower);
+
+        return (
+          emp.usuario.toLowerCase().includes(searchLower) ||
+          emp.correo.toLowerCase().includes(searchLower) ||
+          fullName.includes(searchLower)
+        );
       }
-      
+
       return true;
     });
-    
-    // Reset paginación
+
+    // Reiniciar paginación
     this.currentPage = 1;
   }
 
   limpiarFiltros(): void {
     this.filtros = {
-      habilidad: '',
-      certificacion: '',
       rol: '',
+      habilidad: '',
       soloDisponibles: false
     };
     this.searchText = '';
     this.aplicarFiltros();
+  }
+
+  verDetallesEmpleado(empleado: any): void {
+    // Ajusta la ruta según tu configuración
+    this.router.navigate(['/empleado-detalles', empleado.empleado_id]);
   }
 
   seleccionarEmpleado(empleado: any): void {
@@ -153,19 +156,16 @@ export class DisponibilidadComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           if (res.success) {
-            // Actualizar empleado en la lista local
+            // Actualizar el empleado en la lista local
             const index = this.empleados.findIndex(e => e.empleado_id === this.empleadoSeleccionado.empleado_id);
             if (index !== -1) {
-              // Actualizar los campos modificados
               this.empleados[index] = {
                 ...this.empleados[index],
                 ...res.empleado
               };
-              
-              // Reevaluar disponibilidad
-              this.cargarEmpleados();  // Opción más simple: recargar todos los datos
+              // Refrescar toda la lista:
+              this.cargarEmpleados();
             }
-            
             this.empleadoSeleccionado = null;
           } else {
             this.error = 'Error al actualizar';
@@ -183,8 +183,8 @@ export class DisponibilidadComponent implements OnInit {
     this.nuevoEstado = '';
     this.nuevaCargabilidad = null;
   }
-  
-  // Métodos para paginación
+
+  // Paginación
   get paginatedEmpleados(): any[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     return this.empleadosFiltrados.slice(startIndex, startIndex + this.itemsPerPage);
@@ -195,13 +195,13 @@ export class DisponibilidadComponent implements OnInit {
   }
 
   nextPage(): void {
-    if(this.currentPage < this.totalPages) {
+    if (this.currentPage < this.totalPages) {
       this.currentPage++;
     }
   }
 
   prevPage(): void {
-    if(this.currentPage > 1) {
+    if (this.currentPage > 1) {
       this.currentPage--;
     }
   }

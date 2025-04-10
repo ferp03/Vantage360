@@ -23,6 +23,7 @@
   color: white;
   border-radius: 15px;
   padding: 2rem;
+  border: 3px solid #9668e6;
   flex-wrap: wrap;
   position: relative;
 }
@@ -117,6 +118,7 @@
   box-shadow: 1px 2px 6px #B998F7;
   transition: transform 0.2s, box-shadow 0.2s;
   padding: 2rem;
+  border: 3px solid #9668e6;
   position: relative;
 }
 
@@ -342,7 +344,7 @@
 .modo-edicion input,
 .modo-edicion textarea {
   background-color: #ffffff;
-  border: 1px solid #6f42c1;
+  border: 1px solid #9668e6;
   padding: 0.5rem;
   border-radius: 6px;
   transition: box-shadow 0.2s ease;
@@ -351,7 +353,7 @@
 .modo-edicion input:focus,
 .modo-edicion textarea:focus {
   outline: none;
-  border-color: #59359c;
+  border-color: #9668e6;
   box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.25);
 }
 

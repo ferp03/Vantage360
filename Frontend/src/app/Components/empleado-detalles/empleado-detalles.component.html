@@ -37,7 +37,7 @@
         <div class="habilidades">
           <div class="encabezado-habilidades">
             <h4>Habilidades</h4>
-            <button *ngIf="editandoInfo" class="boton-agregar-habilidad">+</button>
+            <button *ngIf="editandoInfo" class="boton-agregar-habilidad" (click)="irARegistroHabilidades()">+</button>
           </div>
 
           <div class="etiquetas-habilidad">
@@ -79,6 +79,7 @@
 
         <div *ngIf="editandoIndice !== i">
           <h4>{{ experiencia.titulo }}</h4>
+          <p style="color: #666; font-weight: normal;">{{ experiencia.titulo_proyecto}}</p>
           <p>{{ experiencia.empresa }}</p>
           <small>
             {{ experiencia.inicio | date: 'dd/MM/yyyy' }} -
@@ -94,19 +95,29 @@
             <span class="error" *ngIf="errores[i].titulo">Campo requerido</span>
           </p>
           <p>
+            <strong>Proyecto:</strong>
+            <input [(ngModel)]="experiencia.titulo_proyecto" [class.error-input]="errores[i].titulo_proyecto" />
+            <span class="error" *ngIf="errores[i].titulo_proyecto">Campo requerido</span>
+          </p>
+          <p>
             <strong>Empresa:</strong>
             <input [(ngModel)]="experiencia.empresa" [class.error-input]="errores[i].empresa" />
             <span class="error" *ngIf="errores[i].empresa">Campo requerido</span>
           </p>
           <p>
             <strong>Inicio:</strong>
-            <input type="date" [(ngModel)]="experiencia.inicio" [class.error-input]="errores[i].inicio" />
+            <input type="date" [(ngModel)]="experiencia.inicio" 
+              [class.error-input]="errores[i].inicio"
+              (change)="validarFechas(i)" />
             <span class="error" *ngIf="errores[i].inicio">Campo requerido</span>
           </p>
           <p>
             <strong>Fin:</strong>
-            <input type="date" [(ngModel)]="experiencia.fin" [class.error-input]="errores[i].fin" />
+            <input type="date" [(ngModel)]="experiencia.fin" 
+              [class.error-input]="errores[i].fin || errores[i].fechaInvalida"
+              (change)="validarFechas(i)" />
             <span class="error" *ngIf="errores[i].fin">Campo requerido</span>
+            <span class="error" *ngIf="errores[i].fechaInvalida">La fecha de fin no puede ser anterior a la fecha de inicio</span>
           </p>
           <p>
             <strong>Descripción:</strong>

@@ -95,7 +95,7 @@ router.get('/empleado/:id/trayectoria', async (req, res) => {
 
   const { data, error } = await supabase
     .from('historial_laboral')
-    .select('historial_id, titulo_puesto, empresa, descripcion, fecha_inicio, fecha_fin')
+    .select('historial_id, titulo_puesto, titulo_proyecto, empresa, descripcion, fecha_inicio, fecha_fin')
     .eq('empleado_id', id)
     .order('fecha_inicio', { ascending: false });
 
@@ -107,6 +107,7 @@ router.get('/empleado/:id/trayectoria', async (req, res) => {
   const trayectoria = data.map(entry => ({
     historial_id: entry.historial_id,
     titulo: entry.titulo_puesto,
+    titulo_proyecto: entry.titulo_proyecto,
     empresa: entry.empresa,
     inicio: entry.fecha_inicio,
     fin: entry.fecha_fin,
@@ -195,38 +196,50 @@ router.put('/empleado/cambiar-contrasena/:id', async (req, res) => {
 // Crear nueva experiencia laboral
 router.post('/empleado/:id/experiencia', async (req, res) => {
   const { id } = req.params;
-  const { titulo_puesto, empresa, descripcion, fecha_inicio, fecha_fin } = req.body;
+  const { titulo_puesto, titulo_proyecto, empresa, descripcion, fecha_inicio, fecha_fin } = req.body;
 
-  if (!titulo_puesto || !empresa || !descripcion || !fecha_inicio || !fecha_fin) {
+  if (!titulo_puesto || !titulo_proyecto || !empresa || !descripcion || !fecha_inicio || !fecha_fin) {
     return res.status(400).json({ success: false, error: 'Faltan campos requeridos' });
   }
 
-  const { data, error } = await supabase
-    .from('historial_laboral')
-    .insert([{
-      empleado_id: id,
-      titulo_puesto,
-      empresa,
-      descripcion,
-      fecha_inicio,
-      fecha_fin
-    }])
-    .single(); 
+  try {
+    // Don't specify historial_id, let Supabase auto-generate it
+    const { data, error } = await supabase
+      .from('historial_laboral')
+      .insert([{
+        empleado_id: id,
+        titulo_puesto,
+        titulo_proyecto,
+        empresa,
+        descripcion,
+        fecha_inicio,
+        fecha_fin
+      }])
+      .select(); // Add this to return the created record with its ID
 
-  if (error) {
-    console.error('Error al crear nueva experiencia:', error.message);
-    return res.status(500).json({ success: false, error: 'Error al crear nueva experiencia' });
+    if (error) {
+      console.error('Error al crear nueva experiencia:', error.message);
+      return res.status(500).json({ success: false, error: 'Error al crear nueva experiencia' });
+    }
+
+    return res.status(201).json({ 
+      success: true, 
+      data: {
+        historial_id: data[0].historial_id
+      }
+    });
+  } catch (err) {
+    console.error('Error inesperado:', err);
+    return res.status(500).json({ success: false, error: 'Error del servidor' });
   }
-
-  return res.status(201).json({ success: true, data });
 });
 
 // Actualizar experiencia laboral existente
 router.put('/empleado/experiencia/:historial_id', async (req, res) => {
   const { historial_id } = req.params;
-  const { titulo_puesto, empresa, descripcion, fecha_inicio, fecha_fin } = req.body;
+  const { titulo_puesto, titulo_proyecto, empresa, descripcion, fecha_inicio, fecha_fin } = req.body;
 
-  if (!titulo_puesto || !empresa || !descripcion || !fecha_inicio || !fecha_fin) {
+  if (!titulo_puesto || !titulo_proyecto || !empresa || !descripcion || !fecha_inicio || !fecha_fin) {
     return res.status(400).json({ success: false, error: 'Faltan campos requeridos' });
   }
 
@@ -234,6 +247,7 @@ router.put('/empleado/experiencia/:historial_id', async (req, res) => {
     .from('historial_laboral')
     .update({ 
       titulo_puesto, 
+      titulo_proyecto,
       empresa, 
       descripcion, 
       fecha_inicio, 
@@ -247,6 +261,70 @@ router.put('/empleado/experiencia/:historial_id', async (req, res) => {
   }
 
   return res.status(200).json({ success: true, message: 'Experiencia actualizada correctamente' });
+});
+
+// Crear nueva habilidad y asociarla a un empleado
+router.post('/empleado/:id/habilidad', async (req, res) => {
+  const { id } = req.params;
+  const { nombre, categoria, nivel, descripcion } = req.body;
+
+  try {
+    let { data: habilidadExiste, error: errorExiste } = await supabase
+      .from('habilidad')
+      .select('habilidad_id')
+      .eq('nombre', nombre)
+      .maybeSingle(); 
+
+    let habilidadId = habilidadExiste ? habilidadExiste.habilidad_id : null;
+
+    if (!habilidadId) {
+      const { data: nuevaHabilidad, error: errorInsert } = await supabase
+        .from('habilidad')
+        .insert([{ nombre, categoria, nivel, descripcion }])
+        .select()
+        .single();
+
+      if (errorInsert || !nuevaHabilidad) {
+        console.error('Error al crear habilidad:', errorInsert);
+        return res.status(500).json({ success: false, error: 'Error creando habilidad' });
+      }
+      habilidadId = nuevaHabilidad.habilidad_id;
+    }
+
+    const { data: relacionExistente, error: errorRelacionExistente } = await supabase
+      .from('empleado_habilidad')
+      .select('*')
+      .eq('empleado_id', id)
+      .eq('habilidad_id', habilidadId)
+      .maybeSingle();
+
+    if (relacionExistente) {
+      return res.status(200).json({
+        success: true,
+        data: { habilidad_id: habilidadId, message: 'Habilidad ya asociada al empleado' }
+      });
+    }
+
+    const { error: errorRelacion } = await supabase
+      .from('empleado_habilidad')
+      .insert([{
+        empleado_id: id,
+        habilidad_id: habilidadId
+      }]);
+
+    if (errorRelacion) {
+      console.error('Error al asociar habilidad:', errorRelacion);
+      return res.status(500).json({ success: false, error: 'Error asociando habilidad al empleado' });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: { habilidad_id: habilidadId, message: 'Habilidad agregada correctamente' }
+    });
+  } catch (error) {
+    console.error('Error inesperado:', error);
+    return res.status(500).json({ success: false, error: 'Error en el servidor' });
+  }
 });
 
 module.exports = router;
