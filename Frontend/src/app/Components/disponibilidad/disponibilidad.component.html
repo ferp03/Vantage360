@@ -1,5 +1,4 @@
 <div class="dashboard-bg">
-    <div class="container">
       
       <!-- Barra de búsqueda y filtros -->
       <div class="filtro-div">
@@ -123,15 +122,15 @@
             </tr>
           </tbody>
         </table>
+        
+        <!-- Paginación -->
+        <div *ngIf="!cargando && !error && totalPages > 1" class="pagination">
+          <button (click)="prevPage()" [disabled]="currentPage === 1"><img src="/assets/arrow-left-solid.svg" alt="Prev" class="arrows"></button>
+          <span>{{currentPage}} / {{totalPages}}</span>
+          <button (click)="nextPage()" [disabled]="currentPage === totalPages"><img src="/assets/arrow-right-solid.svg" alt="Next" class="arrows"></button>
+        </div>
       </div>
-      
-      <!-- Paginación -->
-      <div *ngIf="!cargando && !error && totalPages > 1" class="pagination">
-        <button (click)="prevPage()" [disabled]="currentPage === 1"><img src="/assets/arrow-left-solid.svg" alt="Prev" class="arrows"></button>
-        <span>{{currentPage}} / {{totalPages}}</span>
-        <button (click)="nextPage()" [disabled]="currentPage === totalPages"><img src="/assets/arrow-right-solid.svg" alt="Next" class="arrows"></button>
-      </div>
-      
+        
       <!-- Modal de edición -->
       <div class="modal-overlay" *ngIf="empleadoSeleccionado">
         <div class="modal">
@@ -167,5 +166,4 @@
           </div>
         </div>
       </div>
-    </div>
   </div>
