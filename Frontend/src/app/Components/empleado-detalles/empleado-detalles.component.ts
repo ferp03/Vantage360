@@ -135,10 +135,19 @@ export class EmpleadoDetallesComponent implements OnInit {
     this.apiService.getEmpleadoTrayectoria(this.empleadoId).subscribe({
       next: (res) => {
         if (res.success) {
-          this.experiencias = res.data; 
+          this.experiencias = res.data;
+          this.ordenarExp();
         }
       },
       error: (err) => console.error('Error al obtener trayectoria:', err)
+    });
+  }
+
+  ordenarExp() {
+    this.experiencias.sort((a, b) => {
+      const fechaA = new Date(a.inicio);
+      const fechaB = new Date(b.inicio);
+      return fechaB.getTime() - fechaA.getTime(); 
     });
   }
 
@@ -212,6 +221,7 @@ export class EmpleadoDetallesComponent implements OnInit {
             console.log('Experiencia creada:', res);
             exp.historial_id = res.data?.historial_id;
             delete exp.esNueva;
+            this.ordenarExp();
           },
           error: (err) => {
             console.error('Error al crear experiencia:', err);
@@ -219,7 +229,10 @@ export class EmpleadoDetallesComponent implements OnInit {
         });
       } else if (exp.historial_id) {
         this.apiService.updateExperiencia(exp.historial_id, payload).subscribe({
-          next: () => console.log('Experiencia actualizada.'),
+          next: () => {
+            console.log('Experiencia actualizada.');
+            this.ordenarExp();
+          },
           error: (err) => console.error('Error al actualizar experiencia:', err)
         });
       }
@@ -267,7 +280,6 @@ export class EmpleadoDetallesComponent implements OnInit {
   existeExperienciaNueva(): boolean {
     return this.experiencias.some(exp => exp.esNueva);
   }
-
 
   cerrarModalContrasena() {
     this.mostrarModalContrasena = false;
@@ -340,4 +352,3 @@ export class EmpleadoDetallesComponent implements OnInit {
     }
   }
 }
-
