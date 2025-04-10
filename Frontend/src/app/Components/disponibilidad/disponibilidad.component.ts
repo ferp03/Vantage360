@@ -12,15 +12,16 @@ export class DisponibilidadComponent implements OnInit {
   empleados: any[] = [];
   empleadosFiltrados: any[] = [];
 
-  // Ahora incluimos habilidad en los filtros
   filtros = {
     rol: '',
     habilidad: '',
+    certificacion: '',
     soloDisponibles: false
   };
 
   rolesUnicos: string[] = [];
   habilidadesUnicas: string[] = [];
+  certificacionesUnicas: string[] = [];
 
   searchText: string = '';
   currentPage: number = 1;
@@ -56,55 +57,48 @@ export class DisponibilidadComponent implements OnInit {
           
           this.cargando = false;
         } else {
-          this.error = 'Error al cargar datos';
-          this.cargando = false;
+          this.error = 'No se pudieron cargar los empleados';
         }
       },
-      error: (err) => {
-        console.error('Error al obtener empleados:', err);
-        this.error = err.error?.error || 'Error al conectar con el servidor';
+      error: () => {
+        this.error = 'Error al cargar los empleados';
         this.cargando = false;
       }
     });
   }
 
   extraerFiltrosUnicos(): void {
-    // Roles únicos
-    const todosRoles = this.empleados.flatMap(emp =>
-      emp.roles.map((r: any) => r.nombre)
-    );
+    const todosRoles = this.empleados.flatMap(emp => emp.roles.map((r: any) => r.nombre));
     this.rolesUnicos = [...new Set(todosRoles)];
 
-    // Habilidades únicas
-    const todasHabilidades = this.empleados.flatMap(emp =>
-      emp.habilidades.map((h: any) => h.nombre)
-    );
+    const todasHabilidades = this.empleados.flatMap(emp => emp.habilidades.map((h: any) => h.nombre));
     this.habilidadesUnicas = [...new Set(todasHabilidades)];
+
+    const todasCertificaciones = this.empleados.flatMap(emp => emp.certificaciones.map((c: any) => c.nombre));
+    this.certificacionesUnicas = [...new Set(todasCertificaciones)];
   }
 
   aplicarFiltros(): void {
     this.empleadosFiltrados = this.empleados.filter(emp => {
-      // Filtro por disponibilidad
-      if (this.filtros.soloDisponibles && !emp.disponible) {
-        return false;
-      }
+      if (this.filtros.soloDisponibles && !emp.disponible) return false;
 
       // Filtro por rol
       if (
         this.filtros.rol &&
         !emp.roles.some((r: any) => r.nombre === this.filtros.rol)
-      ) {
-        return false;
-      }
+      ) return false;
 
       // Filtro por habilidad
       if (
         this.filtros.habilidad &&
         !emp.habilidades.some((h: any) => h.nombre === this.filtros.habilidad)
-      ) {
-        return false;
-      }
+      ) return false;
 
+      if (
+        this.filtros.certificacion &&
+        !emp.certificaciones.some((c: any) => c.nombre === this.filtros.certificacion)
+      ) return false;
+      
       // Filtro por texto de búsqueda (usuario, correo o nombre completo)
       if (this.searchText) {
         const searchLower = this.searchText.toLowerCase();
@@ -119,8 +113,6 @@ export class DisponibilidadComponent implements OnInit {
 
       return true;
     });
-
-    // Reiniciar paginación
     this.currentPage = 1;
   }
 
@@ -128,6 +120,7 @@ export class DisponibilidadComponent implements OnInit {
     this.filtros = {
       rol: '',
       habilidad: '',
+      certificacion: '',
       soloDisponibles: false
     };
     this.searchText = '';
@@ -135,28 +128,27 @@ export class DisponibilidadComponent implements OnInit {
   }
 
   verDetallesEmpleado(empleado: any): void {
-    // Ajusta la ruta según tu configuración
     this.router.navigate(['/empleado-detalles', empleado.empleado_id]);
   }
 
   seleccionarEmpleado(empleado: any): void {
     this.empleadoSeleccionado = empleado;
     this.nuevoEstado = empleado.estado_laboral || '';
-    this.nuevaCargabilidad = empleado.cargabilidad;
+    this.nuevaCargabilidad = empleado.cargabilidad || 0;
   }
 
   actualizarDisponibilidad(): void {
     if (!this.empleadoSeleccionado) return;
-    
-    const datos: any = {};
-    if (this.nuevoEstado) datos.estado_laboral = this.nuevoEstado;
-    if (this.nuevaCargabilidad !== null) datos.cargabilidad = this.nuevaCargabilidad;
-    
-    this.apiService.actualizarDisponibilidad(this.empleadoSeleccionado.empleado_id, datos)
+
+    const payload = {
+      estado: this.nuevoEstado,
+      cargabilidad: this.nuevaCargabilidad
+    };
+
+    this.apiService.actualizarDisponibilidad(this.empleadoSeleccionado.empleado_id, payload)
       .subscribe({
         next: (res: any) => {
           if (res.success) {
-            // Actualizar el empleado en la lista local
             const index = this.empleados.findIndex(e => e.empleado_id === this.empleadoSeleccionado.empleado_id);
             if (index !== -1) {
               this.empleados[index] = {
@@ -171,9 +163,8 @@ export class DisponibilidadComponent implements OnInit {
             this.error = 'Error al actualizar';
           }
         },
-        error: (err) => {
-          console.error('Error al actualizar disponibilidad:', err);
-          this.error = err.error?.error || 'Error al conectar con el servidor';
+        error: () => {
+          this.error = 'Error de conexión con el servidor';
         }
       });
   }
@@ -184,25 +175,20 @@ export class DisponibilidadComponent implements OnInit {
     this.nuevaCargabilidad = null;
   }
 
-  // Paginación
   get paginatedEmpleados(): any[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     return this.empleadosFiltrados.slice(startIndex, startIndex + this.itemsPerPage);
   }
-  
+
   get totalPages(): number {
     return Math.ceil(this.empleadosFiltrados.length / this.itemsPerPage);
   }
 
   nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
+    if (this.currentPage < this.totalPages) this.currentPage++;
   }
 
   prevPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
+    if (this.currentPage > 1) this.currentPage--;
   }
 }

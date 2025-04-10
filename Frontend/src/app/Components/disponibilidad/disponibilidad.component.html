@@ -1,196 +1,149 @@
 <div class="dashboard-bg">
-    <!-- Barra de búsqueda y filtros -->
-    <div class="filtro-div">
-      <div class="titulo">
-        <h1>Disponibilidad de Empleados</h1>
-      </div>
-      <!-- Buscador -->
-      <form class="form" style="margin-left: 10px; width: 60vw;">
+  <!-- Barra de búsqueda y filtros -->
+  <div class="filtro-div">
+    <div class="titulo">
+      <h1>Disponibilidad de Empleados</h1>
+    </div>
+    <!-- Buscador -->
+    <form class="form" style="margin-left: 10px; width: 60vw;">
+      <svg
+        width="17"
+        height="16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        role="img"
+        aria-labelledby="search"
+      >
+        <path
+          d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9"
+          stroke="currentColor"
+          stroke-width="1.333"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ></path>
+      </svg>
+      <input
+        class="input"
+        placeholder="Buscar empleado"
+        [(ngModel)]="searchText"
+        name="searchText"
+        type="text"
+        (keyup)="aplicarFiltros()"
+      />
+      <button class="reset" type="reset" (click)="searchText = ''; aplicarFiltros()">
         <svg
-          width="17"
-          height="16"
-          fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          role="img"
-          aria-labelledby="search"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
         >
-          <path
-            d="M7.667 12.667A5.333 5.333 0 107.667 2a5.333 5.333 0 000 10.667zM14.334 14l-2.9-2.9"
-            stroke="currentColor"
-            stroke-width="1.333"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></path>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
-        <input
-          class="input"
-          placeholder="Buscar empleado"
-          [(ngModel)]="searchText"
-          name="searchText"
-          type="text"
-          (keyup)="aplicarFiltros()"
-        />
-        <button class="reset" type="reset" (click)="searchText = ''; aplicarFiltros()">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      </form>
+      </button>
+    </form>
+  </div>
+
+  <!-- Filtros avanzados -->
+  <div class="filtros-avanzados">
+    <div class="filtro-item">
+      <label for="filtroRol">Rol:</label>
+      <select id="filtroRol" [(ngModel)]="filtros.rol" (change)="aplicarFiltros()">
+        <option value="">Todos</option>
+        <option *ngFor="let r of rolesUnicos" [value]="r">{{r}}</option>
+      </select>
     </div>
 
-    <!-- Filtros avanzados -->
-    <div class="filtros-avanzados">
-      <!-- Rol -->
-      <div class="filtro-item">
-        <label for="filtroRol">Rol:</label>
-        <select id="filtroRol" [(ngModel)]="filtros.rol" (change)="aplicarFiltros()">
-          <option value="">Todos</option>
-          <option *ngFor="let r of rolesUnicos" [value]="r">{{r}}</option>
-        </select>
-      </div>
-
-      <!-- Habilidad -->
-      <div class="filtro-item">
-        <label for="filtroHabilidad">Habilidad:</label>
-        <select id="filtroHabilidad" [(ngModel)]="filtros.habilidad" (change)="aplicarFiltros()">
-          <option value="">Todas</option>
-          <option *ngFor="let h of habilidadesUnicas" [value]="h">{{h}}</option>
-        </select>
-      </div>
-
-      <!-- Solo Disponibles -->
-      <div class="filtro-item checkbox">
-        <input
-          type="checkbox"
-          id="soloDisponibles"
-          [(ngModel)]="filtros.soloDisponibles"
-          (change)="aplicarFiltros()"
-        />
-        <label for="soloDisponibles">Solo disponibles</label>
-      </div>
-
-      <button class="btn-limpiar" (click)="limpiarFiltros()">Limpiar filtros</button>
+    <div class="filtro-item">
+      <label for="filtroHabilidad">Habilidad:</label>
+      <select id="filtroHabilidad" [(ngModel)]="filtros.habilidad" (change)="aplicarFiltros()">
+        <option value="">Todas</option>
+        <option *ngFor="let h of habilidadesUnicas" [value]="h">{{h}}</option>
+      </select>
     </div>
 
-    <!-- Mensaje de carga -->
-    <div *ngIf="cargando" class="cargando">
-      <p>Cargando empleados...</p>
+    <div class="filtro-item">
+      <label for="filtroCertificacion">Certificación:</label>
+      <select id="filtroCertificacion" [(ngModel)]="filtros.certificacion" (change)="aplicarFiltros()">
+        <option value="">Todas</option>
+        <option *ngFor="let c of certificacionesUnicas" [value]="c">{{c}}</option>
+      </select>
     </div>
 
-    <!-- Mensaje de error -->
-    <div *ngIf="error" class="error-mensaje">
-      <p>{{error}}</p>
+    <div class="filtro-item checkbox">
+      <input type="checkbox" id="soloDisponibles" [(ngModel)]="filtros.soloDisponibles" (change)="aplicarFiltros()" />
+      <label for="soloDisponibles">Solo disponibles</label>
     </div>
 
-    <!-- Tabla de empleados -->
-    <div class="tabla-container" *ngIf="!cargando && !error">
-      <table class="tabla-empleados">
-        <thead>
-          <tr>
-            <th>Empleado</th>
-            <th>Rol</th>
-            <th>Cargabilidad</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="let empleado of paginatedEmpleados"
-            [ngClass]="{'disponible': empleado.disponible, 'no-disponible': !empleado.disponible}"
-          >
-            <td
-            (click)="verDetallesEmpleado(empleado)"
-            style="cursor: pointer;"
-            >
-              <div class="empleado-info">
-                <div class="avatar"></div>
-                <div>
-                  <!-- Clic en el nombre para ir a detalles -->
-                  <p class="nombre">
-                    {{empleado.nombre}} {{empleado.apellido_paterno}}
-                  </p>
-                  <p class="usuario">{{empleado.usuario}}</p>
-                </div>
+    <button class="btn-limpiar" (click)="limpiarFiltros()">Limpiar filtros</button>
+  </div>
+
+  <!-- Mensaje de carga -->
+  <div *ngIf="cargando" class="cargando">
+    <p>Cargando empleados...</p>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="error" class="error-mensaje">
+    <p>{{error}}</p>
+  </div>
+
+  <!-- Tabla de empleados -->
+  <div class="tabla-container" *ngIf="!cargando && !error">
+    <table class="tabla-empleados">
+      <thead>
+        <tr>
+          <th>Empleado</th>
+          <th>Rol</th>
+          <th>Habilidades</th>
+          <th>Proyectos</th>
+          <th>Cargabilidad</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let empleado of paginatedEmpleados"
+          [ngClass]="{'disponible': empleado.disponible, 'no-disponible': !empleado.disponible}"
+        >
+          <td (click)="verDetallesEmpleado(empleado)" style="cursor: pointer;">
+            <div class="empleado-info">
+              <div class="avatar"></div>
+              <div>
+                <p class="nombre">{{empleado.nombre}} {{empleado.apellido_paterno}}</p>
+                <p class="usuario">{{empleado.usuario}}</p>
               </div>
-            </td>
-
-            <td>
-              <span class="chip" *ngFor="let rol of empleado.roles">{{ rol.nombre }}</span>
-            </td>
-
-            <td>
-              <div class="cargabilidad-barra">
-                <div class="cargabilidad-valor" [style.width.%]="empleado.cargabilidad"></div>
-                <span>{{empleado.cargabilidad}}%</span>
-              </div>
-            </td>
-
-            <td>
-              <span
-                class="estado"
-                [ngClass]="{'disponible-badge': empleado.disponible, 'no-disponible-badge': !empleado.disponible}"
-              >
-                {{ empleado.disponible ? 'Disponible' : empleado.razon }}
-              </span>
-            </td>
-
-            <td>
-              <!-- Botón para abrir el modal de edición -->
-              <button class="btn-accion" (click)="seleccionarEmpleado(empleado)">Editar</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      
-      <!-- Paginación -->
-      <div *ngIf="!cargando && !error && totalPages > 1" class="pagination">
-        <button (click)="prevPage()" [disabled]="currentPage === 1"><img src="/assets/arrow-left-solid.svg" alt="Prev" class="arrows"></button>
-        <span>{{currentPage}} / {{totalPages}}</span>
-        <button (click)="nextPage()" [disabled]="currentPage === totalPages"><img src="/assets/arrow-right-solid.svg" alt="Next" class="arrows"></button>
-      </div>
-    </div>
-
-    <!-- Modal de edición -->
-    <div class="modal-overlay" *ngIf="empleadoSeleccionado">
-      <div class="modal">
-        <div class="modal-header">
-          <h3>Actualizar disponibilidad</h3>
-          <button class="btn-cerrar" (click)="cancelarActualizacion()">×</button>
-        </div>
-        <div class="modal-content">
-          <div class="empleado-detalle">
-            <p class="nombre">{{empleadoSeleccionado?.nombre}} {{empleadoSeleccionado?.apellido_paterno}}</p>
-            <p class="correo">{{empleadoSeleccionado?.correo}}</p>
-          </div>
-
-          <div class="form-group">
-            <label for="estado">Estado laboral:</label>
-            <select id="estado" [(ngModel)]="nuevoEstado">
-              <option value="Activo">Activo</option>
-              <option value="Vacaciones">Vacaciones</option>
-              <option value="Licencia">Licencia</option>
-              <option value="Capacitación">Capacitación</option>
-              <option value="Baja temporal">Baja temporal</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="cargabilidad">Cargabilidad (%):</label>
-            <input type="number" id="cargabilidad" [(ngModel)]="nuevaCargabilidad" min="0" max="100" />
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn-cancelar" (click)="cancelarActualizacion()">Cancelar</button>
-          <button class="btn-guardar" (click)="actualizarDisponibilidad()">Guardar cambios</button>
-        </div>
-      </div>
-    </div>
+            </div>
+          </td>
+          <td>
+            <span class="chip" *ngFor="let rol of empleado.roles">{{ rol.nombre }}</span>
+          </td>
+          <td>
+            <span class="chip small" *ngFor="let hab of empleado.habilidades.slice(0, 3)">{{ hab.nombre }}</span>
+            <span *ngIf="empleado.habilidades.length > 3">+{{ empleado.habilidades.length - 3 }}</span>
+          </td>
+          <td>
+            <span class="chip small" *ngFor="let proyecto of empleado.proyectos.slice(0, 2)">{{ proyecto.nombre }}</span>
+            <span *ngIf="empleado.proyectos.length > 2">+{{ empleado.proyectos.length - 2 }}</span>
+          </td>
+          <td>
+            <div class="cargabilidad-barra">
+              <div class="cargabilidad-valor" [style.width.%]="empleado.cargabilidad"></div>
+              <span>{{empleado.cargabilidad}}%</span>
+            </div>
+          </td>
+          <td>
+            <span class="estado" [ngClass]="{'disponible-badge': empleado.disponible, 'no-disponible-badge': !empleado.disponible}">
+              {{ empleado.disponible ? 'Disponible' : empleado.razon }}
+            </span>
+          </td>
+          <td>
+            <button class="btn-accion" (click)="seleccionarEmpleado(empleado)">Editar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
