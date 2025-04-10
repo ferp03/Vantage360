@@ -53,13 +53,6 @@
   box-shadow: 0 6px 12px rgba(185, 152, 247, 0.4);
 }
 
-
-.modulo h3 {
-  font-size: 1.3rem; 
-  margin-bottom: 0.7rem; 
-  color: #ffffff;
-}
-
 .modulo p {
   font-size: 0.9rem; 
   color: #cccccc;
@@ -89,3 +82,16 @@
   transform: translateY(0);
 }
 
+.icono {
+  display: flex;            
+  align-items: center;      
+  justify-content: center;  
+  gap: 0.5rem;              
+  font-size: 1.3rem; 
+  color: #ffffff;
+  margin-bottom: 0.7rem; 
+}
+
+.icono mat-icon {
+  font-size: 1.4rem; 
+}

@@ -19,7 +19,9 @@ import { CertificacionesComponent } from './Components/certificaciones/certifica
 import { SubirCertificadoComponent } from '../app/Components/subir-certificado/subir-certificado.component';
 import { RegistroHabilidadesComponent } from './Components/registro-habilidades/registro-habilidades.component';
 import { DisponibilidadComponent } from './Components/disponibilidad/disponibilidad.component';
-import { MenucurycertComponent } from './Components/menucurycert/menucurycert.component'; // Añadir componente
+import { MenucurycertComponent } from './Components/menucurycert/menucurycert.component'; 
+import { MatIconModule } from '@angular/material/icon';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -45,7 +47,9 @@ import { MenucurycertComponent } from './Components/menucurycert/menucurycert.co
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule,  
+    MatIconModule      
   ],
   providers: [],
   bootstrap: [AppComponent]
