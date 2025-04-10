@@ -106,12 +106,15 @@
             *ngFor="let empleado of paginatedEmpleados"
             [ngClass]="{'disponible': empleado.disponible, 'no-disponible': !empleado.disponible}"
           >
-            <td>
+            <td
+            (click)="verDetallesEmpleado(empleado)"
+            style="cursor: pointer;"
+            >
               <div class="empleado-info">
                 <div class="avatar"></div>
                 <div>
                   <!-- Clic en el nombre para ir a detalles -->
-                  <p class="nombre" (click)="verDetallesEmpleado(empleado)">
+                  <p class="nombre">
                     {{empleado.nombre}} {{empleado.apellido_paterno}}
                   </p>
                   <p class="usuario">{{empleado.usuario}}</p>
