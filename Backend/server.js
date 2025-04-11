@@ -9,6 +9,7 @@ const dummyRoutes = require('./routes/dummy.routes');
 const perfilRoutes = require('./routes/perfil.routes');
 const updateRoutes = require('./routes/update.routes');
 const availabilityRoutes = require('./routes/availability.routes'); 
+const certificateRoutes = require('./routes/certificate.routes');
 
 const app = express();
 const port = 3000;
@@ -19,13 +20,13 @@ app.use(cors({
 app.use(bodyParser.json());
 
 // Modulos
-app.use(fileUpload());
 app.use(authRoutes);
 app.use(chuckRoutes);
 app.use(dummyRoutes);
 app.use(perfilRoutes);
 app.use(updateRoutes);
 app.use(availabilityRoutes);
+app.use(certificateRoutes);
 
 // Iniciar el servidor
 app.listen(port, () => {
