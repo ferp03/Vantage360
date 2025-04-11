@@ -2,10 +2,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './Components/login/login.component';
 import { DashboardComponent } from './Components/dashboard/dashboard.component';
-import { AboutComponent } from './Components/about/about.component';
 import { LayoutComponent } from './layout/layout.component';
 import { AuthGuard } from './auth/auth.guard';
-import { ContactComponent } from './Components/contact/contact.component';
+import { UserGuard } from './auth/user.guard';
 import { ForgotPasswordComponent } from './Components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './Components/reset-password/reset-password.component';
 import { EmpleadoDetallesComponent } from './Components/empleado-detalles/empleado-detalles.component';
@@ -26,7 +25,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
-      { path: 'empleados', component: DisponibilidadComponent, canActivate: [AuthGuard] },
+      { path: 'empleados', component: DisponibilidadComponent, canActivate: [UserGuard] },
       { path: 'registro-habilidades', component: RegistroHabilidadesComponent, canActivate: [AuthGuard] },
       { path: 'miscursos', component: CursosComponent, canActivate: [AuthGuard] },
       { path: 'certificates', component: CertificacionesComponent, canActivate: [AuthGuard]},
