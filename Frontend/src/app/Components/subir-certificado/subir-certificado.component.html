@@ -1,66 +1,98 @@
-<div class="contenedor-modal" (click)="cerrar()">
-  <div class="contenido-modal" (click)="$event.stopPropagation()">
-    <button class="boton-cerrar" (click)="cerrar()">&times;</button>
-    
-    <h2 class="titulo-modal">Subir Nuevo Certificado</h2>
-    
-    <form [formGroup]="formularioCertificado" (ngSubmit)="onSubmit()" class="formulario-certificado">
-      <div class="grupo-formulario">
+<div class="skills-container">
+  <div class="skills-box">
+    <h2>Subir Nuevo Certificado</h2>
+    <form [formGroup]="formularioCertificado" (ngSubmit)="onSubmit()">
+
+      <!-- Nombre del Certificado -->
+      <div class="form-group">
         <label for="nombreCertificado">Nombre del Certificado*</label>
-        <div class="mensaje-error" *ngIf="erroresFormulario['name']">{{ erroresFormulario['name'] }}</div>
-        <div class="input-line" [class.invalid]="erroresFormulario['name']">
-          <input id="nombreCertificado" type="text" formControlName="name" placeholder="Ej: Python Avanzado">  
+        <input
+          id="nombreCertificado"
+          type="text"
+          formControlName="name"
+          placeholder="Ej: Python Avanzado"
+        />
+        <div class="error-message" *ngIf="erroresFormulario['name']">
+          {{ erroresFormulario['name'] }}
         </div>
       </div>
 
-      <!-- Fechas -->
-      <div class="fila-formulario">
-        <div class="grupo-formulario">
-          <label for="fechaEmision">Fecha de Emisión*</label>
-          <div class="mensaje-error" *ngIf="erroresFormulario['issueDate']">{{ erroresFormulario['issueDate'] }}</div>
-          <div class="input-line date-field" [class.invalid]="erroresFormulario['issueDate']">
-            <input id="fechaEmision" type="date" formControlName="issueDate">
-          </div>
-        </div>
-        
-        <div class="grupo-formulario">
-          <label for="fechaVencimiento">Fecha de Vencimiento*</label>
-          <div class="mensaje-error" *ngIf="erroresFormulario['expiryDate']">{{ erroresFormulario['expiryDate'] }}</div>
-          <div class="input-line date-field" [class.invalid]="erroresFormulario['expiryDate']">
-            <input id="fechaVencimiento" type="date" formControlName="expiryDate">
-          </div>
+      <!-- Fecha Emisión / Fecha Vencimiento -->
+      <div class="form-group">
+        <label for="fechaEmision">Fecha de Emisión*</label>
+        <input
+          id="fechaEmision"
+          type="date"
+          formControlName="issueDate"
+        />
+        <div class="error-message" *ngIf="erroresFormulario['issueDate']">
+          {{ erroresFormulario['issueDate'] }}
         </div>
       </div>
 
-      <!-- ID de Certificado -->
-      <div class="grupo-formulario">
-        <label for="idCertificado">ID/Número de Certificado*</label>
-        <div class="mensaje-error" *ngIf="erroresFormulario['certificateId']">{{ erroresFormulario['certificateId'] }}</div>
-        <div class="input-line" [class.invalid]="erroresFormulario['certificateId']">
-          <input id="idCertificado" type="text" formControlName="certificateId">
-        </div>
+      <div class="form-group">
+        <label for="fechaVencimiento">Fecha de Vencimiento</label>
+        <input
+          id="fechaVencimiento"
+          type="date"
+          formControlName="expiryDate"
+        />
+        <!-- Si tienes mensaje de error, agrégalo aquí -->
       </div>
 
-      <!-- Subida de Archivo -->
-      <div class="grupo-formulario">
+      <!-- ID/Número de Certificado -->
+      <div class="form-group">
+        <label for="institución">Institución</label>
+        <input
+          id="institución"
+          type="text"
+          formControlName="institute"
+        />
+      </div>
+
+      <!-- Subir Certificado -->
+      <div class="form-group">
         <label>Subir Certificado*</label>
-        <div class="mensaje-error" *ngIf="erroresFormulario['file']">{{ erroresFormulario['file'] }}</div>
-        <div class="file-upload-line" [class.invalid]="erroresFormulario['file']">
-          <input type="file" id="archivoCertificado" (change)="alCambiarArchivo($event)" #fileInput hidden>
-          <label for="archivoCertificado" class="file-line-label">
-            <span class="file-name">{{ nombreArchivoSeleccionado || 'Seleccionar archivo...' }}</span>
-            <span class="browse-text">Examinar</span>
+        <div [class.error-message]="erroresFormulario['file']">
+          <!-- Campo File -->
+          <input
+            type="file"
+            id="archivoCertificado"
+            (change)="alCambiarArchivo($event)"
+            hidden
+            accept=".pdf,.jpg,.jpeg,.png"
+          />
+          <!-- Etiqueta custom para "Examinar" -->
+          <label for="archivoCertificado" class="etiqueta-archivo">
+            <span class="nombre-archivo">
+              {{ nombreArchivoSeleccionado || 'Selecciona un archivo...' }}
+            </span>
+            <span class="boton-examinar">Examinar</span>
           </label>
-          <small class="hint-archivo">Formatos aceptados: PDF, JPG, PNG (Máx. 5MB)</small>
         </div>
+        <div class="error-message" *ngIf="erroresFormulario['file']">
+          {{ erroresFormulario['file'] }}
+        </div>
+        <small class="hint-archivo"
+          >Formatos aceptados: PDF, JPG, PNG (Máx. 5MB)</small
+        >
       </div>
 
-      <!-- Acciones del Formulario -->
-      <div class="acciones-formulario">
-        <button type="button" class="boton boton-cancelar" (click)="cerrar()" [disabled]="estaEnviando">
+      <!-- Botones de Acción -->
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button
+          type="button"
+          (click)="cerrar()"
+          style="background: #999; width: 50%;"
+        >
           Cancelar
         </button>
-        <button type="submit" class="boton boton-enviar" [disabled]="!formularioCertificado.valid" [disabled]="estaEnviando">
+
+        <button
+          type="submit"
+          [disabled]="estaEnviando"
+          style="width: 50%;"
+        >
           <span *ngIf="!estaEnviando">Guardar Certificado</span>
           <span *ngIf="estaEnviando">Enviando...</span>
         </button>

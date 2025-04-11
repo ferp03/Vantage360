@@ -1,223 +1,214 @@
-/* Estilo base para los campos de línea */
-.input-line {
-  position: relative;
-  margin: 8px 0 16px 0;
-}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
-.input-line:after {
-  content: '';
+:host {
+  display: block;
   position: absolute;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 1px;
-  background-color: #ccc;
-  transition: all 0.3s ease;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  background: linear-gradient(160deg, #000000, #221928);
+  font-family: 'Roboto', sans-serif;
 }
 
-.input-line input {
+.skills-container {
+  min-height: 100vh;
   width: 100%;
-  padding: 8px 0;
-  border: none;
-  background: transparent;
-  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.skills-box {
+  /* Si quieres fondo semitransparente, descomenta: */
+  /* background: rgba(35, 35, 50, 0.7); */
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 1px 2px 6px #B998F7;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  margin: 20px;
+}
+
+.skills-box h2 {
   color: white;
-  outline: none;
+  margin-bottom: 25px;
+  font-size: 24px;
 }
 
-/* Efecto cuando el campo está enfocado */
-.input-line input:focus + .input-line:after {
-  height: 2px;
-  background-color: #9668e6;
+/* Form styles */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-/* Estilo para campos inválidos */
-.input-line.invalid:after {
-  background-color: #e74c3c;
+/* Reutilizamos form-group para cada campo del formulario */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
 }
 
-/* Placeholder más discreto */
-.input-line input::placeholder {
-  color: #555;
-  font-weight: 300;
-}
-
-/* Animación para las etiquetas */
-.form-group label {
-  display: block;
-  color: #555;
+/* Labels */
+label {
+  font-weight: bold;
+  color: white;
+  margin-bottom: 5px;
   font-size: 14px;
-  margin-bottom: 4px;
-  transition: all 0.3s ease;
 }
 
-/* Estilo para campos de fecha (también en línea) */
-.input-line input[type="date"] {
+/* Inputs / selects / textareas */
+input,
+select,
+textarea {
+  padding: 12px 15px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #470971;
+}
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Botones */
+button {
+  padding: 14px;
+  background: #9668e6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 10px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+button:hover {
+  background: #3c065f;
+}
+
+/* Select con flechita */
+select {
   appearance: none;
   -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 1em;
 }
 
-/* Icono para campos de fecha */
-.input-line.date-field:after {
-  content: '📅';
-  position: absolute;
-  right: 0;
-  bottom: 8px;
-  font-size: 14px;
-  pointer-events: none;
+/* Ejemplo: ocultar #categoryField si se necesita */
+#categoryField {
+  display: block;
+}
+input[name="skillType"][value="personal"]:checked ~ #categoryField {
+  display: none;
 }
 
-/* Estilo línea para subida de archivos */
-.file-upload-line {
-  position: relative;
-  margin: 8px 0 16px 0;
+/* Botón "Back" (opcional) */
+.back-button-wrapper {
+  position: left;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+}
+.back-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 5px 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.back-button:hover {
+  color: #d1d1d1;
+  text-decoration-thickness: 2px;
 }
 
-.file-upload-line:after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1px;
-  background-color: #ccc;
-  transition: all 0.3s ease;
+/* Toast (opcional) */
+.toast {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1000;
+  right: 30px;
+  top: 30px;
+  font-size: 17px;
+  opacity: 0;
+  transition: opacity 0.5s, visibility 0.5s;
+}
+.toast.show {
+  visibility: visible;
+  opacity: 1;
 }
 
-.file-line-label {
+/* Mensaje de error */
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Etiquetas para subir archivo (custom) */
+.etiqueta-archivo {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px dashed #ddd;
+  border-radius: 8px;
+  padding: 16px;
   cursor: pointer;
 }
-
-.file-name {
-  color: #555;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 70%;
+.nombre-archivo {
+  flex: 1;
+  text-align: left;
+  margin-right: 10px;
 }
-
-.browse-text {
-  color: #9668e6;
-  font-size: 14px;
-}
-
-.file-upload-line:hover:after {
-  background-color: #9668e6;
-}
-
-.file-upload-line.invalid:after{
-  background-color: #e74c3c;
-}
-
-.file-upload-line.invalid:hover:after {
-  background-color: #9668e6;
-}
-
-/* Cuando el campo tiene contenido */
-.input-line.has-content:after {
-  background-color: #9668e6;
-}
-/* Transición suave para todos los elementos */
-.form-group * {
-  transition: all 0.3s ease;
-}
-
-/* Contenedor de botones */
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 24px;
-  padding-top: 16px;
-  border-top: 1px solid #eee;
-}
-
-/* Estilo base para todos los botones */
-.boton {
-  padding: 10px 24px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
+.boton-examinar {
+  background: #9668e6;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
+  font-weight: bold;
   letter-spacing: 0.5px;
-  border: none;
-  outline: none;
 }
-
-/* Botón de Guardar (Estilo Primario) */
-.boton-enviar {
-  background-color: transparent;
-  color: #9668e6;
-  border: 1px solid #e5e7eb;
+.boton-examinar:hover {
+  background: #3c065f;
 }
-
-.boton-enviar:hover {
-  background-color: #9668e6;
-  color: white;
-  transform: translateY(-1px);
-}
-
-.boton-enviar:disabled {
-  background-color: #93c5fd;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-/* Botón de Cancelar (Estilo Secundario) */
-.boton-cancelar {
-  background-color: transparent;
-  color: #9668e6;
-  border: 1px solid #e5e7eb;
-}
-
-.boton-cancelar:hover {
-  background-color: #9668e6;
-  border-color: #d1d5db;
-  color: white;
-}
-
-/* Botón de Cerrar (X) */
-.boton-cerrar {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #9ca3af;
-  cursor: pointer;
-  padding: 4px;
-  line-height: 1;
-  transition: all 0.2s ease;
-}
-
-/* Efecto de carga para botón Guardar */
-.boton-guardar.procesando {
-  position: relative;
-  color: transparent;
-}
-
-.boton-guardar.procesando::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: white;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+.hint-archivo {
+  font-size: 0.75rem;
+  color: #fff; /* si quieres que sea blanco sobre fondo oscuro */
+  margin-top: 8px;
 }
