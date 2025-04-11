@@ -20,7 +20,7 @@ export class SubirCertificadoComponent {
     issueDate: '',
     file: '',
     expiryDate: '',
-    institute: ''
+    institution: ''
   };
 
   constructor(private fb: FormBuilder) {
@@ -28,7 +28,7 @@ export class SubirCertificadoComponent {
       name: ['', [Validators.required]],
       issueDate: ['', [Validators.required]],
       expiryDate: [''],
-      institute: [''],
+      institution: [''],
       file: [null, Validators.required]
     });
   }
