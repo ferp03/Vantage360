@@ -42,7 +42,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 router.post('/certificado', async (req, res) => {
-  const { certificateId, name, issueDate, expiryDate, institution, file } = req.body;
+  const { name, issueDate, expiryDate, institution, file } = req.body;
   
   // Verificar si todos los campos necesarios están presentes
   if (!name || !issueDate || !expiryDate || !institution ||  !file) {
@@ -59,7 +59,7 @@ router.post('/certificado', async (req, res) => {
           fecha_emision: issueDate,
           fecha_vencimiento: expiryDate,
           institucion: institution,
-          archivo: file, // Guardar la ruta del archivo subido
+          archivo: file, 
         },
       ]);
 
