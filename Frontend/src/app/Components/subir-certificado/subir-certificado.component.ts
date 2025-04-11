@@ -1,8 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-
-type FormField = 'name' | 'issueDate' | 'file' | 'expiryDate' | 'certificateId';
-type ErrorType = 'required' | 'maxlength' | 'pastDate' | 'invalidType';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-subir-certificado',
@@ -16,102 +13,47 @@ export class SubirCertificadoComponent {
   formularioCertificado!: FormGroup;
   nombreArchivoSeleccionado: string = '';
   estaEnviando: boolean = false;
-  erroresFormulario: Record<FormField, string> = {
+
+  // Almacena mensajes de error que quieras mostrar
+  erroresFormulario: Record<string, string> = {
     name: '',
     issueDate: '',
     file: '',
     expiryDate: '',
-    certificateId: ''
-  };
-
-  mensajesError: Record<FormField, Partial<Record<ErrorType, string>>> = {
-    name: {
-      required: 'Este campo es requerido',
-      maxlength: 'Máx. 100 caracteres'
-    },
-    issueDate: {
-      required: 'Este campo es requerido',
-      pastDate: 'La fecha no puede ser futura'
-    },
-    file: {
-      required: 'Este campo es requerido',
-      invalidType: 'Solo se aceptan PDF, JPG o PNG'
-    },
-    expiryDate: {},
-    certificateId: {}
+    institution: ''
   };
 
   constructor(private fb: FormBuilder) {
-    this.inicializarFormulario();
-  }
-
-  inicializarFormulario(): void {
     this.formularioCertificado = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(100)]],
-      issueDate: ['', [Validators.required, this.validarFechaPasada]],
+      name: ['', [Validators.required]],
+      issueDate: ['', [Validators.required]],
       expiryDate: [''],
-      certificateId: [''],
+      institution: [''],
       file: [null, Validators.required]
     });
-
-    this.formularioCertificado.valueChanges.subscribe(() => {
-      this.actualizarErroresFormulario();
-    });
-  }
-
-  validarFechaPasada(control: AbstractControl): { [key: string]: boolean } | null {
-    const fechaSeleccionada = new Date(control.value);
-    const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
-    
-    if (fechaSeleccionada > hoy) {
-      return { pastDate: true };
-    }
-    return null;
   }
 
   alCambiarArchivo(event: any): void {
     const archivo = event.target.files[0];
-    
     if (archivo) {
-      const tiposValidos = ['application/pdf', 'image/jpeg', 'image/png'];
-      if (!tiposValidos.includes(archivo.type)) {
-        this.erroresFormulario['file'] = this.mensajesError.file.invalidType!;
-        this.formularioCertificado.get('file')?.setErrors({ invalidType: true });
-        return;
-      }
-
+      // Acá podrías validar tipo, tamaño, etc.
       this.nombreArchivoSeleccionado = archivo.name;
       this.formularioCertificado.patchValue({ file: archivo });
-      this.formularioCertificado.get('file')?.updateValueAndValidity();
-      this.erroresFormulario['file'] = '';
     }
-  }
-
-  actualizarErroresFormulario(): void {
-    (Object.keys(this.formularioCertificado.controls) as FormField[]).forEach((campo: FormField) => {
-      const control = this.formularioCertificado.get(campo);
-      if (control?.errors && (control.dirty || control.touched)) {
-        const primerError = Object.keys(control.errors)[0] as ErrorType;
-        this.erroresFormulario[campo] = this.mensajesError[campo]?.[primerError] || 'Campo inválido';
-      } else {
-        this.erroresFormulario[campo] = '';
-      }
-    });
   }
 
   onSubmit(): void {
     if (this.formularioCertificado.invalid) {
+      // Marca controles como tocados
       Object.values(this.formularioCertificado.controls).forEach(control => {
         control.markAsTouched();
       });
-      this.actualizarErroresFormulario();
       return;
     }
 
     this.estaEnviando = true;
-    
     setTimeout(() => {
+      // Simulación de envío
       this.certificadoEnviado.emit(this.formularioCertificado.value);
       this.estaEnviando = false;
       this.cerrarModal.emit();

@@ -1,236 +1,214 @@
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    background-color: #0e0d0d;
-  }
-  
-  .modal-content {
-    font-family: 'Segoe UI', sans-serif;
-    background: #1f1f1f;
-    padding: 2rem;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 600px;
-    position: relative;
-    color: white;
-  }
-  
-  .close-button {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: white;
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  .form-row {
-    display: flex;
-    gap: 1rem;
-  }
-  
-  .form-row .form-group {
-    flex: 1;
-  }
-  
-  .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 1.5rem;
-  }
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
-  input[type="text"] {
-    padding: 12px 15px;
-    border: 1px solid #d1d5db; /* Gris más suave */
-    border-radius: 9px; /* Bordes un poco más redondeados */
-    font-size: 14px;
-    transition: all 0.3s ease;
-    background-color: #f9fafb; /* Fondo ligeramente gris */
-  }
-
-  input[type="date"] {
-  width: 90%;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 14px;
-  color: #374151;
-  background-color: #f9fafb;
-  appearance: none; /* Elimina el estilo por defecto del navegador */
-  }
-
-  input[type="date"]::placeholder {
-    color: #1f1f1f;
-  }
-
-  .btn {
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-weight: 500;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: none;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  
-  .btn-cancel {
-    background-color: #6200ff57;
-    color: white;
-  }
-  
-  .btn-cancel:hover {
-    background-color: #6200fff8;
-  }
-  
-  .btn-submit {
-    background-color: #6200ff57;
-    color: white;
-    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
-  }
-  
-  .btn-submit:hover {
-    background-color: #6200fff8;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
-  }
-  
-  .btn-submit:disabled {
-    background-color: #6200ff57;
-    color: rgb(184, 184, 184);
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-  }
-
-  .input-line {
-    position: relative;
-    padding-top: 1.5px;
-  }
-
-  .input-line:after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 1px;
-    background-color: #d1d5db;
-    transition: all 0.3s ease;
-  }
-
-  .input-line input {
-    width: 50%;
-    padding: 6px 0;
-    border: none;
-    background: transparent;
-    font-size: 14px;
-    color: white;
-    outline: none;
-  }
-
-  .input-line input:focus + .input-line:after {
-    height: 2px;
-  }
-
-  .input-line.error:after {
-    background-color: #a71515;
-  }
-
-  /* Estilo base para campos de fecha */
-.input-line.date-field {
-  position: relative;
-}
-
-.date-icon {
+:host {
+  display: block;
   position: absolute;
-  right: 0;
-  bottom: 8px;
-  pointer-events: none;
-  color: #6b7280;
-  font-size: 14px;
-}
-
-.input-line input[type="date"] {
-  width: 100%;
-  padding: 8px 0;
-  border: none;
-  background: transparent;
-  color: white;
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-.input-line input[type="date"]::-webkit-calendar-picker-indicator {
-  display: none;
-}
-
-/* Estilo para campo de archivo minimalista */
-.input-line.file-upload {
-  position: relative;
-  padding-bottom: 8px;
-}
-
-.file-upload:after {
-  content: '';
-  position: absolute;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 1px;
-  background-color: #d1d5db;
-  transition: all 0.3s ease;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  background: linear-gradient(160deg, #000000, #221928);
+  font-family: 'Roboto', sans-serif;
 }
 
-.file-upload:hover:after {
-  background-color: #6200fff8;
+.skills-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.file-label {
+.skills-box {
+  /* Si quieres fondo semitransparente, descomenta: */
+  /* background: rgba(35, 35, 50, 0.7); */
+  backdrop-filter: blur(10px);
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 1px 2px 6px #B998F7;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  margin: 20px;
+}
+
+.skills-box h2 {
+  color: white;
+  margin-bottom: 25px;
+  font-size: 24px;
+}
+
+/* Form styles */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Reutilizamos form-group para cada campo del formulario */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+/* Labels */
+label {
+  font-weight: bold;
+  color: white;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+/* Inputs / selects / textareas */
+input,
+select,
+textarea {
+  padding: 12px 15px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #470971;
+}
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Botones */
+button {
+  padding: 14px;
+  background: #9668e6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 10px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+button:hover {
+  background: #3c065f;
+}
+
+/* Select con flechita */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 1em;
+}
+
+/* Ejemplo: ocultar #categoryField si se necesita */
+#categoryField {
+  display: block;
+}
+input[name="skillType"][value="personal"]:checked ~ #categoryField {
+  display: none;
+}
+
+/* Botón "Back" (opcional) */
+.back-button-wrapper {
+  position: left;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+}
+.back-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 5px 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.back-button:hover {
+  color: #d1d1d1;
+  text-decoration-thickness: 2px;
+}
+
+/* Toast (opcional) */
+.toast {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1000;
+  right: 30px;
+  top: 30px;
+  font-size: 17px;
+  opacity: 0;
+  transition: opacity 0.5s, visibility 0.5s;
+}
+.toast.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Mensaje de error */
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Etiquetas para subir archivo (custom) */
+.etiqueta-archivo {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px dashed #ddd;
+  border-radius: 8px;
+  padding: 16px;
   cursor: pointer;
-  width: 100%;
 }
-
-.file-name {
-  color: white;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding-right: 10px;
+.nombre-archivo {
+  flex: 1;
+  text-align: left;
+  margin-right: 10px;
 }
-
-.file-browse {
-  background: #f3f4f6;
-  color: #2563eb;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 12px;
-  transition: all 0.2s;
+.boton-examinar {
+  background: #9668e6;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  letter-spacing: 0.5px;
 }
-
-.file-browse:hover {
-  background: #e0e7ff;
+.boton-examinar:hover {
+  background: #3c065f;
 }
-
-.file-name:empty:before {
-  content: 'Seleccionar archivo...';
-  color: #9ca3af;
+.hint-archivo {
+  font-size: 0.75rem;
+  color: #fff; /* si quieres que sea blanco sobre fondo oscuro */
+  margin-top: 8px;
 }

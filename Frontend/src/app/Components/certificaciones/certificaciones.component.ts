@@ -35,7 +35,6 @@ export class CertificacionesComponent {
     const payload = new FormData();
     
     payload.append('nombre_curso', formData.name);
-    payload.append('institucion', formData.institution);
     payload.append('fecha_emision', formData.issueDate);
     payload.append('archivo', formData.file);
     
