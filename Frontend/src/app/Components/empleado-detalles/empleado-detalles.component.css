@@ -357,5 +357,19 @@
   box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.25);
 }
 
+.material-icons {
+  vertical-align: middle;
+  font-size: 20px; 
+  margin-right: 5px; 
+}
+
+label .material-icons,
+button .material-icons {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+
+
 
 
