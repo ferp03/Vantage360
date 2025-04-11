@@ -28,9 +28,9 @@
         <p><strong><span class="material-icons">calendar_today</span> Desde:</strong> {{ info.desde }}</p>
         <p><strong><span class="material-icons">bar_chart</span> Cargabilidad:</strong> {{ info.cargabilidad }}%</p>
 
-        <button 
+        <button
           *ngIf="editandoInfo && esMiPerfil"
-          class="boton-cambiar-pass" 
+          class="boton-cambiar-pass"
           (click)="mostrarModalContrasena = true"
         >
           <span class="material-icons">lock</span> Cambiar contraseña
@@ -41,9 +41,9 @@
         <div class="habilidades">
           <div class="encabezado-habilidades">
             <h4><span class="material-icons">star</span> Habilidades</h4>
-            <button 
-              *ngIf="editandoInfo && esMiPerfil" 
-              class="boton-agregar-habilidad" 
+            <button
+              *ngIf="editandoInfo && esMiPerfil"
+              class="boton-agregar-habilidad"
               (click)="irARegistroHabilidades()"
             >
               <span>+</span>
@@ -66,12 +66,13 @@
 
     <div class="derecha"></div>
 
-    <button 
-      class="boton-editar" 
+    <button
+      class="boton-editar"
       *ngIf="esMiPerfil"
       (click)="toggleEditarInfo()"
     >
-      <span class="material-icons">{{ editandoInfo ? 'save' : 'edit' }}</span> {{ editandoInfo ? 'Guardar' : 'Editar' }}
+      <span class="material-icons">{{ editandoInfo ? 'save' : 'edit' }}</span>
+      {{ editandoInfo ? 'Guardar' : 'Editar' }}
     </button>
   </div>
 
@@ -79,6 +80,16 @@
     <h3><span class="material-icons">work</span> Trayectoria Laboral</h3>
 
     <div class="linea-tiempo">
+
+      <div
+        class="elemento-tiempo agregar-tarjeta"
+        *ngIf="editandoTrayectoria && esMiPerfil && !existeExperienciaNueva()"
+      >
+        <button class="boton-agregar-exp" (click)="agregarExperiencia()">
+          <span>+</span>
+        </button>
+      </div>
+
       <div
         class="elemento-tiempo"
         *ngFor="let experiencia of experiencias; let i = index"
@@ -88,7 +99,9 @@
           class="boton-editar-cuadro"
           (click)="toggleEditarTrayectoria(i)"
         >
-          <span class="material-icons">{{ editandoIndice === i ? 'save' : 'edit' }}</span> 
+          <span class="material-icons">
+            {{ editandoIndice === i ? 'save' : 'edit' }}
+          </span>
           {{ editandoIndice === i ? 'Guardar' : 'Editar' }}
         </button>
 
@@ -108,7 +121,9 @@
 
         <div *ngIf="editandoIndice === i" class="modo-edicion">
           <p>
-            <strong><span class="material-icons">device_hub</span> Título:</strong>
+            <strong>
+              <span class="material-icons">device_hub</span> Título:
+            </strong>
             <input [(ngModel)]="experiencia.titulo" [class.error-input]="errores[i].titulo" />
             <span class="error" *ngIf="errores[i].titulo">Campo requerido</span>
           </p>
@@ -124,21 +139,21 @@
           </p>
           <p>
             <strong><span class="material-icons">event_available</span> Inicio:</strong>
-            <input 
+            <input
               type="date"
-              [(ngModel)]="experiencia.inicio" 
+              [(ngModel)]="experiencia.inicio"
               [class.error-input]="errores[i].inicio"
-              (change)="validarFechas(i)" 
+              (change)="validarFechas(i)"
             />
             <span class="error" *ngIf="errores[i].inicio">Campo requerido</span>
           </p>
           <p>
             <strong><span class="material-icons">event_busy</span> Fin:</strong>
-            <input 
+            <input
               type="date"
-              [(ngModel)]="experiencia.fin" 
+              [(ngModel)]="experiencia.fin"
               [class.error-input]="errores[i].fin || errores[i].fechaInvalida"
-              (change)="validarFechas(i)" 
+              (change)="validarFechas(i)"
             />
             <span class="error" *ngIf="errores[i].fin">Campo requerido</span>
             <span class="error" *ngIf="errores[i].fechaInvalida">
@@ -147,12 +162,17 @@
           </p>
           <p>
             <strong>Descripción:</strong>
-            <textarea [(ngModel)]="experiencia.descripcion" [class.error-input]="errores[i].descripcion"></textarea>
-            <span class="error" *ngIf="errores[i].descripcion">Campo requerido</span>
+            <textarea
+              [(ngModel)]="experiencia.descripcion"
+              [class.error-input]="errores[i].descripcion"
+            ></textarea>
+            <span class="error" *ngIf="errores[i].descripcion">
+              Campo requerido
+            </span>
           </p>
-          <button 
-            *ngIf="experiencia.esNueva" 
-            class="boton-cancelar" 
+          <button
+            *ngIf="experiencia.esNueva"
+            class="boton-cancelar"
             (click)="cancelarNuevaExperiencia(i)"
           >
             <span class="material-icons">cancel</span> Cancelar
@@ -160,23 +180,15 @@
         </div>
       </div>
 
-      <div 
-        class="elemento-tiempo agregar-tarjeta" 
-        *ngIf="editandoTrayectoria && esMiPerfil && !existeExperienciaNueva()"
-      >
-        <button class="boton-agregar-exp" (click)="agregarExperiencia()">
-          <span class="material-icons">add</span>
-        </button>
-      </div>
     </div>
 
     <div class="boton-editar-trayectoria-global">
-      <button 
-        (click)="guardarTrayectoria()" 
+      <button
+        (click)="guardarTrayectoria()"
         class="boton-editar"
         *ngIf="esMiPerfil"
       >
-        <span class="material-icons">{{ editandoTrayectoria ? 'save' : 'edit' }}</span> 
+        <span class="material-icons">{{ editandoTrayectoria ? 'save' : 'edit' }}</span>
         {{ editandoTrayectoria ? 'Guardar' : 'Editar' }}
       </button>
     </div>
@@ -190,13 +202,21 @@
       <input type="password" [(ngModel)]="contrasenaActual" />
       <span class="error" *ngIf="erroresPass.actual">Campo requerido</span>
 
-      <label><span class="material-icons">lock_open</span> Nueva contraseña:</label>
+      <label>
+        <span class="material-icons">lock_open</span> Nueva contraseña:
+      </label>
       <input type="password" [(ngModel)]="nuevaContrasena" />
-      <span class="error" *ngIf="erroresPass.nueva">La contraseña debe tener al menos 8 caracteres</span>
+      <span class="error" *ngIf="erroresPass.nueva"
+        >La contraseña debe tener al menos 8 caracteres</span
+      >
 
-      <label><span class="material-icons">lock_outline</span> Confirmar nueva contraseña:</label>
+      <label>
+        <span class="material-icons">lock_outline</span> Confirmar nueva contraseña:
+      </label>
       <input type="password" [(ngModel)]="confirmarContrasena" />
-      <span class="error" *ngIf="erroresPass.confirmar">Las contraseñas no coinciden</span>
+      <span class="error" *ngIf="erroresPass.confirmar"
+        >Las contraseñas no coinciden</span
+      >
 
       <div class="acciones-modal">
         <button (click)="confirmarCambioContrasena()">

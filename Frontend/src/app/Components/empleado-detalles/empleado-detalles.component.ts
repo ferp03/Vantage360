@@ -70,7 +70,7 @@ export class EmpleadoDetallesComponent implements OnInit {
   };
 
   private empleadoId: string | null = null;
-  esMiPerfil: boolean = false;  // verficiar si es mi perfil
+  esMiPerfil: boolean = false; 
 
   constructor(
     private apiService: ApiService,
@@ -92,7 +92,6 @@ export class EmpleadoDetallesComponent implements OnInit {
 
   cargarInfoBasica() {
     if (!this.empleadoId) return;
-
     this.apiService.getEmpleadoInfo(this.empleadoId).subscribe({
       next: (res) => {
         if (res.success) {
@@ -111,7 +110,6 @@ export class EmpleadoDetallesComponent implements OnInit {
 
   cargarHabilidades() {
     if (!this.empleadoId) return;
-
     this.apiService.getEmpleadoHabilidades(this.empleadoId).subscribe({
       next: (res) => {
         if (res.success) {
@@ -124,7 +122,6 @@ export class EmpleadoDetallesComponent implements OnInit {
 
   cargarCursos() {
     if (!this.empleadoId) return;
-
     this.apiService.getEmpleadoCertificaciones(this.empleadoId).subscribe({
       next: (res) => {
         if (res.success) {
@@ -137,7 +134,6 @@ export class EmpleadoDetallesComponent implements OnInit {
 
   cargarTrayectoria() {
     if (!this.empleadoId) return;
-
     this.apiService.getEmpleadoTrayectoria(this.empleadoId).subscribe({
       next: (res) => {
         if (res.success) {
@@ -224,7 +220,6 @@ export class EmpleadoDetallesComponent implements OnInit {
 
       if (exp.esNueva) {
         if (!this.empleadoId) return;
-
         this.apiService.createExperiencia(this.empleadoId, payload).subscribe({
           next: (res) => {
             console.log('Experiencia creada:', res);
@@ -236,7 +231,8 @@ export class EmpleadoDetallesComponent implements OnInit {
             console.error('Error al crear experiencia:', err);
           }
         });
-      } else if (exp.historial_id) {
+      } 
+      else if (exp.historial_id) {
         this.apiService.updateExperiencia(exp.historial_id, payload).subscribe({
           next: () => {
             console.log('Experiencia actualizada.');
@@ -247,7 +243,8 @@ export class EmpleadoDetallesComponent implements OnInit {
       }
 
       this.editandoIndice = null;
-    } else {
+    } 
+    else {
       this.editandoIndice = index;
       if (!this.errores[index]) {
         this.errores[index] = {};
@@ -257,6 +254,7 @@ export class EmpleadoDetallesComponent implements OnInit {
 
   agregarExperiencia() {
     if (!this.esMiPerfil) return;
+    
     const nueva: ExperienciaLaboral = {
       titulo: '',
       empresa: '',
@@ -266,8 +264,11 @@ export class EmpleadoDetallesComponent implements OnInit {
       descripcion: '',
       esNueva: true
     };
-    this.experiencias.push(nueva);
-    this.editandoIndice = this.experiencias.length - 1;
+    
+    this.experiencias.unshift(nueva);
+    
+    this.editandoIndice = 0;
+    
     this.errores[this.editandoIndice] = { fechaInvalida: false };
   }
 
@@ -343,13 +344,15 @@ export class EmpleadoDetallesComponent implements OnInit {
   validarFechas(index: number): boolean {
     const exp = this.experiencias[index];
     if (!exp.inicio || !exp.fin) {
-      return false; 
+      return false;
     }
     const fechaInicio = new Date(exp.inicio);
     const fechaFin = new Date(exp.fin);
+
     if (!this.errores[index].fechaInvalida) {
       this.errores[index].fechaInvalida = false;
     }
+    
     const fechaInvalida = fechaFin < fechaInicio;
     this.errores[index].fechaInvalida = fechaInvalida;
     return fechaInvalida;
