@@ -18,8 +18,10 @@ import { CursosComponent } from './Components/cursos/cursos.component';
 import { CertificacionesComponent } from './Components/certificaciones/certificaciones.component';
 import { SubirCertificadoComponent } from '../app/Components/subir-certificado/subir-certificado.component';
 import { RegistroHabilidadesComponent } from './Components/registro-habilidades/registro-habilidades.component';
-import { DisponibilidadComponent } from './Components/disponibilidad/disponibilidad.component'; // Añadir componente
-import { CommonModule } from '@angular/common';
+import { DisponibilidadComponent } from './Components/disponibilidad/disponibilidad.component';
+import { MenucurycertComponent } from './Components/menucurycert/menucurycert.component'; 
+import { MatIconModule } from '@angular/material/icon';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,8 @@ import { CommonModule } from '@angular/common';
     CertificacionesComponent,
     SubirCertificadoComponent,
     RegistroHabilidadesComponent,
-    DisponibilidadComponent
+    DisponibilidadComponent,
+    MenucurycertComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +48,8 @@ import { CommonModule } from '@angular/common';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    CommonModule
+    BrowserAnimationsModule,  
+    MatIconModule      
   ],
   providers: [],
   bootstrap: [AppComponent]

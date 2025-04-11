@@ -1,0 +1,44 @@
+<!-- Menu de Cursos y Certificaciones -->
+<div class="contenedor-modulos">
+  <h1>Cursos y Certificaciones</h1>
+  
+  <div class="grid-modulos">
+    <div class="modulo" (click)="navegarA('/miscursos')">
+      <h3 class="icono">
+        <mat-icon>school</mat-icon>
+        <span>Mis Cursos</span>
+      </h3>
+      <p>
+        Visualiza el progreso de tus cursos actuales y revisa el contenido de cursos completados.
+      </p>
+      <button class="btn-accion" (click)="navegarA('/miscursos')">Ver mis cursos</button>
+    </div>
+    
+    <div class="modulo" (click)="navegarA('/certificates')">
+      <h3 class="icono">
+        <mat-icon>grade</mat-icon>
+        <span>Mis Certificados</span>
+      </h3>
+      <p>Visualiza y descarga tus certificados.</p>
+      <button class="btn-accion" (click)="navegarA('/certificates')">Ver mis certificados</button>
+    </div>
+    
+    <div class="modulo" (click)="navegarA('/register-certificate')">
+      <h3 class="icono">
+        <mat-icon>file_upload</mat-icon>
+        <span>Subir Certificado</span>
+      </h3>
+      <p>Sube certificados externos para mantener tu historial en un solo lugar.</p>
+      <button class="btn-accion" (click)="navegarA('/register-certificate')">Subir certificado</button>
+    </div>
+    
+    <div class="modulo" (click)="navegarA('/ruta-4')">
+      <h3 class="icono">
+        <mat-icon>tips_and_updates</mat-icon>
+        <span>Recomendaciones</span>
+      </h3>
+      <p>Recibe recomendaciones personalizadas basadas en tus preferencias.</p>
+      <button class="btn-accion" (click)="navegarA('/ruta-4')">Ver recomendaciones</button>
+    </div>
+  </div>
+</div>
