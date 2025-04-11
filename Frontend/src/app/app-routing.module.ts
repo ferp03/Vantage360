@@ -33,7 +33,7 @@ const routes: Routes = [
       { path: 'register-certificate', component: SubirCertificadoComponent, canActivate: [AuthGuard] },
       { path: 'empleado-detalles/:id', component: EmpleadoDetallesComponent, canActivate: [AuthGuard]},
       { path: 'registro-habilidades/:id', component: RegistroHabilidadesComponent, canActivate: [AuthGuard]},
-      { path: 'menucurycert', component: MenucurycertComponent, canActivate: [AuthGuard] },
+      { path: 'cursos_certificados', component: MenucurycertComponent, canActivate: [AuthGuard] },
     ]
   },
 
