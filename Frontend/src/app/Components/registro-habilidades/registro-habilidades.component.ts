@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { NgForm } from '@angular/forms';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-registro-habilidades',
@@ -22,7 +23,8 @@ export class RegistroHabilidadesComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,  
-    private apiService: ApiService  
+    private apiService: ApiService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -84,7 +86,7 @@ export class RegistroHabilidadesComponent implements OnInit {
     if (this.empleadoId) {
       this.router.navigate(['/empleado-detalles', this.empleadoId]);
     } else {
-      this.router.navigate(['/dashboard']);
+      this.location.back();
     }
   }
 }

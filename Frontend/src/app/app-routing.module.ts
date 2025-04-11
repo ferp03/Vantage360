@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './Components/login/login.component';
-import { DashboardComponent } from './Components/dashboard/dashboard.component';
 import { LayoutComponent } from './layout/layout.component';
 import { AuthGuard } from './auth/auth.guard';
 import { UserGuard } from './auth/user.guard';
@@ -23,8 +22,7 @@ const routes: Routes = [
   {
     path: '', component: LayoutComponent,
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+      { path: '', redirectTo: 'cursos_certificados', pathMatch: 'full' },
       { path: 'empleados', component: DisponibilidadComponent, canActivate: [UserGuard] },
       { path: 'registro-habilidades', component: RegistroHabilidadesComponent, canActivate: [AuthGuard] },
       { path: 'miscursos', component: CursosComponent, canActivate: [AuthGuard] },
