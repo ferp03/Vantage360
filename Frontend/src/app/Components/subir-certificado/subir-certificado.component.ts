@@ -13,7 +13,7 @@ export class SubirCertificadoComponent {
   @Output() cerrarModal = new EventEmitter<void>();
   @Output() certificadoEnviado = new EventEmitter<any>();
 
-  formularioCertificado!: FormGroup;
+  formularioCertificado!: FormGroup; // certificateForm
   nombreArchivoSeleccionado: string = '';
   estaEnviando: boolean = false;
   erroresFormulario: Record<FormField, string> = {
@@ -37,8 +37,13 @@ export class SubirCertificadoComponent {
       required: 'Este campo es requerido',
       invalidType: 'Solo se aceptan PDF, JPG o PNG'
     },
-    expiryDate: {},
-    certificateId: {}
+    expiryDate: {
+      required: 'Este campo es requerido',
+      pastDate: 'La fecha no puede ser pasada'
+    },
+    certificateId: {
+      required: 'Este campo es requerido'
+    }
   };
 
   constructor(private fb: FormBuilder) {
@@ -49,8 +54,8 @@ export class SubirCertificadoComponent {
     this.formularioCertificado = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
       issueDate: ['', [Validators.required, this.validarFechaPasada]],
-      expiryDate: [''],
-      certificateId: [''],
+      expiryDate: ['', [Validators.required, this.validarFechaPasada]],
+      certificateId: ['', [Validators.required]],
       file: [null, Validators.required]
     });
 
@@ -69,6 +74,24 @@ export class SubirCertificadoComponent {
     }
     return null;
   }
+
+  validarFechaFutura(control: AbstractControl): { [key: string]: boolean } | null {
+    // Si el campo está vacío (y es opcional), no hay error
+    if (!control.value) {
+      return null;
+    }
+  
+    const fechaVencimiento = new Date(control.value);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+  
+    // Verificamos si la fecha de vencimiento es hoy o en el pasado
+    if (fechaVencimiento <= hoy) {
+      return { futureDateRequired: true }; // Error si no es futura
+    }
+  
+    return null;
+  }  
 
   alCambiarArchivo(event: any): void {
     const archivo = event.target.files[0];

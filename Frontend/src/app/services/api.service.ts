@@ -33,22 +33,10 @@ export class ApiService {
   }
 
   guardarCertificado(formData: FormData): Observable<any> {
-    // Simulación - remover cuando el backend esté listo
-    console.log('Datos simulados que se enviarían:', {
-      nombre_curso: formData.get('nombre_curso'),
-      archivo: (formData.get('archivo') as File)?.name
+    const headers = new HttpHeaders({
     });
-    
-    return of({ 
-      success: true,
-      data: {
-        id: 'simulado-' + Math.random().toString(36).substring(2),
-        nombre_curso: formData.get('nombre_curso'),
-        institucion: formData.get('institucion'),
-        archivo_url: 'assets/placeholder-certificate.pdf',
-        fecha_emision: new Date().toISOString()
-      }
-    });
+
+    return this.http.post(`${this.apiUrl}/certificados`, formData, { headers });
   }
 
   obtenerCertificados(): Observable<any> {
