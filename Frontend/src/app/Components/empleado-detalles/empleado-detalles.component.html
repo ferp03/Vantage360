@@ -28,7 +28,11 @@
         <p><strong>Desde:</strong> {{ info.desde }}</p>
         <p><strong>Cargabilidad:</strong> {{ info.cargabilidad }}%</p>
 
-        <button *ngIf="editandoInfo" class="boton-cambiar-pass" (click)="mostrarModalContrasena = true">
+        <button 
+          *ngIf="editandoInfo && esMiPerfil"
+          class="boton-cambiar-pass" 
+          (click)="mostrarModalContrasena = true"
+        >
           Cambiar contraseña
         </button>
       </div>
@@ -37,7 +41,13 @@
         <div class="habilidades">
           <div class="encabezado-habilidades">
             <h4>Habilidades</h4>
-            <button *ngIf="editandoInfo" class="boton-agregar-habilidad" (click)="irARegistroHabilidades()">+</button>
+            <button 
+              *ngIf="editandoInfo && esMiPerfil" 
+              class="boton-agregar-habilidad" 
+              (click)="irARegistroHabilidades()"
+            >
+              +
+            </button>
           </div>
 
           <div class="etiquetas-habilidad">
@@ -47,7 +57,7 @@
           <h4>Cursos y Certificados</h4>
           <ul>
             <li *ngFor="let curso of cursos">
-              {{ curso.nombre }} 
+              {{ curso.nombre }}
             </li>
           </ul>
         </div>
@@ -56,7 +66,11 @@
 
     <div class="derecha"></div>
 
-    <button class="boton-editar" (click)="toggleEditarInfo()">
+    <button 
+      class="boton-editar" 
+      *ngIf="esMiPerfil"
+      (click)="toggleEditarInfo()"
+    >
       {{ editandoInfo ? 'Guardar' : 'Editar' }}
     </button>
   </div>
@@ -70,7 +84,7 @@
         *ngFor="let experiencia of experiencias; let i = index"
       >
         <button
-          *ngIf="editandoTrayectoria"
+          *ngIf="editandoTrayectoria && esMiPerfil"
           class="boton-editar-cuadro"
           (click)="toggleEditarTrayectoria(i)"
         >
@@ -106,37 +120,56 @@
           </p>
           <p>
             <strong>Inicio:</strong>
-            <input type="date" [(ngModel)]="experiencia.inicio" 
+            <input 
+              type="date"
+              [(ngModel)]="experiencia.inicio" 
               [class.error-input]="errores[i].inicio"
-              (change)="validarFechas(i)" />
+              (change)="validarFechas(i)" 
+            />
             <span class="error" *ngIf="errores[i].inicio">Campo requerido</span>
           </p>
           <p>
             <strong>Fin:</strong>
-            <input type="date" [(ngModel)]="experiencia.fin" 
+            <input 
+              type="date"
+              [(ngModel)]="experiencia.fin" 
               [class.error-input]="errores[i].fin || errores[i].fechaInvalida"
-              (change)="validarFechas(i)" />
+              (change)="validarFechas(i)" 
+            />
             <span class="error" *ngIf="errores[i].fin">Campo requerido</span>
-            <span class="error" *ngIf="errores[i].fechaInvalida">La fecha de fin no puede ser anterior a la fecha de inicio</span>
+            <span class="error" *ngIf="errores[i].fechaInvalida">
+              La fecha de fin no puede ser anterior a la fecha de inicio
+            </span>
           </p>
           <p>
             <strong>Descripción:</strong>
             <textarea [(ngModel)]="experiencia.descripcion" [class.error-input]="errores[i].descripcion"></textarea>
             <span class="error" *ngIf="errores[i].descripcion">Campo requerido</span>
           </p>
-          <button *ngIf="experiencia.esNueva" class="boton-cancelar" (click)="cancelarNuevaExperiencia(i)">
+          <button 
+            *ngIf="experiencia.esNueva" 
+            class="boton-cancelar" 
+            (click)="cancelarNuevaExperiencia(i)"
+          >
             Cancelar
           </button>
         </div>
       </div>
 
-      <div class="elemento-tiempo agregar-tarjeta" *ngIf="editandoTrayectoria && !existeExperienciaNueva()">
+      <div 
+        class="elemento-tiempo agregar-tarjeta" 
+        *ngIf="editandoTrayectoria && esMiPerfil && !existeExperienciaNueva()"
+      >
         <button class="boton-agregar-exp" (click)="agregarExperiencia()">+</button>
       </div>
     </div>
 
     <div class="boton-editar-trayectoria-global">
-      <button (click)="guardarTrayectoria()" class="boton-editar">
+      <button 
+        (click)="guardarTrayectoria()" 
+        class="boton-editar"
+        *ngIf="esMiPerfil"
+      >
         {{ editandoTrayectoria ? 'Guardar' : 'Editar' }}
       </button>
     </div>

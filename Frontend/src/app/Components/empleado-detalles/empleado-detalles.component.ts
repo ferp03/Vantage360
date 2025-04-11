@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
-import { ActivatedRoute, Router} from '@angular/router';
+import { AuthService } from 'src/app/auth/auth.service';
 
 interface ExperienciaLaboral {
   historial_id?: number;
@@ -69,15 +70,20 @@ export class EmpleadoDetallesComponent implements OnInit {
   };
 
   private empleadoId: string | null = null;
+  esMiPerfil: boolean = false;  // verficiar si es mi perfil
 
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
     this.empleadoId = this.route.snapshot.paramMap.get('id');
+    const idUsuarioLogueado = this.authService.userId;
+    this.esMiPerfil = (idUsuarioLogueado == this.empleadoId);
+
     this.cargarInfoBasica();
     this.cargarHabilidades();
     this.cargarCursos();
@@ -147,7 +153,7 @@ export class EmpleadoDetallesComponent implements OnInit {
     this.experiencias.sort((a, b) => {
       const fechaA = new Date(a.inicio);
       const fechaB = new Date(b.inicio);
-      return fechaB.getTime() - fechaA.getTime(); 
+      return fechaB.getTime() - fechaA.getTime();
     });
   }
 
@@ -158,6 +164,8 @@ export class EmpleadoDetallesComponent implements OnInit {
   }
 
   toggleEditarInfo() {
+    if (!this.esMiPerfil) return;
+
     const correoTrim = this.info.correo.trim();
     const usuarioTrim = this.info.usuario.trim();
 
@@ -184,6 +192,7 @@ export class EmpleadoDetallesComponent implements OnInit {
   }
 
   toggleEditarTrayectoria(index: number) {
+    if (!this.esMiPerfil) return;
     if (!this.editandoTrayectoria) return;
 
     const exp = this.experiencias[index];
@@ -247,6 +256,7 @@ export class EmpleadoDetallesComponent implements OnInit {
   }
 
   agregarExperiencia() {
+    if (!this.esMiPerfil) return;
     const nueva: ExperienciaLaboral = {
       titulo: '',
       empresa: '',
@@ -258,10 +268,11 @@ export class EmpleadoDetallesComponent implements OnInit {
     };
     this.experiencias.push(nueva);
     this.editandoIndice = this.experiencias.length - 1;
-    this.errores[this.editandoIndice] = {fechaInvalida: false};
+    this.errores[this.editandoIndice] = { fechaInvalida: false };
   }
 
   cancelarNuevaExperiencia(index: number) {
+    if (!this.esMiPerfil) return;
     if (this.experiencias[index]?.esNueva) {
       this.experiencias.splice(index, 1);
     }
@@ -270,6 +281,7 @@ export class EmpleadoDetallesComponent implements OnInit {
   }
 
   guardarTrayectoria() {
+    if (!this.esMiPerfil) return;
     if (this.editandoTrayectoria && this.editandoIndice !== null) {
       alert('Primero guarda o cancela la experiencia que estás editando.');
       return;
@@ -290,6 +302,8 @@ export class EmpleadoDetallesComponent implements OnInit {
   }
 
   confirmarCambioContrasena() {
+    if (!this.esMiPerfil) return;
+
     const actualTrim = this.contrasenaActual.trim();
     const nuevaTrim = this.nuevaContrasena.trim();
     const confirmarTrim = this.confirmarContrasena.trim();
@@ -328,25 +342,21 @@ export class EmpleadoDetallesComponent implements OnInit {
 
   validarFechas(index: number): boolean {
     const exp = this.experiencias[index];
-    
     if (!exp.inicio || !exp.fin) {
       return false; 
     }
-    
     const fechaInicio = new Date(exp.inicio);
     const fechaFin = new Date(exp.fin);
-    
     if (!this.errores[index].fechaInvalida) {
       this.errores[index].fechaInvalida = false;
     }
-    
     const fechaInvalida = fechaFin < fechaInicio;
     this.errores[index].fechaInvalida = fechaInvalida;
-    
     return fechaInvalida;
   }
 
   irARegistroHabilidades() {
+    if (!this.esMiPerfil) return;
     if (this.empleadoId) {
       this.router.navigate(['/registro-habilidades', this.empleadoId]);
     }
