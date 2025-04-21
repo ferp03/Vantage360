@@ -41,7 +41,7 @@ export class LoginComponent {
   }
 
   signup(): void {
-    if (!this.name || !this.patlastname ||!this.username || !this.password || !this.email) {
+    if (!this.name || !this.patlastname || !this.password || !this.email) {
       this.mensaje = 'Debes ingresar usuario, correo y contraseña.';
       return;
     }else if(this.password !== this.password2){
@@ -49,7 +49,7 @@ export class LoginComponent {
       return;
     }
 
-    this.api.signup(this.name, this.patlastname, this.matlastname, this.username, this.email, this.password).subscribe({
+    this.api.signup(this.name, this.patlastname, this.matlastname, this.email, this.password).subscribe({
       next: (response: any) => {
         console.log(response)
         if(response.success){
