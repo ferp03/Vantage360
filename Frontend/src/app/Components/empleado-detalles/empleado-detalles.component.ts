@@ -80,14 +80,18 @@ export class EmpleadoDetallesComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.empleadoId = this.route.snapshot.paramMap.get('id');
-    const idUsuarioLogueado = this.authService.userId;
-    this.esMiPerfil = (idUsuarioLogueado == this.empleadoId);
-
-    this.cargarInfoBasica();
-    this.cargarHabilidades();
-    this.cargarCursos();
-    this.cargarTrayectoria();
+    // Escuchar cambios en los parámetros de la ruta
+    this.route.paramMap.subscribe(params => {
+      this.empleadoId = params.get('id'); // Obtén el nuevo ID
+      const idUsuarioLogueado = this.authService.userId;
+      this.esMiPerfil = (idUsuarioLogueado == this.empleadoId);
+  
+      // Recargar los datos del componente
+      this.cargarInfoBasica();
+      this.cargarHabilidades();
+      this.cargarCursos();
+      this.cargarTrayectoria();
+    });
   }
 
   cargarInfoBasica() {
