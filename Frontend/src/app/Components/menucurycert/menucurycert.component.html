@@ -23,13 +23,13 @@
       <button class="btn-accion" (click)="navegarA('/certificates')">Ver mis certificados</button>
     </div>
     
-    <div class="modulo" (click)="navegarA('/register-certificate')">
+    <div class="modulo" (click)="abrirModalSubirCertificado()">
       <h3 class="icono">
         <mat-icon>file_upload</mat-icon>
         <span>Subir Certificado</span>
       </h3>
       <p>Sube certificados externos para mantener tu historial en un solo lugar.</p>
-      <button class="btn-accion" (click)="navegarA('/register-certificate')">Subir certificado</button>
+      <button class="btn-accion" (click)="abrirModalSubirCertificado(); $event.stopPropagation()">Subir certificado</button>
     </div>
     
     <div class="modulo" (click)="navegarA('/ruta-4')">
@@ -39,6 +39,87 @@
       </h3>
       <p>Recibe recomendaciones personalizadas basadas en tus preferencias.</p>
       <button class="btn-accion" (click)="navegarA('/ruta-4')">Ver recomendaciones</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para subir certificado con el nuevo estilo -->
+<div class="modal-overlay" *ngIf="mostrarModalCertificado" (click)="cerrarModalSubirCertificado()">
+  <div class="skills-container" (click)="$event.stopPropagation()">
+    <div class="skills-box">
+      <h2>Subir Certificado</h2>
+      
+      <form #certificadoForm="ngForm" (ngSubmit)="subirCertificado(certificadoForm)">
+        <div class="form-group" [class.error]="nombre.invalid && (nombre.dirty || nombre.touched || formSubmitted)">
+          <label for="nombre">Nombre del certificado</label>
+          <input 
+            type="text" 
+            id="nombre" 
+            [(ngModel)]="certificado.nombre" 
+            name="nombre" 
+            #nombre="ngModel"
+            [class.invalid]="nombre.invalid && (nombre.dirty || nombre.touched || formSubmitted)"
+            required>
+          <span class="error-message" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched || formSubmitted)">
+            Este campo es obligatorio
+          </span>
+        </div>
+        
+        <div class="form-group" [class.error]="institucion.invalid && (institucion.dirty || institucion.touched || formSubmitted)">
+          <label for="institucion">Institución</label>
+          <input 
+            type="text" 
+            id="institucion" 
+            [(ngModel)]="certificado.institucion" 
+            name="institucion"
+            #institucion="ngModel" 
+            [class.invalid]="institucion.invalid && (institucion.dirty || institucion.touched || formSubmitted)"
+            required>
+          <span class="error-message" *ngIf="institucion.invalid && (institucion.dirty || institucion.touched || formSubmitted)">
+            Este campo es obligatorio
+          </span>
+        </div>
+        
+        <div class="form-group" [class.error]="fecha.invalid && (fecha.dirty || fecha.touched || formSubmitted)">
+          <label for="fecha">Fecha de emisión</label>
+          <input 
+            type="date" 
+            id="fecha" 
+            [(ngModel)]="certificado.fecha" 
+            name="fecha"
+            #fecha="ngModel"
+            [class.invalid]="fecha.invalid && (fecha.dirty || fecha.touched || formSubmitted)" 
+            required>
+          <span class="error-message" *ngIf="fecha.invalid && (fecha.dirty || fecha.touched || formSubmitted)">
+            Este campo es obligatorio
+          </span>
+        </div>
+        
+        <div class="form-group" [class.error]="archivoInvalido">
+          <label>Archivo del certificado</label>
+          <div class="etiqueta-archivo" [class.invalid]="archivoInvalido || formSubmitted && !certificado.archivo">
+            <span class="nombre-archivo">{{ nombreArchivo || 'Ningún archivo seleccionado' }}</span>
+            <label class="boton-examinar" for="archivo">Examinar</label>
+          </div>
+          <input 
+            type="file" 
+            id="archivo" 
+            (change)="onFileSelected($event)" 
+            accept=".pdf,.jpg,.png" 
+            required
+            #archivoInput
+            style="display: none;">
+          <span class="hint-archivo" [class.error]="archivoInvalido || formSubmitted && !certificado.archivo">Formatos aceptados: PDF, JPG, PNG</span>
+          <span class="error-message" *ngIf="archivoInvalido || formSubmitted && !certificado.archivo">
+            Debes seleccionar un archivo válido
+          </span>
+        </div>
+        
+        <div class="acciones">
+          <button type="button" (click)="cerrarModalSubirCertificado()">Cancelar</button>
+          <button type="submit">Guardar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

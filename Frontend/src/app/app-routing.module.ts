@@ -9,7 +9,6 @@ import { ResetPasswordComponent } from './Components/reset-password/reset-passwo
 import { EmpleadoDetallesComponent } from './Components/empleado-detalles/empleado-detalles.component';
 import { CursosComponent } from './Components/cursos/cursos.component';
 import { CertificacionesComponent } from './Components/certificaciones/certificaciones.component';
-import { SubirCertificadoComponent } from './Components/subir-certificado/subir-certificado.component';
 import { RegistroHabilidadesComponent } from './Components/registro-habilidades/registro-habilidades.component';
 import { DisponibilidadComponent } from './Components/disponibilidad/disponibilidad.component';
 import { MenucurycertComponent } from './Components/menucurycert/menucurycert.component';
@@ -27,7 +26,6 @@ const routes: Routes = [
       { path: 'registro-habilidades', component: RegistroHabilidadesComponent, canActivate: [AuthGuard] },
       { path: 'miscursos', component: CursosComponent, canActivate: [AuthGuard] },
       { path: 'certificates', component: CertificacionesComponent, canActivate: [AuthGuard]},
-      { path: 'register-certificate', component: SubirCertificadoComponent, canActivate: [AuthGuard] },
       { path: 'empleado-detalles/:id', component: EmpleadoDetallesComponent, canActivate: [AuthGuard]},
       { path: 'registro-habilidades/:id', component: RegistroHabilidadesComponent, canActivate: [AuthGuard]},
       { path: 'cursos_certificados', component: MenucurycertComponent, canActivate: [AuthGuard] },

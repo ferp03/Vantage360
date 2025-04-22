@@ -13,7 +13,6 @@ import { ResetPasswordComponent } from './Components/reset-password/reset-passwo
 import { EmpleadoDetallesComponent } from './Components/empleado-detalles/empleado-detalles.component';
 import { CursosComponent } from './Components/cursos/cursos.component';
 import { CertificacionesComponent } from './Components/certificaciones/certificaciones.component';
-import { SubirCertificadoComponent } from '../app/Components/subir-certificado/subir-certificado.component';
 import { RegistroHabilidadesComponent } from './Components/registro-habilidades/registro-habilidades.component';
 import { DisponibilidadComponent } from './Components/disponibilidad/disponibilidad.component';
 import { MenucurycertComponent } from './Components/menucurycert/menucurycert.component'; 
@@ -31,7 +30,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     EmpleadoDetallesComponent,
     CursosComponent,
     CertificacionesComponent,
-    SubirCertificadoComponent,
     RegistroHabilidadesComponent,
     DisponibilidadComponent,
     MenucurycertComponent

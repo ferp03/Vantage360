@@ -21,19 +21,5 @@
         </div>
       </div>
     </div>
-    
-    <!-- Botón para agregar nuevo certificado -->
-    <div class="add-certificate-section">
-      <button class="btn-add-certificate" (click)="abrirModal()">
-        <span>+</span> Agregar Nueva Certificación
-      </button>
-    </div>
-    
-    <!-- Modal -->
-    <app-subir-certificado
-      *ngIf="mostrarModal"
-      (cerrarModal)="onCerrarModal()"
-      (certificadoEnviado)="onCertificadoEnviado($event)">
-    </app-subir-certificado>
   </section>
 </div>
