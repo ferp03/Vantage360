@@ -65,22 +65,23 @@ router.post('/login', async (req, res) => {
   });
   
   router.post('/signup', async (req, res) => {
-    const { name, patlastname, matlastname, username, email, password } = req.body;
-    if (!name || !patlastname ||!username || !email || !password) {
+    const { name, patlastname, matlastname, email, password } = req.body;
+    if (!name || !patlastname || !email || !password) {
       return res.status(400).json({success: false, error: 'Faltan campos requeridos' });
     }
   
     // Validar que el username no exista en la tabla usuarios
-    const { data: existingUsername, error: usernameCheckError } = await supabase
-      .from('empleado')
-      .select('empleado_id')
-      .eq('usuario', username)
-      .single();
+    // const { data: existingUsername, error: usernameCheckError } = await supabase
+    //   .from('empleado')
+    //   .select('empleado_id')
+    //   .eq('usuario', username)
+    //   .single();
   
-    if (existingUsername) {
-      console.log('Ese nombre de usuario ya está en uso.');
-      return res.status(400).json({success: false, error: 'Ese nombre de usuario ya está en uso.'});
-    }
+    // if (existingUsername) {
+    //   console.log('Ese nombre de usuario ya está en uso.');
+    //   return res.status(400).json({success: false, error: 'Ese nombre de usuario ya está en uso.'});
+    // }
+
     // Validar que el email no exista en auth.users
     const { data: existingEmail, error: emailCheckError } = await supabase
       .from('auth.users')
@@ -115,7 +116,7 @@ router.post('/login', async (req, res) => {
       .from('empleado')
       .insert({
         empleado_id: user.id,
-        usuario: username,
+        //usuario: username,
         correo: email,
         contraseña: password,
         nombre: name,

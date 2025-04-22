@@ -9,7 +9,7 @@ import { ApiService } from 'src/app/services/api.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  username = '';
+  //username = '';
   password = '';
   password2 = '';
   mensaje = '';
@@ -38,22 +38,22 @@ export class LoginComponent {
       },
       error: (err) => {
         // Este bloque se activa si el backend devuelve 401 u otro error de red
-        this.mensaje = err.error?.error || 'Hubo un error al intentar iniciar sesión';
+        this.mensaje = err.error?.error || 'Ingresar correctamente el correo y contraseña';
         console.log(this.mensaje);
       }
     });
   }
 
   signup(): void {
-    if (!this.name || !this.patlastname ||!this.username || !this.password || !this.email) {
-      this.mensaje = 'Debes ingresar usuario, correo y contraseña.';
+    if (!this.name || !this.patlastname || !this.password || !this.email) {
+      this.mensaje = 'Debes llenar los campos obligatorios.';
       return;
     }else if(this.password !== this.password2){
       this.mensaje = 'Las contraseñas no coinciden';
       return;
     }
 
-    this.api.signup(this.name, this.patlastname, this.matlastname, this.username, this.email, this.password).subscribe({
+    this.api.signup(this.name, this.patlastname, this.matlastname, this.email, this.password).subscribe({
       next: (response: any) => {
         console.log(response)
         if(response.success){
