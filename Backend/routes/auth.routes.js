@@ -116,9 +116,7 @@ router.post('/login', async (req, res) => {
       .from('empleado')
       .insert({
         empleado_id: user.id,
-        //usuario: username,
-        correo: email,
-        contraseña: password,
+        //usuario: username, PENDIENTE CHECAR
         nombre: name,
         apellido_paterno: patlastname,
         apellido_materno: matlastname || null,
