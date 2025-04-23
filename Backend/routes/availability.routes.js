@@ -9,18 +9,7 @@ router.get('/empleados/disponibilidad', async (req, res) => {
   try {
     // Consulta principal para obtener todos los empleados
     const { data: empleados, error: empleadosError } = await supabase
-      .from('empleado')
-      .select(`
-        empleado_id,
-        usuario,
-        nombre,
-        apellido_paterno,
-        apellido_materno,
-        correo,
-        fecha_ingreso,
-        cargabilidad,
-        estado_laboral
-      `);
+      .rpc('get_empleados_con_info');
 
     if (empleadosError) {
       console.error('Error al obtener empleados:', empleadosError);
@@ -40,6 +29,10 @@ router.get('/empleados/disponibilidad', async (req, res) => {
         `)
         .eq('empleado_id', empleado.empleado_id);
 
+        if(rolesError) {
+          console.log('Error al obtener rol de empleado', rolesError);
+        }
+
       // Obtener proyectos
       const { data: proyectosData, error: proyectosError } = await supabase
         .from('empleado_proyecto')
@@ -50,6 +43,10 @@ router.get('/empleados/disponibilidad', async (req, res) => {
           )
         `)
         .eq('empleado_id', empleado.empleado_id);
+
+      if(proyectosError) {
+        console.log('Error al obtener proyectos del empleado', proyectosError);
+      }
 
       // Obtener habilidades
       const { data: habilidadesData, error: habilidadesError } = await supabase
@@ -64,18 +61,37 @@ router.get('/empleados/disponibilidad', async (req, res) => {
         `)
         .eq('empleado_id', empleado.empleado_id);
 
+      if(habilidadesError) {
+        console.log('Error al encontrar habilidades del empleado', habilidadesError);
+      } 
+
       // Obtener certificaciones
       const { data: certificacionesData, error: certificacionesError } = await supabase
-        .from('empleado_certificacion')
+        .from('certificacion')
         .select(`
-          certificacion:certificacion (
-            certificacion_id,
-            nombre,
-            estado,
-            institucion
-          )
+          certificacion_id,
+          nombre,
+          fecha_vencimiento,
+          institucion
         `)
         .eq('empleado_id', empleado.empleado_id);
+
+      if(certificacionesError) {
+        console.log('Error al encontrar certificaciones del empleado', certificacionesError);
+      }
+
+      const { data: cursosData, error: cursosError } = await supabase
+        .from('curso')
+        .select(`
+          curso_id,
+          nombre,
+          fecha_vencimiento
+        `)
+        .eq('empleado_id', empleado.empleado_id);
+
+      if(cursosError) {
+        console.log('Error al encontrar cursos del empleado', cursosError);
+      }
 
       // Determinar disponibilidad
       let disponible = true;
@@ -88,7 +104,7 @@ router.get('/empleados/disponibilidad', async (req, res) => {
       }
 
       // Verificar estado laboral
-      if (empleado.estado_laboral && empleado.estado_laboral !== 'Activo') {
+      if (empleado.estado_laboral && empleado.estado_laboral === 'vacations') {
         disponible = false;
         razon = empleado.estado_laboral; // Ejemplo: "En licencia", "Vacaciones", etc.
       }
@@ -106,6 +122,7 @@ router.get('/empleados/disponibilidad', async (req, res) => {
         proyectos: proyectosData ? proyectosData.map(p => p.proyecto) : [],
         habilidades: habilidadesData ? habilidadesData.map(h => h.habilidad) : [],
         certificaciones: certificacionesData ? certificacionesData.map(c => c.certificacion) : [],
+        cursos: cursosData ? cursosData.map(cc => cc.curso) : [],
         disponible,
         razon
       };
