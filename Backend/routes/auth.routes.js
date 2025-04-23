@@ -121,6 +121,8 @@ router.post('/login', async (req, res) => {
         apellido_paterno: patlastname,
         apellido_materno: matlastname || null,
         fecha_ingreso: new Date().toISOString().split('T')[0],
+        nivel: 12,
+        estado_laboral: 'activo',
       });
   
     if (insertError) {
