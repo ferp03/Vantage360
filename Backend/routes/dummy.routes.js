@@ -6,53 +6,53 @@ const supabase = supabaseAdmin;
 const usuarios = [
     {
       usuario: 'laurapolanco', correo: 'xarteaga@villareal.net', contraseña: 'password123',
-      nombre: 'Anabel', apellido_paterno: 'Roldán', apellido_materno: 'Leiva',
-      fecha_ingreso: '2022-06-04', cargabilidad: 68.78
+      nombre: 'Laura', apellido_paterno: 'Polanco', apellido_materno: 'Leiva',
+      fecha_ingreso: '2022-06-04', cargabilidad: 68.78, ciudad: 19, nivel: 5, grupo_nivel: 7, nivel_ingles: "A2", staff_days: 30, ytd_unassigned: 2, ytd_recovery: 96, bd: 9
     },
     {
       usuario: 'urocha', correo: 'paolapuga@hotmail.com', contraseña: 'password123',
-      nombre: 'Ivonne', apellido_paterno: 'León', apellido_materno: 'Solorio',
-      fecha_ingreso: '2022-04-20', cargabilidad: 88.49
+      nombre: 'Uriel', apellido_paterno: 'Rocha', apellido_materno: 'Solorio',
+      fecha_ingreso: '2022-04-20', cargabilidad: 88.49, ciudad: 22, nivel: 8, grupo_nivel: 5, nivel_ingles: "C1", staff_days: 44, ytd_unassigned: 5, ytd_recovery: 88, bd: 7
     },
     {
       usuario: 'esteveznayeli', correo: 'maurobernal@corporacin.org', contraseña: 'password123',
-      nombre: 'Jaime', apellido_paterno: 'Zaragoza', apellido_materno: 'Cardona',
-      fecha_ingreso: '2023-03-30', cargabilidad: 70.1
+      nombre: 'Nayeli', apellido_paterno: 'Estevez', apellido_materno: 'Cardona',
+      fecha_ingreso: '2023-03-30', cargabilidad: 70.1, ciudad: 55, nivel: 11, grupo_nivel: 2, nivel_ingles: "B1", staff_days: 53, ytd_unassigned: 8, ytd_recovery: 80, bd: 6
     },
     {
       usuario: 'acunamaximiliano', correo: 'irmasaavedra@yahoo.com', contraseña: 'password123',
-      nombre: 'José Emilio', apellido_paterno: 'Palomino', apellido_materno: 'Jaimes',
-      fecha_ingreso: '2022-09-15', cargabilidad: 65.43
+      nombre: 'Maximiliano', apellido_paterno: 'Acuna', apellido_materno: 'Jaimes',
+      fecha_ingreso: '2022-09-15', cargabilidad: 65.43, ciudad: 41, nivel: 4, grupo_nivel: 7, nivel_ingles: "B1", staff_days: 32, ytd_unassigned: 3, ytd_recovery: 93, bd: 8
     },
     {
       usuario: 'miguel-angelnaranjo', correo: 'magdalena93@club.com', contraseña: 'password123',
-      nombre: 'Yeni', apellido_paterno: 'Sáenz', apellido_materno: 'Gracia',
-      fecha_ingreso: '2023-04-04', cargabilidad: 61.73
+      nombre: 'Miguel', apellido_paterno: 'Naranjo', apellido_materno: 'Gracia',
+      fecha_ingreso: '2023-04-04', cargabilidad: 61.73, ciudad: 55, nivel: 7, grupo_nivel: 7, nivel_ingles: "B2", staff_days: 57, ytd_unassigned: 9, ytd_recovery: 77, bd: 7
     },
     {
       usuario: 'aguillen', correo: 'fabiolazambrano@laboratorios.biz', contraseña: 'password123',
-      nombre: 'Bruno', apellido_paterno: 'Mejía', apellido_materno: 'Irizarry',
-      fecha_ingreso: '2023-01-20', cargabilidad: 63.08
+      nombre: 'Adrian', apellido_paterno: 'Guillen', apellido_materno: 'Irizarry',
+      fecha_ingreso: '2023-01-20', cargabilidad: 63.08, ciudad: 55, nivel: 10, grupo_nivel: 2, nivel_ingles: "C1", staff_days: 43, ytd_unassigned: 4, ytd_recovery: 91, bd: 8
     },
     {
       usuario: 'rodrigonegron', correo: 'sanabriaamelia@fajardo-correa.net', contraseña: 'password123',
-      nombre: 'Salvador', apellido_paterno: 'Viera', apellido_materno: 'Carrera',
-      fecha_ingreso: '2022-07-13', cargabilidad: 90.49
+      nombre: 'Rodrigo', apellido_paterno: 'Negron', apellido_materno: 'Carrera',
+      fecha_ingreso: '2022-07-13', cargabilidad: 90.49, ciudad: 55, nivel: 4, grupo_nivel: 7, nivel_ingles: "B2", staff_days: 41, ytd_unassigned: 4, ytd_recovery: 92, bd: 8
     },
     {
       usuario: 'sara15', correo: 'florezsocorro@corporacin.com', contraseña: 'password123',
-      nombre: 'Gabino', apellido_paterno: 'Paz', apellido_materno: 'Mondragón',
-      fecha_ingreso: '2022-05-05', cargabilidad: 70.4
+      nombre: 'Sara', apellido_paterno: 'Paz', apellido_materno: 'Mondragón',
+      fecha_ingreso: '2022-05-05', cargabilidad: 70.4, ciudad: 55, nivel: 8, grupo_nivel: 5, nivel_ingles: "C1", staff_days: 50, ytd_unassigned: 7, ytd_recovery: 85, bd: 6
     },
     {
       usuario: 'rosalesaldonza', correo: 'yolmos@hotmail.com', contraseña: 'password123',
-      nombre: 'Evelio', apellido_paterno: 'Rael', apellido_materno: 'Nieto',
-      fecha_ingreso: '2022-09-25', cargabilidad: 82.75
+      nombre: 'Aldonza', apellido_paterno: 'Rosales', apellido_materno: 'Nieto',
+      fecha_ingreso: '2022-09-25', cargabilidad: 82.75, ciudad: 55, nivel: 12, grupo_nivel: 2, nivel_ingles: "B1", staff_days: 35, ytd_unassigned: 3, ytd_recovery: 93, bd: 9
     },
     {
       usuario: 'lucerovanesa', correo: 'abelgollum@industrias.com', contraseña: 'password123',
-      nombre: 'José Luis', apellido_paterno: 'Quesada', apellido_materno: 'Yáñez',
-      fecha_ingreso: '2023-05-21', cargabilidad: 95.34
+      nombre: 'Vanesa', apellido_paterno: 'Lucero', apellido_materno: 'Yáñez',
+      fecha_ingreso: '2023-05-21', cargabilidad: 95.34, ciudad: 55, nivel: 7, grupo_nivel: 5, nivel_ingles: "A2", staff_days: 60, ytd_unassigned: 10, ytd_recovery: 71, bd: 4
     }
   ];
   
@@ -76,13 +76,21 @@ router.post('/dummy/insertar-empleados', async (req, res) => {
       const { error: dbError } = await supabase.from('empleado').insert({
         empleado_id: uuid,
         usuario: u.usuario,
-        correo: u.correo,
-        contraseña: u.contraseña,
+        //correo: u.correo,
+        //contraseña: u.contraseña,
         nombre: u.nombre,
         apellido_paterno: u.apellido_paterno,
         apellido_materno: u.apellido_materno,
         fecha_ingreso: u.fecha_ingreso,
-        cargabilidad: u.cargabilidad
+        cargabilidad: u.cargabilidad,
+        ciudad_id: u.ciudad,
+        nivel: u.nivel,
+        nivel_grupo: u.grupo_nivel,
+        nivel_ingles: u.nivel_ingles,
+        staff_days: u.staff_days,
+        ytd_unassigned: u.ytd_unassigned,
+        ytd_recovery: u.ytd_recovery,
+        bd: u.bd
       });
   
       if (dbError) {
@@ -93,6 +101,48 @@ router.post('/dummy/insertar-empleados', async (req, res) => {
     }
   
     res.json(resultados);
+});
+
+
+router.delete('/dummy/eliminar-empleados', async (req, res) => {
+  let nextPageToken = null;
+  const resultados = [];
+
+  try {
+    do {
+      const { data, error } = await supabase.auth.admin.listUsers({
+        page: nextPageToken,
+        perPage: 1000,
+      });
+
+      if (error) {
+        console.error('Error al listar usuarios:', error);
+        return res.status(500).json({ error: 'Error al listar usuarios' });
+      }
+
+      for (const user of data.users) {
+        const { error: authDeleteError } = await supabase.auth.admin.deleteUser(user.id);
+        if (authDeleteError) {
+          console.error(`❌ Error borrando usuario auth: ${user.email}:`, authDeleteError.message);
+          resultados.push({ email: user.email, error: authDeleteError.message });
+        } else {
+          console.log('✅ Usuario eliminado:', user.email);
+          resultados.push({ email: user.email, status: 'eliminado' });
+        }
+      }
+
+      nextPageToken = data.nextPage;
+    } while (nextPageToken);
+
+    res.json({
+      mensaje: 'Eliminación de usuarios finalizada',
+      resultados
+    });
+
+  } catch (err) {
+    console.error('Error en la eliminación:', err);
+    res.status(500).json({ error: 'Error inesperado en el servidor' });
+  }
 });
 
 module.exports = router;
