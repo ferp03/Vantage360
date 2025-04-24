@@ -1,86 +1,115 @@
 <div class="contenedor-detalle">
   <h1>Mi perfil</h1>
   <div class="caja-info" [ngClass]="{ 'editando': editandoInfo }">
+  <div class="caja-info-superior">
+
+      
     <div class="izquierda" [ngClass]="{ 'modo-edicion': editandoInfo }">
       <div class="izquierda-superior">
-        <h3><span class="material-icons">account_circle</span> {{ info.nombre }}</h3>
-
-        <div *ngIf="!editandoInfo">
-          <p><strong><span class="material-icons">email</span> correo:</strong> {{ info.correo }}</p>
-          <p><strong><span class="material-icons">person</span> Usuario:</strong> {{ info.usuario }}</p>
+        
+        <div class="h3-tooltip-container">
+          <h2><span class="material-icons">account_circle</span> {{ info.nombre }}</h2>
+          <div class="tooltip">
+            <span class="material-icons">info</span>
+            <div class="tooltip-text">
+              <p><strong>Desde:</strong> {{ info.desde }}</p>
+              <p><strong>Ciudad:</strong> {{ info.ubicacion }}</p>
+              <p><strong>Nivel:</strong> {{ info.nivel }}</p>
+              <p><strong>Nivel Inglés:</strong> {{ info.nivel_ingles }}</p>
+              <p><strong>Staff Days:</strong> {{ info.staff_days }}</p>
+              <p><strong>YTD Unassigned:</strong> {{ info.ytd_unassigned }}%</p>
+              <p><strong>YTD Recovery:</strong> {{ info.ytd_recovery }}%</p>
+              <p><strong>Bench Days:</strong> {{ info.bd }}%</p>
+            </div>
+          </div>
         </div>
-
-        <div *ngIf="editandoInfo">
-          <p>
-            <strong><span class="material-icons">email</span> correo:</strong>
-            <input [(ngModel)]="info.correo" [class.error-input]="erroresInfo.correo" />
-            <span class="error" *ngIf="erroresInfo.correo">Campo requerido</span>
-            <span class="error" *ngIf="!erroresInfo.correo && erroresInfo.formatoEmail">Correo no válido</span>
-          </p>
-
-          <p>
-            <strong><span class="material-icons">person</span> Usuario:</strong>
-            <input [(ngModel)]="info.usuario" [class.error-input]="erroresInfo.usuario" />
-            <span class="error" *ngIf="erroresInfo.usuario">Campo requerido</span>
-          </p>
-        </div>
-
-        <p><strong><span class="material-icons">calendar_today</span> Desde:</strong> {{ info.desde }}</p>
+        
+        
+        <p><strong><span class="material-icons">email</span> Correo:</strong> {{ info.correo }}</p>
+        <p><strong><span class="material-icons">person</span> Usuario:</strong> {{ info.usuario }}</p>
+        <p>
+          <strong><span class="material-icons">bar_chart</span> Estado Laboral: </strong>
+          <span *ngIf="!editandoInfo">{{ nuevoEstado | titlecase }}</span>
+          <select *ngIf="editandoInfo" [(ngModel)]="nuevoEstado">
+            <option value="bench">Bench</option>
+            <option value="active">Active</option>
+            <option value="vacations">Vacations</option>
+          </select>
+        </p>
         <p><strong><span class="material-icons">bar_chart</span> Cargabilidad:</strong> {{ info.cargabilidad }}%</p>
-
+        <p><strong><span class="material-icons">person</span> People Lead:</strong> {{ info.lead_usuario }}</p>
+        
+        
+        
+        
+        
         <button
-          *ngIf="editandoInfo && esMiPerfil"
-          class="boton-cambiar-pass"
-          (click)="mostrarModalContrasena = true"
+        *ngIf="editandoInfo && esMiPerfil"
+        class="boton-cambiar-pass"
+        (click)="mostrarModalContrasena = true"
         >
-          <span class="material-icons">lock</span> Cambiar contraseña
+        <span class="material-icons">lock</span> Cambiar contraseña
+      </button>
+    </div>
+    
+    <div class="izquierda-habilidades">
+      <div class="habilidades">
+        <div class="encabezado-habilidades">
+          <h4><span class="material-icons">star</span> Habilidades</h4>
+          <button
+          *ngIf="editandoInfo && esMiPerfil"
+          class="boton-agregar-habilidad"
+          (click)="irARegistroHabilidades()"
+          >
+          <span>+</span>
         </button>
       </div>
-
-      <div class="izquierda-habilidades">
-        <div class="habilidades">
-          <div class="encabezado-habilidades">
-            <h4><span class="material-icons">star</span> Habilidades</h4>
-            <button
-              *ngIf="editandoInfo && esMiPerfil"
-              class="boton-agregar-habilidad"
-              (click)="irARegistroHabilidades()"
-            >
-              <span>+</span>
-            </button>
-          </div>
-
-          <div class="etiquetas-habilidad">
-            <span *ngFor="let habilidad of habilidades">{{ habilidad }}</span>
-          </div>
-
-          <h4><span class="material-icons">school</span>Certificados</h4>
-          <ul>
-            <li *ngFor="let curso of cursos">
-              {{ curso.nombre }}
-            </li>
-          </ul>
-        </div>
+      
+      <div class="etiquetas-habilidad">
+        <span *ngFor="let habilidad of habilidades">{{ habilidad }}</span>
       </div>
+      
+      <h4><span class="material-icons">school</span> Certificados</h4>
+      <ul>
+        <li *ngFor="let certificado of certificados">{{ certificado.nombre }}</li>
+      </ul>
     </div>
-
-    <div class="derecha"></div>
-
-    <button
-      class="boton-editar"
-      *ngIf="esMiPerfil"
-      (click)="toggleEditarInfo()"
-    >
-      <span class="material-icons">{{ editandoInfo ? 'save' : 'edit' }}</span>
-      {{ editandoInfo ? 'Guardar' : 'Editar' }}
-    </button>
+    
+    
   </div>
+    </div>
+  
+    <div class="derecha"></div>
+    
+    
+  </div>
+
+  <div class="botones">
+    
+    <button
+    class="boton-cancelar"
+    *ngIf="editandoInfo && esMiPerfil"
+    (click)="cancelarEdicion()"
+    >
+    <span class="material-icons">cancel</span>
+    Cancelar
+  </button>
+  <button
+  class="boton-editar"
+  *ngIf="esMiPerfil"
+  (click)="editandoInfo ? guardarCambios() : toggleEditarInfo()"
+  >
+  <span class="material-icons">{{ editandoInfo ? 'save' : 'edit' }}</span>
+  {{ editandoInfo ? 'Guardar' : 'Editar' }}
+  </button>
+  </div>
+</div>
+
 
   <div class="carrera" [ngClass]="{ 'modo-edicion': editandoTrayectoria }">
     <h3><span class="material-icons">work</span> Trayectoria Laboral</h3>
-
+  
     <div class="linea-tiempo">
-
       <div
         class="elemento-tiempo agregar-tarjeta"
         *ngIf="editandoTrayectoria && esMiPerfil && !existeExperienciaNueva()"
@@ -89,7 +118,7 @@
           <span>+</span>
         </button>
       </div>
-
+  
       <div
         class="elemento-tiempo"
         *ngFor="let experiencia of experiencias; let i = index"
@@ -104,128 +133,26 @@
           </span>
           {{ editandoIndice === i ? 'Guardar' : 'Editar' }}
         </button>
-
+  
         <div *ngIf="editandoIndice !== i">
           <h4><span class="material-icons">device_hub</span> {{ experiencia.titulo }}</h4>
-          <p style="color: #666; font-weight: normal;">
-            {{ experiencia.titulo_proyecto }}
-          </p>
-          <p><span class="material-icons">business</span> {{ experiencia.empresa }}</p>
+          <p>{{ experiencia.descripcion }}</p>
           <small>
             <span class="material-icons">calendar_today</span>
-            {{ experiencia.inicio | date: 'dd/MM/yyyy' }} -
-            {{ experiencia.fin ? (experiencia.fin | date: 'dd/MM/yyyy') : 'Presente' }}
+            {{ experiencia.inicio }} - {{ experiencia.fin }}
           </small>
-          <p>{{ experiencia.descripcion }}</p>
         </div>
-
-        <div *ngIf="editandoIndice === i" class="modo-edicion">
-          <p>
-            <strong>
-              <span class="material-icons">device_hub</span> Título:
-            </strong>
-            <input [(ngModel)]="experiencia.titulo" [class.error-input]="errores[i].titulo" />
-            <span class="error" *ngIf="errores[i].titulo">Campo requerido</span>
-          </p>
-          <p>
-            <strong>Proyecto:</strong>
-            <input [(ngModel)]="experiencia.titulo_proyecto" [class.error-input]="errores[i].titulo_proyecto" />
-            <span class="error" *ngIf="errores[i].titulo_proyecto">Campo requerido</span>
-          </p>
-          <p>
-            <strong><span class="material-icons">business</span> Empresa:</strong>
-            <input [(ngModel)]="experiencia.empresa" [class.error-input]="errores[i].empresa" />
-            <span class="error" *ngIf="errores[i].empresa">Campo requerido</span>
-          </p>
-          <p>
-            <strong><span class="material-icons">event_available</span> Inicio:</strong>
-            <input
-              type="date"
-              [(ngModel)]="experiencia.inicio"
-              [class.error-input]="errores[i].inicio"
-              (change)="validarFechas(i)"
-            />
-            <span class="error" *ngIf="errores[i].inicio">Campo requerido</span>
-          </p>
-          <p>
-            <strong><span class="material-icons">event_busy</span> Fin:</strong>
-            <input
-              type="date"
-              [(ngModel)]="experiencia.fin"
-              [class.error-input]="errores[i].fin || errores[i].fechaInvalida"
-              (change)="validarFechas(i)"
-            />
-            <span class="error" *ngIf="errores[i].fin">Campo requerido</span>
-            <span class="error" *ngIf="errores[i].fechaInvalida">
-              La fecha de fin no puede ser anterior a la fecha de inicio
-            </span>
-          </p>
-          <p>
-            <strong>Descripción:</strong>
-            <textarea
-              [(ngModel)]="experiencia.descripcion"
-              [class.error-input]="errores[i].descripcion"
-            ></textarea>
-            <span class="error" *ngIf="errores[i].descripcion">
-              Campo requerido
-            </span>
-          </p>
-          <button
-            *ngIf="experiencia.esNueva"
-            class="boton-cancelar"
-            (click)="cancelarNuevaExperiencia(i)"
-          >
-            <span class="material-icons">cancel</span> Cancelar
-          </button>
+  
+        <div *ngIf="editandoIndice === i">
+          <!-- Campos para edición -->
+          <input [(ngModel)]="experiencia.titulo" placeholder="Título" />
+          <textarea [(ngModel)]="experiencia.descripcion" placeholder="Descripción"></textarea>
+          <input [(ngModel)]="experiencia.inicio" placeholder="Fecha de inicio" />
+          <input [(ngModel)]="experiencia.fin" placeholder="Fecha de fin" />
         </div>
-      </div>
-
-    </div>
-
-    <div class="boton-editar-trayectoria-global">
-      <button
-        (click)="guardarTrayectoria()"
-        class="boton-editar"
-        *ngIf="esMiPerfil"
-      >
-        <span class="material-icons">{{ editandoTrayectoria ? 'save' : 'edit' }}</span>
-        {{ editandoTrayectoria ? 'Guardar' : 'Editar' }}
-      </button>
-    </div>
-  </div>
-
-  <div class="modal" *ngIf="mostrarModalContrasena">
-    <div class="modal-contenido">
-      <h3><span class="material-icons">lock</span> Cambiar contraseña</h3>
-
-      <label><span class="material-icons">vpn_key</span> Contraseña actual:</label>
-      <input type="password" [(ngModel)]="contrasenaActual" />
-      <span class="error" *ngIf="erroresPass.actual">Campo requerido</span>
-
-      <label>
-        <span class="material-icons">lock_open</span> Nueva contraseña:
-      </label>
-      <input type="password" [(ngModel)]="nuevaContrasena" />
-      <span class="error" *ngIf="erroresPass.nueva"
-        >La contraseña debe tener al menos 8 caracteres</span
-      >
-
-      <label>
-        <span class="material-icons">lock_outline</span> Confirmar nueva contraseña:
-      </label>
-      <input type="password" [(ngModel)]="confirmarContrasena" />
-      <span class="error" *ngIf="erroresPass.confirmar"
-        >Las contraseñas no coinciden</span
-      >
-
-      <div class="acciones-modal">
-        <button (click)="confirmarCambioContrasena()">
-          <span class="material-icons">check</span> Confirmar
-        </button>
-        <button class="cancelar" (click)="cerrarModalContrasena()">
-          <span class="material-icons">close</span> Cancelar
-        </button>
       </div>
     </div>
   </div>
+  
 </div>
+

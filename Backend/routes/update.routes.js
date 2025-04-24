@@ -45,8 +45,7 @@ router.put('/update', async (req, res) => {
 
         // Verificar si el username ya existe para otro empleado
         const { data: existingUsername, error: usernameCheckError } = await supabase
-            .from('empleado')
-            .select('empleado_id')
+            .rpc('get_empleados_con_info_all')
             .eq('usuario', username)
             .single();
 

@@ -40,7 +40,17 @@ export class EmpleadoDetallesComponent implements OnInit {
     correo: '',
     usuario: '',
     desde: '',
-    cargabilidad: ''
+    cargabilidad: '',
+    nivel: ' ',
+    nivel_ingles: ' ',
+    staff_days: ' ',
+    ytd_unassigned: ' ',
+    ytd_recovery: ' ',
+    bd: ' ',
+    estado_laboral: ' ',
+    lead_usuario: ' ',
+    lead_id: ' ',
+    ubicacion: ' '
   };
 
   erroresInfo = {
@@ -50,7 +60,7 @@ export class EmpleadoDetallesComponent implements OnInit {
   };
 
   habilidades: string[] = [];
-  cursos: Curso[] = [];
+  certificados: Curso[] = [];
   experiencias: ExperienciaLaboral[] = [];
 
   editandoInfo = false;
@@ -68,6 +78,8 @@ export class EmpleadoDetallesComponent implements OnInit {
     nueva: false,
     confirmar: false,
   };
+
+  nuevoEstado: string = '';
 
   private empleadoId: string | null = null;
   esMiPerfil: boolean = false; 
@@ -89,7 +101,7 @@ export class EmpleadoDetallesComponent implements OnInit {
       // Recargar los datos del componente
       this.cargarInfoBasica();
       this.cargarHabilidades();
-      this.cargarCursos();
+      this.cargarCertificados();
       this.cargarTrayectoria();
     });
   }
@@ -104,8 +116,20 @@ export class EmpleadoDetallesComponent implements OnInit {
             correo: res.data.correo,
             usuario: res.data.usuario,
             desde: this.formatearFecha(res.data.desde),
-            cargabilidad: res.data.cargabilidad
+            cargabilidad: res.data.cargabilidad,
+            nivel : res.data.nivel,
+            nivel_ingles: res.data.nivel_ingles,
+            staff_days: res.data.staff_days,
+            ytd_unassigned: res.data.ytd_unassigned,
+            ytd_recovery: res.data.ytd_recovery,
+            bd: res.data.bd,
+            estado_laboral: res.data.estado_laboral,
+            lead_usuario: res.data.lead_usuario,
+            lead_id: res.data.lead_id,
+            ubicacion: res.data.ubicacion
           };
+        this.nuevoEstado = this.info.estado_laboral;
+
         }
       },
       error: (err) => console.error('Error al obtener info:', err)
@@ -124,12 +148,12 @@ export class EmpleadoDetallesComponent implements OnInit {
     });
   }
 
-  cargarCursos() {
+  cargarCertificados() {
     if (!this.empleadoId) return;
     this.apiService.getEmpleadoCertificaciones(this.empleadoId).subscribe({
       next: (res) => {
         if (res.success) {
-          this.cursos = res.data;
+          this.certificados = res.data;
         }
       },
       error: (err) => console.error('Error al obtener certificaciones:', err)
@@ -367,5 +391,39 @@ export class EmpleadoDetallesComponent implements OnInit {
     if (this.empleadoId) {
       this.router.navigate(['/registro-habilidades', this.empleadoId]);
     }
+  }
+
+  guardarCambios(): void {
+    // Crear un objeto con los datos modificados
+    const datosActualizados: any = {};
+    console.log(this.nuevoEstado);
+    if (this.nuevoEstado !== this.info.estado_laboral) {
+      datosActualizados.estado_laboral = this.nuevoEstado;
+    }
+    // Agrega aquí otros campos que quieras enviar al backend
+  
+    console.log('Datos a actualizar:', datosActualizados);
+    // Llamar al servicio para actualizar los datos
+    if (this.empleadoId && Object.keys(datosActualizados).length > 0) {
+      this.apiService.actualizarEmpleado(this.empleadoId, datosActualizados).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            console.log('Datos actualizados correctamente:', res);
+            this.editandoInfo = false; // Salir del modo edición
+          } else {
+            console.error('Error al actualizar los datos:', res.message);
+          }
+        },
+        error: (err) => {
+          console.error('Error al conectar con el servidor:', err);
+        }
+      });
+    }else{return;}
+  }
+
+  cancelarEdicion(): void {
+    // Restablecer los valores originales
+    this.nuevoEstado = this.info.estado_laboral;
+    this.editandoInfo = false; // Salir del modo edición
   }
 }

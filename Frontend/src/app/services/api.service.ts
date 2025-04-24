@@ -119,7 +119,11 @@ export class ApiService {
   // Crear nueva habilidad
   agregarHabilidad(empleadoId: string, datos: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/empleado/${empleadoId}/habilidad`, datos);
-  }  
+  }
+
+  actualizarEmpleado(empleadoId: string, datosActualizados: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/empleado/cambiar-datos/${empleadoId}`, datosActualizados);
+  }
 
   // Crear nuevo curso con archivo 
 crearCurso(empleadoId: string, formData: FormData): Observable<any> {

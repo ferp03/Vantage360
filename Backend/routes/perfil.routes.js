@@ -1,15 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { supabaseAnon } = require('../supabase');
-const supabase = supabaseAnon;
+const { supabaseAdmin } = require('../supabase');
+const supabase = supabaseAdmin;
 
 // Obtener info básica del empleado
 router.get('/empleado/info/:id', async (req, res) => {
   const { id } = req.params;
 
   const { data, error } = await supabase
-    .from('empleado')
-    .select('nombre, apellido_paterno, apellido_materno, correo, usuario, fecha_ingreso, cargabilidad')
+    .rpc('get_empleados_con_info_all')
     .eq('empleado_id', id)
     .single();
 
@@ -27,10 +26,21 @@ router.get('/empleado/info/:id', async (req, res) => {
     success: true,
     data: {
       nombre: nombreCompleto,
-      correo: data.correo,
+      correo: data.email,
       usuario: data.usuario,
       desde: data.fecha_ingreso,
-      cargabilidad: data.cargabilidad
+      cargabilidad: data.cargabilidad,
+      nivel: data.nivel,
+      nivel_grupo: data.nivel_grupo,
+      nivel_ingles: data.nivel_ingles,
+      staff_days: data.staff_days,
+      ytd_unassigned: data.ytd_unassigned,
+      ytd_recovery: data.ytd_recovery,
+      bd: data.bd,
+      estado_laboral: data.estado_laboral,
+      lead_usuario: data.lead_usuario,
+      lead_id: data.lead_id,
+      ubicacion: data.ubicacion
     }
   });
 });
@@ -66,12 +76,8 @@ router.get('/empleado/:id/certificaciones', async (req, res) => {
   const { id } = req.params;
 
   const { data, error } = await supabase
-    .from('empleado_certificacion')
-    .select(`
-      certificacion:certificacion_id (
-        nombre
-      )
-    `)
+    .from('certificacion')
+    .select('nombre')
     .eq('empleado_id', id);
 
   if (error) {
@@ -80,7 +86,7 @@ router.get('/empleado/:id/certificaciones', async (req, res) => {
   }
 
   const certificaciones = data.map(entry => ({
-    nombre: entry.certificacion.nombre
+    nombre: entry.nombre
   }));
 
   return res.status(200).json({
@@ -192,6 +198,24 @@ router.put('/empleado/cambiar-contrasena/:id', async (req, res) => {
 
   return res.status(200).json({ success: true, message: 'Contraseña actualizada correctamente' });
 });
+
+// Guardar los cambios hechos en el perfil del empleado
+router.put('/empleado/cambiar-datos/:id', async (req, res) => {
+  const { id } = req.params;
+  const { estado_laboral } = req.body;
+
+  const {data, error} = await supabase
+    .from('empleado')
+    .update({estado_laboral: estado_laboral})
+    .eq('empleado_id', id);
+
+  if(error){
+    console.log('Error al cambiar el estado laboral', error.message);
+    return res.status(500).json({ success: false, error: 'Error al cambiar el estado laboral' });
+  }
+
+  return res.status(200).json({ success: true, message: 'Estado laboral actualizado correctamente' });
+})
 
 // Crear nueva experiencia laboral
 router.post('/empleado/:id/experiencia', async (req, res) => {
