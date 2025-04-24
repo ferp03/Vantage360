@@ -12,6 +12,7 @@ interface ExperienciaLaboral {
   fin: string;
   descripcion: string;
   esNueva?: boolean;
+  esPuestoActual?: boolean; // Nuevo campo agregado
 }
 
 interface ErroresExperiencia {
@@ -142,6 +143,14 @@ export class EmpleadoDetallesComponent implements OnInit {
       next: (res) => {
         if (res.success) {
           this.experiencias = res.data;
+          // Procesar las experiencias para marcar las que no tienen fecha fin como puestos actuales
+          this.experiencias.forEach(exp => {
+            if (!exp.fin) {
+              exp.esPuestoActual = true;
+            } else {
+              exp.esPuestoActual = false;
+            }
+          });
           this.ordenarExp();
         }
       },
@@ -191,6 +200,25 @@ export class EmpleadoDetallesComponent implements OnInit {
     this.editandoInfo = !this.editandoInfo;
   }
 
+  togglePuestoActual(index: number): void {
+    const exp = this.experiencias[index];
+    
+    if (exp.esPuestoActual) {
+      // Si marca como puesto actual, eliminamos la fecha de fin
+      exp.fin = '';
+      this.errores[index].fin = false;
+      this.errores[index].fechaInvalida = false;
+    } else {
+      // Si desmarca, verificamos inmediatamente si hay una fecha fin válida
+      if (exp.fin) {
+        this.errores[index].fin = false; // Ya hay fecha, quitamos error
+        this.validarFechas(index); // Validamos si la fecha es correcta
+      } else {
+        this.errores[index].fin = true; // No hay fecha, mostramos error
+      }
+    }
+  }
+
   toggleEditarTrayectoria(index: number) {
     if (!this.esMiPerfil) return;
     if (!this.editandoTrayectoria) return;
@@ -201,7 +229,8 @@ export class EmpleadoDetallesComponent implements OnInit {
       titulo_proyecto: !exp.titulo_proyecto?.trim(),
       empresa: !exp.empresa?.trim(),
       inicio: !exp.inicio?.trim(),
-      fin: !exp.fin?.trim(),
+      // Solo validamos fin si no es puesto actual
+      fin: !exp.esPuestoActual && !exp.fin?.trim(),
       descripcion: !exp.descripcion?.trim(),
       fechaInvalida: false
     };
@@ -219,7 +248,8 @@ export class EmpleadoDetallesComponent implements OnInit {
         empresa: exp.empresa,
         descripcion: exp.descripcion,
         fecha_inicio: exp.inicio,
-        fecha_fin: exp.fin
+        fecha_fin: exp.esPuestoActual ? null : exp.fin,
+        es_puesto_actual: exp.esPuestoActual
       };
 
       if (exp.esNueva) {
@@ -266,7 +296,8 @@ export class EmpleadoDetallesComponent implements OnInit {
       inicio: '',
       fin: '',
       descripcion: '',
-      esNueva: true
+      esNueva: true,
+      esPuestoActual: false // Por defecto, no es puesto actual
     };
     
     this.experiencias.unshift(nueva);
@@ -347,18 +378,24 @@ export class EmpleadoDetallesComponent implements OnInit {
 
   validarFechas(index: number): boolean {
     const exp = this.experiencias[index];
+    
+    // Si es un puesto actual, no validamos fecha fin
+    if (exp.esPuestoActual) {
+      this.errores[index].fechaInvalida = false;
+      return false;
+    }
+    
     if (!exp.inicio || !exp.fin) {
       return false;
     }
+    
     const fechaInicio = new Date(exp.inicio);
     const fechaFin = new Date(exp.fin);
-
-    if (!this.errores[index].fechaInvalida) {
-      this.errores[index].fechaInvalida = false;
-    }
     
+    // Determinar si la fecha fin es válida
     const fechaInvalida = fechaFin < fechaInicio;
     this.errores[index].fechaInvalida = fechaInvalida;
+    
     return fechaInvalida;
   }
 

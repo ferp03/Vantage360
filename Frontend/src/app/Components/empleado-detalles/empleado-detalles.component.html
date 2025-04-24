@@ -119,49 +119,64 @@
           <p>{{ experiencia.descripcion }}</p>
         </div>
 
-        <div *ngIf="editandoIndice === i" class="modo-edicion">
-          <p>
-            <strong>
+        <div *ngIf="editandoIndice === i" class="modo-edicion experiencia-form">
+          <div class="campo-grupo">
+            <label>
               <span class="material-icons">device_hub</span> Título:
-            </strong>
+            </label>
             <input [(ngModel)]="experiencia.titulo" [class.error-input]="errores[i].titulo" />
             <span class="error" *ngIf="errores[i].titulo">Campo requerido</span>
-          </p>
-          <p>
-            <strong>Proyecto:</strong>
+          </div>
+
+          <div class="campo-grupo">
+            <label>Proyecto:</label>
             <input [(ngModel)]="experiencia.titulo_proyecto" [class.error-input]="errores[i].titulo_proyecto" />
             <span class="error" *ngIf="errores[i].titulo_proyecto">Campo requerido</span>
-          </p>
-          <p>
-            <strong><span class="material-icons">business</span> Empresa:</strong>
+          </div>
+
+          <div class="campo-grupo">
+            <label><span class="material-icons">business</span> Empresa:</label>
             <input [(ngModel)]="experiencia.empresa" [class.error-input]="errores[i].empresa" />
             <span class="error" *ngIf="errores[i].empresa">Campo requerido</span>
-          </p>
-          <p>
-            <strong><span class="material-icons">event_available</span> Inicio:</strong>
-            <input
-              type="date"
-              [(ngModel)]="experiencia.inicio"
-              [class.error-input]="errores[i].inicio"
-              (change)="validarFechas(i)"
-            />
-            <span class="error" *ngIf="errores[i].inicio">Campo requerido</span>
-          </p>
-          <p>
-            <strong><span class="material-icons">event_busy</span> Fin:</strong>
-            <input
-              type="date"
-              [(ngModel)]="experiencia.fin"
-              [class.error-input]="errores[i].fin || errores[i].fechaInvalida"
-              (change)="validarFechas(i)"
-            />
-            <span class="error" *ngIf="errores[i].fin">Campo requerido</span>
-            <span class="error" *ngIf="errores[i].fechaInvalida">
-              La fecha de fin no puede ser anterior a la fecha de inicio
-            </span>
-          </p>
-          <p>
-            <strong>Descripción:</strong>
+          </div>
+
+          <div class="campo-checkbox">
+            <input type="checkbox" id="puestoActual{{i}}" [ngModel]="experiencia.esPuestoActual" (ngModelChange)="experiencia.esPuestoActual = $event; togglePuestoActual(i)" />
+            <label for="puestoActual{{i}}">
+              <span class="material-icons">work</span> Es mi puesto actual
+            </label>
+          </div>
+
+          <div class="fechas-container">
+            <div class="campo-grupo">
+              <label><span class="material-icons">event_available</span> Inicio:</label>
+              <input
+                type="date"
+                [(ngModel)]="experiencia.inicio"
+                [class.error-input]="errores[i].inicio"
+                (change)="validarFechas(i)"
+              />
+              <span class="error" *ngIf="errores[i].inicio">Campo requerido</span>
+            </div>
+
+            <div class="campo-grupo" *ngIf="!experiencia.esPuestoActual">
+              <label><span class="material-icons">event_busy</span> Fin:</label>
+              <input
+                type="date"
+                [(ngModel)]="experiencia.fin"
+                [class.error-input]="errores[i].fin || errores[i].fechaInvalida"
+                (change)="validarFechas(i); errores[i].fin = !experiencia.fin"
+                (input)="errores[i].fin = !experiencia.fin"
+              />
+              <span class="error" *ngIf="errores[i].fin">Campo requerido</span>
+              <span class="error" *ngIf="errores[i].fechaInvalida">
+                La fecha de fin no puede ser anterior a la fecha de inicio
+              </span>
+            </div>
+          </div>
+
+          <div class="campo-grupo">
+            <label>Descripción:</label>
             <textarea
               [(ngModel)]="experiencia.descripcion"
               [class.error-input]="errores[i].descripcion"
@@ -169,17 +184,19 @@
             <span class="error" *ngIf="errores[i].descripcion">
               Campo requerido
             </span>
-          </p>
-          <button
-            *ngIf="experiencia.esNueva"
-            class="boton-cancelar"
-            (click)="cancelarNuevaExperiencia(i)"
-          >
-            <span class="material-icons">cancel</span> Cancelar
-          </button>
+          </div>
+
+          <div class="acciones">
+            <button
+              *ngIf="experiencia.esNueva"
+              class="boton-cancelar"
+              (click)="cancelarNuevaExperiencia(i)"
+            >
+              <span class="material-icons">cancel</span> Cancelar
+            </button>
+          </div>
         </div>
       </div>
-
     </div>
 
     <div class="boton-editar-trayectoria-global">

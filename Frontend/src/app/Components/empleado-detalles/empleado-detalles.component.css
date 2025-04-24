@@ -1,3 +1,4 @@
+/* Estilos generales */
 .contenedor-detalle {
   display: flex;
   flex-direction: column;
@@ -17,7 +18,6 @@
 .caja-info {
   display: flex;
   gap: 2rem;
-  /* background-color: #1C1C24; */
   box-shadow: 1px 2px 6px #B998F7;
   transition: transform 0.2s, box-shadow 0.2s;
   color: white;
@@ -50,9 +50,9 @@
 }
 
 .habilidades {
-  /* background: rgba(35, 35, 50, 0.7); */
   box-shadow: 1px 2px 6px #B998F7;
-  transition: transform 0.2s, box-shadow 0.2s;  padding: 1rem 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  padding: 1rem 1.5rem;
   border-radius: 10px;
 }
 
@@ -112,7 +112,6 @@
 
 .carrera {
   margin-top: 2rem;
-  /* background: #1C1C24; */
   color: white;
   border-radius: 15px;
   box-shadow: 1px 2px 6px #B998F7;
@@ -126,20 +125,19 @@
   display: flex;
   gap: 1rem;
   overflow-x: auto;
-  scrollbar-width: none; /* For Firefox */
-  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   padding: 1rem 0.5rem 1rem 0.5rem;
 }
 
 .linea-tiempo::-webkit-scrollbar {
-  display: none; /* For Chrome, Safari, and Opera */
+  display: none;
 }
 
 .elemento-tiempo {
   position: relative;
   width: 300px;
   max-width: 300px;
-  /* background: rgba(35, 35, 50, 0.7); */
   box-shadow: 1px 2px 6px #B998F7;
   transition: transform 0.2s, box-shadow 0.2s;
   padding: 2.5rem 1rem 1rem 1rem;
@@ -250,6 +248,135 @@
   justify-content: flex-end;
 }
 
+/* Estilos para el formulario de experiencia */
+.experiencia-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px 15px;
+  background-color: rgba(20, 20, 30, 0.6);
+  border-radius: 10px;
+  box-shadow: inset 0 0 20px rgba(138, 86, 232, 0.1);
+}
+
+/* Estilo para cada grupo de campo */
+.campo-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campo-grupo label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  color: #fff;
+  font-size: 14px;
+}
+
+/* Estilo mejorado para los inputs */
+.campo-grupo input,
+.campo-grupo textarea {
+  padding: 10px 12px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(138, 86, 232, 0.3);
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  color: #222;
+}
+
+.campo-grupo input:focus,
+.campo-grupo textarea:focus {
+  outline: none;
+  border-color: #9668e6;
+  box-shadow: 0 0 0 2px rgba(150, 104, 230, 0.2);
+}
+
+/* Estilo para la descripción */
+.campo-grupo textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* Contenedor de fechas */
+.fechas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background-color: rgba(30, 30, 40, 0.5);
+  border-radius: 8px;
+  border-left: 3px solid rgba(150, 104, 230, 0.7);
+}
+
+/* Estilo para el checkbox */
+.campo-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 2px;
+  margin-top: -6px;
+  margin-bottom: -6px;
+}
+
+.campo-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #9668e6;
+  cursor: pointer;
+}
+
+.campo-checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #fff;
+}
+
+/* Estilo para mensajes de error */
+.error {
+  color: #ff6b6b;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+/* Estilo para los botones */
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.boton-cancelar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background-color: rgba(80, 80, 100, 0.6);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.boton-cancelar:hover {
+  background-color: rgba(100, 100, 130, 0.7);
+}
+
+/* Estilo para los inputs con error */
+.error-input {
+  border-color: #ff6b6b !important;
+  background-color: rgba(255, 107, 107, 0.05) !important;
+}
+
+/* Estilo para el modal de contraseña */
 .modal {
   position: fixed;
   top: 0;
@@ -298,13 +425,6 @@
   box-sizing: border-box;
 }
 
-.error {
-  color: red;
-  font-size: 0.75rem;
-  margin-top: 0.2rem;
-  margin-bottom: 0.5rem;
-}
-
 .acciones-modal {
   display: flex;
   justify-content: flex-end;
@@ -334,42 +454,3 @@
 .acciones-modal button.cancelar:hover {
   background-color: #888;
 }
-
-.caja-info.editando,
-.carrera.modo-edicion {
-  border: 2px dashed #6f42c1;
-  transition: all 0.3s ease;
-}
-
-.modo-edicion input,
-.modo-edicion textarea {
-  background-color: #ffffff;
-  border: 1px solid #9668e6;
-  padding: 0.5rem;
-  border-radius: 6px;
-  transition: box-shadow 0.2s ease;
-}
-
-.modo-edicion input:focus,
-.modo-edicion textarea:focus {
-  outline: none;
-  border-color: #9668e6;
-  box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.25);
-}
-
-.material-icons {
-  vertical-align: middle;
-  font-size: 20px; 
-  margin-right: 5px; 
-}
-
-label .material-icons,
-button .material-icons {
-  vertical-align: middle;
-  margin-right: 5px;
-}
-
-
-
-
-
