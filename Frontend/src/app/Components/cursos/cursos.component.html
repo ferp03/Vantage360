@@ -14,12 +14,12 @@
     </div>
   </header>
 
-  <section class="courses-grid">
+  <section class="courses-grid" [ngClass]="{ 'few-courses': cursosPaginados.length <= 2 }">
     <div class="course-card" *ngFor="let curso of cursosPaginados">
       <div class="course-header">
         <h3>{{ curso.nombre }}</h3>
       </div>
-
+  
       <div class="course-dates">
         <div class="date-label">
           <span class="date-icon material-icons">calendar_today</span>
@@ -30,14 +30,14 @@
           <span>Vence: {{ curso.fecha_vencimiento }}</span>
         </div>
       </div>
-
+  
       <div class="course-description" *ngIf="curso.descripcion">
         <div class="description-title">
           <span class="material-icons">info</span> Descripción:
         </div>
         <div>{{ curso.descripcion }}</div>
       </div>
-
+  
       <div class="course-actions">
         <a [href]="curso.archivo" target="_blank" class="btn btn-certificate">
           <span class="certificate-icon material-icons">school</span>
@@ -46,6 +46,7 @@
       </div>
     </div>
   </section>
+  
 
   <div class="pagination">
     <button (click)="cambiarPagina(paginaActual - 1)" [disabled]="paginaActual === 1">
@@ -57,7 +58,6 @@
     </button>
   </div>
 
-  <!-- Modal para agregar curso -->
   <div class="modal-overlay" *ngIf="mostrarFormulario">
     <div class="modal-contenido formulario-curso">
       <div class="modal-header">
@@ -68,28 +68,24 @@
       <div class="modal-body">
         <form>
 
-          <!-- Nombre del curso -->
           <div class="form-group">
             <label>Nombre del curso</label>
             <input type="text" [(ngModel)]="nuevoCurso.nombre" name="nombre" />
             <div class="error-message" *ngIf="formErrores.nombre">{{ formErrores.nombre }}</div>
           </div>
 
-          <!-- Fecha de emisión -->
           <div class="form-group">
             <label>Fecha de emisión</label>
             <input type="date" [(ngModel)]="nuevoCurso.fecha_emision" name="fecha_emision" />
             <div class="error-message" *ngIf="formErrores.fecha_emision">{{ formErrores.fecha_emision }}</div>
           </div>
 
-          <!-- Fecha de vencimiento -->
           <div class="form-group">
             <label>Fecha de vencimiento</label>
             <input type="date" [(ngModel)]="nuevoCurso.fecha_vencimiento" name="fecha_vencimiento" />
             <div class="error-message" *ngIf="formErrores.fecha_vencimiento">{{ formErrores.fecha_vencimiento }}</div>
           </div>
 
-          <!-- Archivo del curso -->
           <div class="form-group">
             <label>Archivo del curso</label>
             <div class="etiqueta-archivo" (click)="fileInput?.click()">
@@ -101,7 +97,6 @@
             <div class="error-message" *ngIf="formErrores.archivo">{{ formErrores.archivo }}</div>
           </div>
 
-          <!-- Botones -->
           <div class="acciones">
             <button type="button" (click)="cerrarFormulario()">Cancelar</button>
             <button type="button" (click)="guardarCurso()">Guardar</button>
