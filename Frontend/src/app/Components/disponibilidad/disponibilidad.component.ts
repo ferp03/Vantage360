@@ -37,7 +37,6 @@ export class DisponibilidadComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -117,7 +116,7 @@ export class DisponibilidadComponent implements OnInit {
 
         return (
           emp.usuario.toLowerCase().includes(searchLower) ||
-          emp.correo.toLowerCase().includes(searchLower) ||
+          emp.email.toLowerCase().includes(searchLower) ||
           fullName.includes(searchLower)
         );
       }

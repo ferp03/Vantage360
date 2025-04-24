@@ -127,7 +127,7 @@
                 <div>
                   <!-- Clic en el nombre para ir a detalles -->
                   <p class="nombre">
-                    {{empleado.nombre}} {{empleado.apellido_paterno}}
+                    {{empleado.nombre}} {{empleado.apellido_paterno}} {{empleado.apellido_materno}}
                   </p>
                   <p class="usuario">{{empleado.usuario}}</p>
                 </div>
@@ -195,11 +195,9 @@
           <div class="form-group">
             <label for="estado">Estado laboral:</label>
             <select id="estado" [(ngModel)]="nuevoEstado">
-              <option value="Activo">Activo</option>
-              <option value="Vacaciones">Vacaciones</option>
-              <option value="Licencia">Licencia</option>
-              <option value="Capacitación">Capacitación</option>
-              <option value="Baja temporal">Baja temporal</option>
+              <option value="active">Activo</option>
+              <option value="bench">Banca</option>
+              <option value="vacations">Vacaciones</option>
             </select>
           </div>
 

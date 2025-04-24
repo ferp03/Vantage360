@@ -318,13 +318,42 @@
   color: white;
 }
 
+.btn-guardar, .btn-cancelar {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 .btn-guardar {
   background-color: #9668e6;
   color: white;
 }
 
+.btn-cancelar {
+  background-color: #f5f5f5;
+}
+
 .btn-guardar:hover {
-  background-color: #8452d8;
+  background-color: #8050d0;
+  transform: translateY(-2px);
+}
+
+.btn-cancelar:hover {
+  background-color: #f5f5f5cb;
+  transform: translateY(-2px);
+}
+
+.modal-footer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding-bottom: 20px;
 }
 
 /* Formulario de búsqueda */
@@ -395,4 +424,9 @@ input:focus {
 input:not(:placeholder-shown) ~ .reset {
   opacity: 1;
   visibility: visible;
+}
+
+.form-group{
+  max-width: 340px;
+  padding-bottom: 8px;
 }
