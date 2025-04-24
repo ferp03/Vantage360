@@ -105,11 +105,19 @@ export class ApiService {
   
   // ELIMINAR experiencia existente
   deleteExperiencia(historialId: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/empleado/experiencia/${historialId}`)
+    // Convertir explícitamente a número para asegurar consistencia de tipos
+    const id = Number(historialId);
+    
+    console.log(`[ApiService] Enviando solicitud de eliminación para historial_id: ${id}, tipo: ${typeof id}`);
+    
+    // Usar el endpoint correcto y asegurar que se manejan los errores
+    return this.http.delete<any>(`${this.apiUrl}/empleado/experiencia/${id}`)
       .pipe(
         catchError(error => {
-          console.error('Error al eliminar experiencia:', error);
-          return throwError(() => new Error('Error al eliminar experiencia'));
+          console.error('[ApiService] Error completo al eliminar experiencia:', error);
+          
+          // Rethrow para que el componente pueda manejarlo
+          return throwError(() => error);
         })
       );
   }

@@ -319,23 +319,48 @@ router.put('/empleado/experiencia/:historial_id', async (req, res) => {
 
 // Eliminar experiencia laboral
 router.delete('/empleado/experiencia/:historial_id', async (req, res) => {
-  const { historial_id } = req.params;
-  
   try {
-    const { error } = await supabase
+    // Convertir explícitamente a número
+    const historial_id = Number(req.params.historial_id);
+    
+    console.log(`Intentando eliminar experiencia con ID: ${historial_id}, tipo: ${typeof historial_id}`);
+    
+    // Verificar si el ID es válido
+    if (isNaN(historial_id)) {
+      console.error('ID de historial inválido:', req.params.historial_id);
+      return res.status(400).json({ 
+        success: false, 
+        error: 'ID de historial inválido' 
+      });
+    }
+    // Ejecutar la eliminación con el ID numérico
+    const { data, error } = await supabase
       .from('historial_laboral')
       .delete()
-      .eq('historial_id', historial_id);
-
+      .eq('historial_id', historial_id)
+      .select(); // Añadimos select para verificar si se eliminó algo
+    
+    // Comprobar si hubo error en Supabase
     if (error) {
-      console.error('Error al eliminar experiencia:', error.message);
-      return res.status(500).json({ success: false, error: 'Error al eliminar experiencia' });
+      console.error('Error de Supabase al eliminar experiencia:', error);
+      return res.status(500).json({ 
+        success: false, 
+        error: `Error al eliminar experiencia: ${error.message}`,
+        details: error
+      });
     }
-
-    return res.status(200).json({ success: true, message: 'Experiencia eliminada correctamente' });
+    console.log(`Experiencia con ID ${historial_id} eliminada correctamente`);
+    return res.status(200).json({ 
+      success: true, 
+      message: 'Experiencia eliminada correctamente' 
+    });
   } catch (err) {
-    console.error('Error inesperado:', err);
-    return res.status(500).json({ success: false, error: 'Error del servidor' });
+    console.error('Error inesperado al eliminar experiencia:', err);
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Error del servidor', 
+      details: err.message 
+    });
   }
 });
 

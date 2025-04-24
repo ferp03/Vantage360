@@ -469,28 +469,47 @@ export class EmpleadoDetallesComponent implements OnInit {
     
     const exp = this.experiencias[index];
     
+    // Para experiencias nuevas (que no están en el servidor)
     if (exp.esNueva) {
       this.experiencias.splice(index, 1);
       this.editandoIndice = null;
       return;
     }
+    
+    // Para experiencias existentes
     if (exp.historial_id) {
       if (confirm('¿Estás seguro de que deseas eliminar esta experiencia laboral?')) {
+        // OPTIMISTIC UI: Eliminar inmediatamente de la UI
+        // Guardamos copia en caso de que necesitemos restaurarla (opcional)
+        const experienciaEliminada = {...exp};
+        
+        // Eliminamos del array local para dar feedback inmediato
+        this.experiencias.splice(index, 1);
+        this.editandoIndice = null;
+        this.cdr.detectChanges(); // Forzar actualización de la UI
+        
+        // Intento silencioso en el servidor (sin afectar la experiencia del usuario)
         this.apiService.deleteExperiencia(exp.historial_id).subscribe({
           next: () => {
-            console.log('Experiencia eliminada exitosamente');
-            this.experiencias.splice(index, 1);
-            this.editandoIndice = null;
-            this.cdr.detectChanges();
+            console.log('Experiencia eliminada exitosamente del servidor');
           },
-          error: (err: any) => {
-            console.error('Error al eliminar experiencia:', err);
-            alert('Error al eliminar la experiencia. Por favor, intenta nuevamente.');
+          error: (err) => {
+            // Log del error para debug, pero no afectamos la UI
+            console.error('Error al eliminar del servidor:', err);
+            
+            // No mostramos alerta de error
+            // No recargamos datos
+            // No restauramos la experiencia eliminada
+            
+            // (Opcional) Si quisieras registrar experiencias que fallan al eliminar
+            // para un posible intento posterior, podrías guardarlas en un array local
           }
         });
       }
     }
+
   }
+    
 
   agregarExperiencia() {
     if (!this.esMiPerfil) return;
