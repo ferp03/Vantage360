@@ -338,9 +338,9 @@ router.delete('/empleado/experiencia/:historial_id', async (req, res) => {
       .from('historial_laboral')
       .delete()
       .eq('historial_id', historial_id)
-      .select(); // Añadimos select para verificar si se eliminó algo
+      .select(); 
     
-    // Comprobar si hubo error en Supabase
+    // Comprobar si hubo error en base de datos
     if (error) {
       console.error('Error de Supabase al eliminar experiencia:', error);
       return res.status(500).json({ 

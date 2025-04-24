@@ -479,8 +479,7 @@ export class EmpleadoDetallesComponent implements OnInit {
     // Para experiencias existentes
     if (exp.historial_id) {
       if (confirm('¿Estás seguro de que deseas eliminar esta experiencia laboral?')) {
-        // OPTIMISTIC UI: Eliminar inmediatamente de la UI
-        // Guardamos copia en caso de que necesitemos restaurarla (opcional)
+        
         const experienciaEliminada = {...exp};
         
         // Eliminamos del array local para dar feedback inmediato
@@ -497,12 +496,7 @@ export class EmpleadoDetallesComponent implements OnInit {
             // Log del error para debug, pero no afectamos la UI
             console.error('Error al eliminar del servidor:', err);
             
-            // No mostramos alerta de error
-            // No recargamos datos
-            // No restauramos la experiencia eliminada
-            
-            // (Opcional) Si quisieras registrar experiencias que fallan al eliminar
-            // para un posible intento posterior, podrías guardarlas en un array local
+          
           }
         });
       }
