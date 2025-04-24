@@ -16,11 +16,13 @@ export class DisponibilidadComponent implements OnInit {
   filtros = {
     rol: '',
     habilidad: '',
+    capability: '',
     soloDisponibles: false
   };
 
   rolesUnicos: string[] = [];
   habilidadesUnicas: string[] = [];
+  capabilities: string[] = [];
 
   searchText: string = '';
   currentPage: number = 1;
@@ -49,9 +51,10 @@ export class DisponibilidadComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.empleados = res.empleados;
+          console.log(this.empleados);
           this.empleadosFiltrados = [...this.empleados];
 
-          // Extraer roles y habilidades únicas
+          // Extraer roles, habilidades y capabilities
           this.extraerFiltrosUnicos();
           
           this.cargando = false;
@@ -80,6 +83,10 @@ export class DisponibilidadComponent implements OnInit {
       emp.habilidades.map((h: any) => h.nombre)
     );
     this.habilidadesUnicas = [...new Set(todasHabilidades)];
+
+    // Capabilities únicos
+    const todasCapabilities = this.empleados.map(emp => emp.capability);
+    this.capabilities = [...new Set(todasCapabilities)];
   }
 
   aplicarFiltros(): void {
@@ -90,18 +97,16 @@ export class DisponibilidadComponent implements OnInit {
       }
 
       // Filtro por rol
-      if (
-        this.filtros.rol &&
-        !emp.roles.some((r: any) => r.nombre === this.filtros.rol)
-      ) {
+      if (this.filtros.rol && !emp.roles.some((r: any) => r.nombre === this.filtros.rol)) {
+        return false;
+      }
+
+      if (this.filtros.capability && emp.capability !== this.filtros.capability) {
         return false;
       }
 
       // Filtro por habilidad
-      if (
-        this.filtros.habilidad &&
-        !emp.habilidades.some((h: any) => h.nombre === this.filtros.habilidad)
-      ) {
+      if (this.filtros.habilidad && !emp.habilidades.some((h: any) => h.nombre === this.filtros.habilidad)) {
         return false;
       }
 
@@ -128,6 +133,7 @@ export class DisponibilidadComponent implements OnInit {
     this.filtros = {
       rol: '',
       habilidad: '',
+      capability: '',
       soloDisponibles: false
     };
     this.searchText = '';

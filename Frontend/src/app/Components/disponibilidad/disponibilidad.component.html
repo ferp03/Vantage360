@@ -56,6 +56,16 @@
         </select>
       </div>
 
+      <!-- Capability -->
+      <div class="filtro-item">
+        <label for="filtroCapability">Capability:</label>
+        <select id="filtroCapability" [(ngModel)]="filtros.capability" (change)="aplicarFiltros()">
+          <option value="">Todas</option>
+          <option *ngFor="let c of capabilities" [value]="c">{{c}}</option>
+        </select>
+      </div>
+
+
       <!-- Habilidad -->
       <div class="filtro-item">
         <label for="filtroHabilidad">Habilidad:</label>
@@ -96,6 +106,8 @@
           <tr>
             <th>Empleado</th>
             <th>Rol</th>
+            <th>Capability</th>
+            <th>Habilidades</th>
             <th>Cargabilidad</th>
             <th>Estado</th>
             <th>Acciones</th>
@@ -124,6 +136,15 @@
 
             <td>
               <span class="chip" *ngFor="let rol of empleado.roles">{{ rol.nombre }}</span>
+            </td>
+
+            <td>
+              <span>{{ empleado.capability }}</span>
+            </td>
+
+            <td>
+              <span class="chip small" *ngFor="let hab of empleado.habilidades.slice(0, 3)">{{ hab.nombre }}</span>
+              <span class="chip small" *ngIf="empleado.habilidades.length > 3">+{{ empleado.habilidades.length - 3 }}</span>
             </td>
 
             <td>
