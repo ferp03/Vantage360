@@ -156,13 +156,6 @@
   cursor: pointer;
 }
 
-.boton-editar-cuadro {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 0.75rem;
-}
-
 .boton-agregar-exp {
   background-color: #9668e6;
   color: white;
@@ -345,31 +338,6 @@
   margin-top: 2px;
 }
 
-/* Estilo para los botones */
-.acciones {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 6px;
-}
-
-.boton-cancelar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  background-color: rgba(80, 80, 100, 0.6);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.boton-cancelar:hover {
-  background-color: rgba(100, 100, 130, 0.7);
-}
-
 /* Estilo para los inputs con error */
 .error-input {
   border-color: #ff6b6b !important;
@@ -453,4 +421,75 @@
 
 .acciones-modal button.cancelar:hover {
   background-color: #888;
+}
+
+/* Añadidos los nuevos estilos */
+.acciones {
+  display: flex;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.boton-guardar,
+.boton-cancelar,
+.boton-eliminar {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  gap: 5px;
+}
+
+.boton-guardar {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+}
+
+.boton-guardar:hover {
+  background-color: #388e3c;
+}
+
+.boton-cancelar {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.boton-cancelar:hover {
+  background-color: #e0e0e0;
+}
+
+.boton-eliminar {
+  background-color: #f44336;
+  color: white;
+  border: none;
+}
+
+.boton-eliminar:hover {
+  background-color: #d32f2f;
+}
+
+.boton-editar-cuadro {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.boton-editar-cuadro:hover {
+  background-color: #1976d2;
 }

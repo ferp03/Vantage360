@@ -95,14 +95,11 @@
         *ngFor="let experiencia of experiencias; let i = index"
       >
         <button
-          *ngIf="editandoTrayectoria && esMiPerfil"
+          *ngIf="editandoTrayectoria && esMiPerfil && editandoIndice !== i"
           class="boton-editar-cuadro"
-          (click)="toggleEditarTrayectoria(i)"
+          (click)="iniciarEdicionExperiencia(i)"
         >
-          <span class="material-icons">
-            {{ editandoIndice === i ? 'save' : 'edit' }}
-          </span>
-          {{ editandoIndice === i ? 'Guardar' : 'Editar' }}
+          <span class="material-icons">edit</span> Editar
         </button>
 
         <div *ngIf="editandoIndice !== i">
@@ -122,13 +119,13 @@
         <div *ngIf="editandoIndice === i" class="modo-edicion experiencia-form">
           <div class="campo-grupo">
             <label>
-              <span class="material-icons">device_hub</span> Título:
+              <span class="material-icons">device_hub</span> Capability:
             </label>
             <select 
               [(ngModel)]="experiencia.capability_id" 
               [class.error-input]="errores[i].titulo"
               (ngModelChange)="experiencia.titulo = obtenerNombreCapability(experiencia.capability_id)">
-              <option [ngValue]="undefined" disabled>{{ capabilities.length ? 'Selecciona un título' : 'Cargando opciones...' }}</option>
+              <option [ngValue]="undefined" disabled>{{ capabilities.length ? 'Selecciona una opción' : 'Cargando opciones...' }}</option>
               <option *ngFor="let cap of capabilities" [ngValue]="cap.id">{{ cap.nombre }}</option>
             </select>
             <span class="error" *ngIf="errores[i].titulo">Campo requerido</span>
@@ -194,12 +191,16 @@
           </div>
 
           <div class="acciones">
-            <button
-              *ngIf="experiencia.esNueva"
-              class="boton-cancelar"
-              (click)="cancelarNuevaExperiencia(i)"
-            >
-              <span class="material-icons">cancel</span> Cancelar
+            <div class="botones-principales">
+              <button class="boton-guardar" (click)="guardarExperienciaForzado(i)">
+                <span class="material-icons">save</span> Guardar
+              </button>
+              <button class="boton-cancelar" (click)="cancelarEdicionExperiencia(i)">
+                <span class="material-icons">cancel</span> Cancelar
+              </button>
+            </div>
+            <button class="boton-eliminar" (click)="eliminarExperiencia(i)">
+              <span class="material-icons">delete</span> Eliminar
             </button>
           </div>
         </div>

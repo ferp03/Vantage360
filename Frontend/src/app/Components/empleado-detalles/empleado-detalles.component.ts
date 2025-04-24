@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -13,7 +13,7 @@ interface ExperienciaLaboral {
   descripcion: string;
   esNueva?: boolean;
   esPuestoActual?: boolean;
-  capability_id?: number; // Añadir este campo
+  capability_id?: number; 
 }
 
 interface Capability {
@@ -61,6 +61,8 @@ export class EmpleadoDetallesComponent implements OnInit {
   experiencias: ExperienciaLaboral[] = [];
   capabilities: Capability[] = [];
 
+  experienciasOriginales: { [key: number]: ExperienciaLaboral } = {};
+
   editandoInfo = false;
   editandoTrayectoria = false;
   editandoIndice: number | null = null;
@@ -84,17 +86,16 @@ export class EmpleadoDetallesComponent implements OnInit {
     private apiService: ApiService,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
-    // Escuchar cambios en los parámetros de la ruta
     this.route.paramMap.subscribe(params => {
-      this.empleadoId = params.get('id'); // Obtén el nuevo ID
+      this.empleadoId = params.get('id');
       const idUsuarioLogueado = this.authService.userId;
       this.esMiPerfil = (idUsuarioLogueado == this.empleadoId);
   
-      // Recargar los datos del componente
       this.cargarInfoBasica();
       this.cargarHabilidades();
       this.cargarCursos();
@@ -102,6 +103,7 @@ export class EmpleadoDetallesComponent implements OnInit {
       this.cargarCapabilities();
     });
   }
+
   cargarCapabilities() {
     console.log('Intentando cargar capabilities...');
     this.apiService.getCapabilities().subscribe({
@@ -116,7 +118,6 @@ export class EmpleadoDetallesComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Error al obtener capabilities:', err);
-        // Usar datos de prueba si falla la carga
         this.capabilities = [
           { id: 1, nombre: 'Agile' },
           { id: 2, nombre: 'Back End Engineering' },
@@ -128,7 +129,6 @@ export class EmpleadoDetallesComponent implements OnInit {
       }
     });
   }
-  
 
   cargarInfoBasica() {
     if (!this.empleadoId) return;
@@ -178,16 +178,19 @@ export class EmpleadoDetallesComponent implements OnInit {
       next: (res) => {
         if (res.success) {
           this.experiencias = res.data;
-          // Procesar las experiencias para marcar las que no tienen fecha fin como puestos actuales
           this.experiencias.forEach(exp => {
             if (!exp.fin) {
               exp.esPuestoActual = true;
             } else {
               exp.esPuestoActual = false;
             }
-            // Asegurarse de que capability_id esté asignado si viene en los datos
+            
+            // Asegurarse de que el capability_id se guarde
             if (exp.capability_id) {
-              exp.capability_id = exp.capability_id;
+              // Buscar el nombre de la capability correspondiente
+              const capability = this.capabilities.find(c => c.id === exp.capability_id);
+              // Asignar el nombre de la capability como título
+              exp.titulo = capability ? capability.nombre : `Capability ${exp.capability_id}`;
             }
           });
           this.ordenarExp();
@@ -216,8 +219,6 @@ export class EmpleadoDetallesComponent implements OnInit {
     const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES', opciones);
     return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
   }
-
-
 
   toggleEditarInfo() {
     if (!this.esMiPerfil) return;
@@ -251,26 +252,34 @@ export class EmpleadoDetallesComponent implements OnInit {
     const exp = this.experiencias[index];
     
     if (exp.esPuestoActual) {
-      // Si marca como puesto actual, eliminamos la fecha de fin
       exp.fin = '';
       this.errores[index].fin = false;
       this.errores[index].fechaInvalida = false;
     } else {
-      // Si desmarca, verificamos inmediatamente si hay una fecha fin válida
       if (exp.fin) {
-        this.errores[index].fin = false; // Ya hay fecha, quitamos error
-        this.validarFechas(index); // Validamos si la fecha es correcta
+        this.errores[index].fin = false;
+        this.validarFechas(index);
       } else {
-        this.errores[index].fin = true; // No hay fecha, mostramos error
+        this.errores[index].fin = true;
       }
     }
   }
 
-  toggleEditarTrayectoria(index: number) {
-    if (!this.esMiPerfil) return;
-    if (!this.editandoTrayectoria) return;
+  iniciarEdicionExperiencia(index: number) {
+    if (!this.esMiPerfil || !this.editandoTrayectoria) return;
+    
+    this.editandoIndice = index;
+    if (!this.errores[index]) {
+      this.errores[index] = {};
+    }
+    this.experienciasOriginales[index] = { ...this.experiencias[index] };
+  }
 
+  guardarExperiencia(index: number) {
+    if (!this.esMiPerfil || !this.editandoTrayectoria) return;
+    
     const exp = this.experiencias[index];
+    
     this.errores[index] = {
       titulo: !exp.titulo?.trim(),
       titulo_proyecto: !exp.titulo_proyecto?.trim(),
@@ -283,56 +292,196 @@ export class EmpleadoDetallesComponent implements OnInit {
 
     this.validarFechas(index);
 
-    if (this.editandoIndice === index) {
-      if (Object.values(this.errores[index]).some(e => e)) {
-        return;
-      }
+    if (Object.values(this.errores[index]).some(e => e)) {
+      return;
+    }
 
-      const payload = {
-        titulo_puesto: exp.titulo,
-        titulo_proyecto: exp.titulo_proyecto,
-        empresa: exp.empresa,
-        descripcion: exp.descripcion,
-        fecha_inicio: exp.inicio,
-        fecha_fin: exp.esPuestoActual ? null : exp.fin,
-        es_puesto_actual: exp.esPuestoActual,
-        capability_id: exp.capability_id // Añadir este campo al payload
-      };
+    const esNueva = exp.esNueva;
+    const huboModificaciones = this.detectarCambiosEnExperiencia(index);
 
-      if (exp.esNueva) {
-        if (!this.empleadoId) return;
-        this.apiService.createExperiencia(this.empleadoId, payload).subscribe({
-          next: (res) => {
-            console.log('Experiencia creada:', res);
-            exp.historial_id = res.data?.historial_id;
+    if (!esNueva && !huboModificaciones) {
+      console.log('No se detectaron cambios, cerrando edición');
+      this.editandoIndice = null;
+      return;
+    }
+
+    const payload = {
+      titulo_puesto: exp.titulo,
+      titulo_proyecto: exp.titulo_proyecto,
+      empresa: exp.empresa,
+      descripcion: exp.descripcion,
+      fecha_inicio: exp.inicio,
+      fecha_fin: exp.esPuestoActual ? null : exp.fin,
+      es_puesto_actual: exp.esPuestoActual,
+      capability_id: exp.capability_id
+    };
+
+    if (esNueva) {
+      if (!this.empleadoId) return;
+      this.apiService.createExperiencia(this.empleadoId, payload).subscribe({
+        next: (res) => {
+          console.log('Experiencia creada:', res);
+          if (res && res.data) {
+            exp.historial_id = res.data.historial_id;
             delete exp.esNueva;
             this.ordenarExp();
-          },
-          error: (err) => {
-            console.error('Error al crear experiencia:', err);
           }
-        });
-      } 
-      else if (exp.historial_id) {
-        this.apiService.updateExperiencia(exp.historial_id, payload).subscribe({
-          next: () => {
-            console.log('Experiencia actualizada.');
-            this.ordenarExp();
-          },
-          error: (err) => console.error('Error al actualizar experiencia:', err)
-        });
-      }
-
-      this.editandoIndice = null;
+          this.editandoIndice = null;
+          this.cargarTrayectoria();
+        },
+        error: (err) => {
+          console.error('Error al crear experiencia:', err);
+        }
+      });
     } 
-    else {
-      this.editandoIndice = index;
-      if (!this.errores[index]) {
-        this.errores[index] = {};
-      }
+    else if (exp.historial_id) {
+      this.apiService.updateExperiencia(exp.historial_id, payload).subscribe({
+        next: () => {
+          console.log('Experiencia actualizada.');
+          this.ordenarExp();
+          this.editandoIndice = null;
+          this.cargarTrayectoria();
+        },
+        error: (err) => console.error('Error al actualizar experiencia:', err)
+      });
     }
   }
 
+  detectarCambiosEnExperiencia(index: number): boolean {
+    const original = this.experienciasOriginales[index];
+    const actual = this.experiencias[index];
+
+    if (!original) return true;
+    return (
+      original.titulo !== actual.titulo ||
+      original.titulo_proyecto !== actual.titulo_proyecto ||
+      original.empresa !== actual.empresa ||
+      original.descripcion !== actual.descripcion ||
+      original.inicio !== actual.inicio ||
+      original.fin !== actual.fin ||
+      original.esPuestoActual !== actual.esPuestoActual ||
+      original.capability_id !== actual.capability_id
+    );
+  }
+
+  toggleEditarTrayectoria(index: number) {
+    if (!this.esMiPerfil) return;
+    
+    console.log('toggleEditarTrayectoria llamado con índice:', index);
+    
+    if (this.editandoIndice === index) {
+      this.guardarExperienciaForzado(index);
+    } else {
+      this.iniciarEdicionExperiencia(index);
+    }
+  }
+
+  guardarExperienciaForzado(index: number) {
+    if (!this.esMiPerfil || !this.editandoTrayectoria) return;
+    
+    console.log('Guardando experiencia forzadamente:', index);
+    
+    const exp = this.experiencias[index];
+    
+    this.errores[index] = {
+      titulo: !exp.titulo?.trim(),
+      titulo_proyecto: !exp.titulo_proyecto?.trim(),
+      empresa: !exp.empresa?.trim(),
+      inicio: !exp.inicio?.trim(),
+      fin: !exp.esPuestoActual && !exp.fin?.trim(),
+      descripcion: !exp.descripcion?.trim(),
+      fechaInvalida: false
+    };
+
+    this.validarFechas(index);
+
+    if (Object.values(this.errores[index]).some(e => e)) {
+      console.log('Hay errores de validación, no se puede guardar');
+      return;
+    }
+    
+    const payload = {
+      titulo_puesto: exp.titulo,
+      titulo_proyecto: exp.titulo_proyecto,
+      empresa: exp.empresa,
+      descripcion: exp.descripcion,
+      fecha_inicio: exp.inicio,
+      fecha_fin: exp.esPuestoActual ? null : exp.fin,
+      es_puesto_actual: exp.esPuestoActual,
+      capability_id: exp.capability_id
+    };
+
+    console.log('Payload a guardar:', payload);
+    
+    if (exp.esNueva) {
+      if (!this.empleadoId) return;
+      this.apiService.createExperiencia(this.empleadoId, payload).subscribe({
+        next: (res) => {
+          console.log('Experiencia creada exitosamente');
+          this.editandoIndice = null;
+          this.cargarTrayectoria();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error al crear experiencia:', err);
+        }
+      });
+    } 
+    else if (exp.historial_id) {
+      this.apiService.updateExperiencia(exp.historial_id, payload).subscribe({
+        next: () => {
+          console.log('Experiencia actualizada exitosamente');
+          this.editandoIndice = null;
+          this.cargarTrayectoria();
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error al actualizar experiencia:', err);
+        }
+      });
+    }
+  }
+
+  cancelarEdicionExperiencia(index: number) {
+    if (!this.esMiPerfil || !this.editandoTrayectoria) return;
+    
+    if (this.experiencias[index]?.esNueva) {
+      this.experiencias.splice(index, 1);
+    } else if (this.experienciasOriginales[index]) {
+      this.experiencias[index] = { ...this.experienciasOriginales[index] };
+    }
+    
+    this.editandoIndice = null;
+    delete this.errores[index];
+  }
+
+  eliminarExperiencia(index: number) {
+    if (!this.esMiPerfil || !this.editandoTrayectoria) return;
+    
+    const exp = this.experiencias[index];
+    
+    if (exp.esNueva) {
+      this.experiencias.splice(index, 1);
+      this.editandoIndice = null;
+      return;
+    }
+    if (exp.historial_id) {
+      if (confirm('¿Estás seguro de que deseas eliminar esta experiencia laboral?')) {
+        this.apiService.deleteExperiencia(exp.historial_id).subscribe({
+          next: () => {
+            console.log('Experiencia eliminada exitosamente');
+            this.experiencias.splice(index, 1);
+            this.editandoIndice = null;
+            this.cdr.detectChanges();
+          },
+          error: (err: any) => {
+            console.error('Error al eliminar experiencia:', err);
+            alert('Error al eliminar la experiencia. Por favor, intenta nuevamente.');
+          }
+        });
+      }
+    }
+  }
 
   agregarExperiencia() {
     if (!this.esMiPerfil) return;
@@ -346,13 +495,11 @@ export class EmpleadoDetallesComponent implements OnInit {
       descripcion: '',
       esNueva: true,
       esPuestoActual: false,
-      capability_id: undefined // Inicializar el nuevo campo
+      capability_id: undefined
     };
     
     this.experiencias.unshift(nueva);
-    
     this.editandoIndice = 0;
-    
     this.errores[this.editandoIndice] = { fechaInvalida: false };
   }
 
@@ -428,7 +575,6 @@ export class EmpleadoDetallesComponent implements OnInit {
   validarFechas(index: number): boolean {
     const exp = this.experiencias[index];
     
-    // Si es un puesto actual, no validamos fecha fin
     if (exp.esPuestoActual) {
       this.errores[index].fechaInvalida = false;
       return false;
@@ -441,7 +587,6 @@ export class EmpleadoDetallesComponent implements OnInit {
     const fechaInicio = new Date(exp.inicio);
     const fechaFin = new Date(exp.fin);
     
-    // Determinar si la fecha fin es válida
     const fechaInvalida = fechaFin < fechaInicio;
     this.errores[index].fechaInvalida = fechaInvalida;
     

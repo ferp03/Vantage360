@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../envs/environment';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -100,6 +101,17 @@ export class ApiService {
   // ACTUALIZAR experiencia existente
   updateExperiencia(historialId: number, datos: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/empleado/experiencia/${historialId}`, datos);
+  }
+  
+  // ELIMINAR experiencia existente
+  deleteExperiencia(historialId: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/empleado/experiencia/${historialId}`)
+      .pipe(
+        catchError(error => {
+          console.error('Error al eliminar experiencia:', error);
+          return throwError(() => new Error('Error al eliminar experiencia'));
+        })
+      );
   }
   
   // Validar contraseña actual
