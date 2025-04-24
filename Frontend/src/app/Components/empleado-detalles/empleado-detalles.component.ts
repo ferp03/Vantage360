@@ -99,34 +99,41 @@ export class EmpleadoDetallesComponent implements OnInit {
       this.cargarInfoBasica();
       this.cargarHabilidades();
       this.cargarCursos();
-      this.cargarTrayectoria();
-      this.cargarCapabilities();
+      
+      // Primero cargamos las capabilities, y después la trayectoria
+      this.cargarCapabilities().then(() => {
+        this.cargarTrayectoria();
+      });
     });
   }
 
-  cargarCapabilities() {
+  cargarCapabilities(): Promise<void> {
     console.log('Intentando cargar capabilities...');
-    this.apiService.getCapabilities().subscribe({
-      next: (res: any) => {
-        console.log('Respuesta completa de capabilities:', res);
-        if (res.success) {
-          this.capabilities = res.data;
-          console.log('Capabilities cargadas:', this.capabilities);
-        } else {
-          console.error('Error al cargar capabilities:', res.error);
+    return new Promise<void>((resolve) => {
+      this.apiService.getCapabilities().subscribe({
+        next: (res: any) => {
+          console.log('Respuesta completa de capabilities:', res);
+          if (res.success) {
+            this.capabilities = res.data;
+            console.log('Capabilities cargadas:', this.capabilities);
+          } else {
+            console.error('Error al cargar capabilities:', res.error);
+          }
+          resolve(); // Resolvemos la promesa sin importar si hubo éxito o error
+        },
+        error: (err: any) => {
+          console.error('Error al obtener capabilities:', err);
+          this.capabilities = [
+            { id: 1, nombre: 'Agile' },
+            { id: 2, nombre: 'Back End Engineering' },
+            { id: 3, nombre: 'Business Analyst' },
+            { id: 4, nombre: 'Capital Markets Processes' },
+            { id: 5, nombre: 'Cloud' }
+          ];
+          console.log('Usando capabilities de prueba');
+          resolve(); // Resolvemos la promesa con capabilities de respaldo
         }
-      },
-      error: (err: any) => {
-        console.error('Error al obtener capabilities:', err);
-        this.capabilities = [
-          { id: 1, nombre: 'Agile' },
-          { id: 2, nombre: 'Back End Engineering' },
-          { id: 3, nombre: 'Business Analyst' },
-          { id: 4, nombre: 'Capital Markets Processes' },
-          { id: 5, nombre: 'Cloud' }
-        ];
-        console.log('Usando capabilities de prueba');
-      }
+      });
     });
   }
 
@@ -185,12 +192,14 @@ export class EmpleadoDetallesComponent implements OnInit {
               exp.esPuestoActual = false;
             }
             
-            // Asegurarse de que el capability_id se guarde
+            // Asignar el nombre correcto de la capability basado en su ID
             if (exp.capability_id) {
-              // Buscar el nombre de la capability correspondiente
               const capability = this.capabilities.find(c => c.id === exp.capability_id);
-              // Asignar el nombre de la capability como título
-              exp.titulo = capability ? capability.nombre : `Capability ${exp.capability_id}`;
+              if (capability) {
+                exp.titulo = capability.nombre;
+              } else {
+                exp.titulo = `Capability ${exp.capability_id}`;
+              }
             }
           });
           this.ordenarExp();
