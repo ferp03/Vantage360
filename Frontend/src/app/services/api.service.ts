@@ -47,7 +47,7 @@ export class ApiService {
   //}
 
   obtenerCertificadosPorEmpleado(empleadoId: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/empleado/${empleadoId}`);
+    return this.http.get(`${this.apiUrl}/empleado/api/${empleadoId}`);
   }
 
   eliminarCertificado(capabilityId: number): Observable<any> {
