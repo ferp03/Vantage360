@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../auth/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-cursos',
@@ -12,6 +14,10 @@ export class CursosComponent implements OnInit {
   cursosPorPagina = 4;
   paginaActual = 1;
   totalPaginas = 1;
+  
+  // Error handling
+  error: string | null = null;
+  loading: boolean = false;
 
   mostrarFormulario = false;
 
@@ -29,19 +35,68 @@ export class CursosComponent implements OnInit {
     archivo: ''
   };
 
-  empleadoId = '2a159dda-93e7-436c-a1a4-2cb42f493665'; 
+  empleadoId: string = '';
 
-  constructor(private api: ApiService) {}
+  constructor(
+    private api: ApiService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
-    this.obtenerCursos();
+    // Get user ID from AuthService
+    const userId = this.authService.userId;
+    
+    console.log('AuthService userId:', userId);
+    
+    if (userId) {
+      this.empleadoId = userId;
+      console.log('Using userId from AuthService:', this.empleadoId);
+      this.obtenerCursos();
+    } else {
+      this.error = 'No se pudo obtener el ID del usuario. Por favor, vuelve a iniciar sesión.';
+      console.error('No user ID available from auth service');
+    }
   }
 
   obtenerCursos() {
-    this.api.obtenerCursosEmpleado(this.empleadoId).subscribe(res => {
-      this.cursos = res.data || [];
-      this.ordenarCursosPorFecha();
-      this.actualizarPaginacion();
+    console.log('Obteniendo cursos para empleadoId:', this.empleadoId);
+    this.loading = true;
+    this.error = null;
+    
+    this.api.obtenerCursosEmpleado(this.empleadoId).subscribe({
+      next: (res) => {
+        console.log('API response:', res);
+        this.loading = false;
+        
+        if (res && res.data) {
+          this.cursos = res.data;
+          console.log('Cursos obtenidos:', this.cursos.length);
+          
+          if (this.cursos.length === 0) {
+            console.log('No se encontraron cursos para este usuario');
+          }
+          
+          this.ordenarCursosPorFecha();
+          this.actualizarPaginacion();
+        } else {
+          console.error('Formato de respuesta inválido:', res);
+          this.error = 'Formato de respuesta inválido';
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loading = false;
+        console.error('Error al obtener cursos:', err);
+        
+        if (err.status === 401) {
+          this.error = 'Sesión expirada. Por favor, vuelve a iniciar sesión.';
+        } else if (err.status === 403) {
+          this.error = 'No tienes permiso para acceder a estos cursos.';
+        } else if (err.status === 404) {
+          this.error = 'No se encontraron cursos para este usuario.';
+        } else {
+          this.error = `Error al obtener cursos: ${err.message || 'Desconocido'}`;
+        }
+      }
     });
   }
 
@@ -131,12 +186,19 @@ export class CursosComponent implements OnInit {
     formData.append('archivo', this.archivoSeleccionado!);
 
     this.api.crearCurso(this.empleadoId, formData).subscribe({
-      next: () => {
+      next: (res) => {
+        console.log('Curso guardado:', res);
         this.obtenerCursos();
         this.cerrarFormulario();
       },
       error: (err) => {
         console.error('Error al guardar curso:', err);
+        
+        if (err.status === 401) {
+          this.error = 'Sesión expirada. Por favor, vuelve a iniciar sesión.';
+        } else {
+          this.error = `Error al guardar curso: ${err.error?.message || err.message || 'Desconocido'}`;
+        }
       }
     });
   }
