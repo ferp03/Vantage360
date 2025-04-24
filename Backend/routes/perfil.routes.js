@@ -203,7 +203,6 @@ router.post('/empleado/:id/experiencia', async (req, res) => {
   }
 
   try {
-    // Don't specify historial_id, let Supabase auto-generate it
     const { data, error } = await supabase
       .from('historial_laboral')
       .insert([{
@@ -215,7 +214,7 @@ router.post('/empleado/:id/experiencia', async (req, res) => {
         fecha_inicio,
         fecha_fin
       }])
-      .select(); // Add this to return the created record with its ID
+      .select(); 
 
     if (error) {
       console.error('Error al crear nueva experiencia:', error.message);

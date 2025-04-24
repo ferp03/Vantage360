@@ -1,49 +1,114 @@
 <div class="courses-dashboard">
-    <header class="courses-header">
-      <h1>Mis Cursos</h1>
-      <p>Gestiona tu progreso de aprendizaje</p>
-    </header>
-  
-    <section class="courses-container">
-      <div class="course-card">
-        <h3>Ciberseguridad</h3>
-        <div class="progress-container">
-          <div class="progress-label">
-            <span>Progreso</span>
-            <span>75%</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress" style="width: 75%"></div>
-          </div>
+  <header class="courses-header">
+    <div class="header-row">
+      <div class="header-text">
+        <h1>Mis Cursos</h1>
+        <p>Gestiona tu progreso de aprendizaje</p>
+      </div>
+      <div class="header-button">
+        <button class="btn-discreto" (click)="abrirFormulario()">
+          <span class="material-icons">add_circle_outline</span>
+          <span>Agregar Curso</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="courses-grid">
+    <div class="course-card" *ngFor="let curso of cursosPaginados">
+      <div class="course-header">
+        <h3>{{ curso.nombre }}</h3>
+      </div>
+
+      <div class="course-dates">
+        <div class="date-label">
+          <span class="date-icon material-icons">calendar_today</span>
+          <span>Emisión: {{ curso.fecha_emision }}</span>
         </div>
-        <div class="course-actions">
-          <button class="btn btn-primary">Continuar</button>
-          <button class="btn btn-secondary">Ver detalles</button>
+        <div class="date-label">
+          <span class="date-icon material-icons">schedule</span>
+          <span>Vence: {{ curso.fecha_vencimiento }}</span>
         </div>
       </div>
-  
-      <div class="course-card">
-        <h3>Python</h3>
-        <div class="progress-container">
-          <div class="progress-label">
-            <span>Progreso</span>
-            <span>75%</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress" style="width: 75%"></div>
-          </div>
+
+      <div class="course-description" *ngIf="curso.descripcion">
+        <div class="description-title">
+          <span class="material-icons">info</span> Descripción:
         </div>
-        <div class="course-actions">
-          <button class="btn btn-primary">Continuar</button>
-          <button class="btn btn-secondary">Ver detalles</button>
-        </div>
+        <div>{{ curso.descripcion }}</div>
       </div>
-  
-      <button class="btn btn-add-course">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8 1V15M1 8H15" stroke="white" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        Agregar Nuevo Curso
-      </button>
-    </section>
+
+      <div class="course-actions">
+        <a [href]="curso.archivo" target="_blank" class="btn btn-certificate">
+          <span class="certificate-icon material-icons">school</span>
+          Ver Certificado
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="pagination">
+    <button (click)="cambiarPagina(paginaActual - 1)" [disabled]="paginaActual === 1">
+      <span class="material-icons">chevron_left</span>
+    </button>
+
+    <button (click)="cambiarPagina(paginaActual + 1)" [disabled]="paginaActual === totalPaginas">
+      <span class="material-icons">chevron_right</span>
+    </button>
   </div>
+
+  <!-- Modal para agregar curso -->
+  <div class="modal-overlay" *ngIf="mostrarFormulario">
+    <div class="modal-contenido formulario-curso">
+      <div class="modal-header">
+        <h2>Agregar Curso</h2>
+        <button class="btn-cerrar" (click)="cerrarFormulario()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <form>
+
+          <!-- Nombre del curso -->
+          <div class="form-group">
+            <label>Nombre del curso</label>
+            <input type="text" [(ngModel)]="nuevoCurso.nombre" name="nombre" />
+            <div class="error-message" *ngIf="formErrores.nombre">{{ formErrores.nombre }}</div>
+          </div>
+
+          <!-- Fecha de emisión -->
+          <div class="form-group">
+            <label>Fecha de emisión</label>
+            <input type="date" [(ngModel)]="nuevoCurso.fecha_emision" name="fecha_emision" />
+            <div class="error-message" *ngIf="formErrores.fecha_emision">{{ formErrores.fecha_emision }}</div>
+          </div>
+
+          <!-- Fecha de vencimiento -->
+          <div class="form-group">
+            <label>Fecha de vencimiento</label>
+            <input type="date" [(ngModel)]="nuevoCurso.fecha_vencimiento" name="fecha_vencimiento" />
+            <div class="error-message" *ngIf="formErrores.fecha_vencimiento">{{ formErrores.fecha_vencimiento }}</div>
+          </div>
+
+          <!-- Archivo del curso -->
+          <div class="form-group">
+            <label>Archivo del curso</label>
+            <div class="etiqueta-archivo" (click)="fileInput?.click()">
+              <span class="nombre-archivo">{{ archivoSeleccionado?.name || 'Ningún archivo seleccionado' }}</span>
+              <span class="boton-examinar">Examinar</span>
+              <input #fileInput type="file" hidden (change)="onArchivoSeleccionado($event)" />
+            </div>
+            <span class="hint-archivo">Formatos aceptados: PDF, JPG, PNG</span>
+            <div class="error-message" *ngIf="formErrores.archivo">{{ formErrores.archivo }}</div>
+          </div>
+
+          <!-- Botones -->
+          <div class="acciones">
+            <button type="button" (click)="cerrarFormulario()">Cancelar</button>
+            <button type="button" (click)="guardarCurso()">Guardar</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
