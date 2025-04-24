@@ -16,16 +16,26 @@
 
 .caja-info {
   display: flex;
-  gap: 2rem;
-  /* background-color: #1C1C24; */
+  flex-direction: column;
   box-shadow: 1px 2px 6px #B998F7;
   transition: transform 0.2s, box-shadow 0.2s;
-  color: white;
   border-radius: 15px;
   padding: 2rem;
   border: 3px solid #9668e6;
+}
+
+.caja-info-superior {
+  display: flex;
+  gap: 2rem;
+  /* background-color: #1C1C24; */
+  color: white;
   flex-wrap: wrap;
   position: relative;
+}
+
+.botones {
+  display: flex;
+  gap: 10px;
 }
 
 .izquierda {
@@ -89,7 +99,7 @@
 
 .derecha {
   flex: 1;
-  min-width: 300px;
+  width: 50%;
   box-shadow: 1px 2px 6px #B998F7;
   transition: transform 0.2s, box-shadow 0.2s;
 }

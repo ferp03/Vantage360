@@ -76,12 +76,8 @@ router.get('/empleado/:id/certificaciones', async (req, res) => {
   const { id } = req.params;
 
   const { data, error } = await supabase
-    .from('empleado_certificacion')
-    .select(`
-      certificacion:certificacion_id (
-        nombre
-      )
-    `)
+    .from('certificacion')
+    .select('nombre')
     .eq('empleado_id', id);
 
   if (error) {
@@ -90,7 +86,7 @@ router.get('/empleado/:id/certificaciones', async (req, res) => {
   }
 
   const certificaciones = data.map(entry => ({
-    nombre: entry.certificacion.nombre
+    nombre: entry.nombre
   }));
 
   return res.status(200).json({

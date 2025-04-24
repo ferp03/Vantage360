@@ -1,6 +1,9 @@
 <div class="contenedor-detalle">
   <h1>Mi perfil</h1>
   <div class="caja-info" [ngClass]="{ 'editando': editandoInfo }">
+  <div class="caja-info-superior">
+
+      
     <div class="izquierda" [ngClass]="{ 'modo-edicion': editandoInfo }">
       <div class="izquierda-superior">
         
@@ -20,13 +23,13 @@
             </div>
           </div>
         </div>
-
-
+        
+        
         <p><strong><span class="material-icons">email</span> Correo:</strong> {{ info.correo }}</p>
         <p><strong><span class="material-icons">person</span> Usuario:</strong> {{ info.usuario }}</p>
         <p>
           <strong><span class="material-icons">bar_chart</span> Estado Laboral: </strong>
-            <span *ngIf="!editandoInfo">{{ nuevoEstado | titlecase }}</span>
+          <span *ngIf="!editandoInfo">{{ nuevoEstado | titlecase }}</span>
           <select *ngIf="editandoInfo" [(ngModel)]="nuevoEstado">
             <option value="bench">Bench</option>
             <option value="active">Active</option>
@@ -35,66 +38,74 @@
         </p>
         <p><strong><span class="material-icons">bar_chart</span> Cargabilidad:</strong> {{ info.cargabilidad }}%</p>
         <p><strong><span class="material-icons">person</span> People Lead:</strong> {{ info.lead_usuario }}</p>
-
-
+        
+        
         
         
         
         <button
-          *ngIf="editandoInfo && esMiPerfil"
-          class="boton-cambiar-pass"
-          (click)="mostrarModalContrasena = true"
+        *ngIf="editandoInfo && esMiPerfil"
+        class="boton-cambiar-pass"
+        (click)="mostrarModalContrasena = true"
         >
-          <span class="material-icons">lock</span> Cambiar contraseña
+        <span class="material-icons">lock</span> Cambiar contraseña
+      </button>
+    </div>
+    
+    <div class="izquierda-habilidades">
+      <div class="habilidades">
+        <div class="encabezado-habilidades">
+          <h4><span class="material-icons">star</span> Habilidades</h4>
+          <button
+          *ngIf="editandoInfo && esMiPerfil"
+          class="boton-agregar-habilidad"
+          (click)="irARegistroHabilidades()"
+          >
+          <span>+</span>
         </button>
       </div>
-
-      <div class="izquierda-habilidades">
-        <div class="habilidades">
-          <div class="encabezado-habilidades">
-            <h4><span class="material-icons">star</span> Habilidades</h4>
-            <button
-              *ngIf="editandoInfo && esMiPerfil"
-              class="boton-agregar-habilidad"
-              (click)="irARegistroHabilidades()"
-            >
-              <span>+</span>
-            </button>
-          </div>
-
-          <div class="etiquetas-habilidad">
-            <span *ngFor="let habilidad of habilidades">{{ habilidad }}</span>
-          </div>
-
-          <h4><span class="material-icons">school</span> Certificados</h4>
-          <ul>
-            <li *ngFor="let curso of cursos">{{ curso.nombre }}</li>
-          </ul>
-        </div>
-
-        
+      
+      <div class="etiquetas-habilidad">
+        <span *ngFor="let habilidad of habilidades">{{ habilidad }}</span>
       </div>
+      
+      <h4><span class="material-icons">school</span> Certificados</h4>
+      <ul>
+        <li *ngFor="let certificado of certificados">{{ certificado.nombre }}</li>
+      </ul>
     </div>
-
-    <div class="derecha"></div>
-
-    <button
-      class="boton-cancelar"
-      *ngIf="editandoInfo && esMiPerfil"
-      (click)="cancelarEdicion()"
-    >
-      <span class="material-icons">cancel</span>
-      Cancelar
-    </button>
-    <button
-      class="boton-editar"
-      *ngIf="esMiPerfil"
-      (click)="editandoInfo ? guardarCambios() : toggleEditarInfo()"
-    >
-      <span class="material-icons">{{ editandoInfo ? 'save' : 'edit' }}</span>
-      {{ editandoInfo ? 'Guardar' : 'Editar' }}
-    </button>
+    
+    
   </div>
+    </div>
+  
+    <div class="derecha"></div>
+    
+    
+  </div>
+
+  <div class="botones">
+    
+    <button
+    class="boton-cancelar"
+    *ngIf="editandoInfo && esMiPerfil"
+    (click)="cancelarEdicion()"
+    >
+    <span class="material-icons">cancel</span>
+    Cancelar
+  </button>
+  <button
+  class="boton-editar"
+  *ngIf="esMiPerfil"
+  (click)="editandoInfo ? guardarCambios() : toggleEditarInfo()"
+  >
+  <span class="material-icons">{{ editandoInfo ? 'save' : 'edit' }}</span>
+  {{ editandoInfo ? 'Guardar' : 'Editar' }}
+  </button>
+  </div>
+</div>
+
+
   <div class="carrera" [ngClass]="{ 'modo-edicion': editandoTrayectoria }">
     <h3><span class="material-icons">work</span> Trayectoria Laboral</h3>
   

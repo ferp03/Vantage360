@@ -60,7 +60,7 @@ export class EmpleadoDetallesComponent implements OnInit {
   };
 
   habilidades: string[] = [];
-  cursos: Curso[] = [];
+  certificados: Curso[] = [];
   experiencias: ExperienciaLaboral[] = [];
 
   editandoInfo = false;
@@ -101,7 +101,7 @@ export class EmpleadoDetallesComponent implements OnInit {
       // Recargar los datos del componente
       this.cargarInfoBasica();
       this.cargarHabilidades();
-      this.cargarCursos();
+      this.cargarCertificados();
       this.cargarTrayectoria();
     });
   }
@@ -148,12 +148,12 @@ export class EmpleadoDetallesComponent implements OnInit {
     });
   }
 
-  cargarCursos() {
+  cargarCertificados() {
     if (!this.empleadoId) return;
     this.apiService.getEmpleadoCertificaciones(this.empleadoId).subscribe({
       next: (res) => {
         if (res.success) {
-          this.cursos = res.data;
+          this.certificados = res.data;
         }
       },
       error: (err) => console.error('Error al obtener certificaciones:', err)
