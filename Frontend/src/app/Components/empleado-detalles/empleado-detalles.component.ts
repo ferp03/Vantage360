@@ -40,7 +40,17 @@ export class EmpleadoDetallesComponent implements OnInit {
     correo: '',
     usuario: '',
     desde: '',
-    cargabilidad: ''
+    cargabilidad: '',
+    nivel: ' ',
+    nivel_ingles: ' ',
+    staff_days: ' ',
+    ytd_unassigned: ' ',
+    ytd_recovery: ' ',
+    bd: ' ',
+    estado_laboral: ' ',
+    lead_usuario: ' ',
+    lead_id: ' ',
+    ubicacion: ' '
   };
 
   erroresInfo = {
@@ -104,7 +114,17 @@ export class EmpleadoDetallesComponent implements OnInit {
             correo: res.data.correo,
             usuario: res.data.usuario,
             desde: this.formatearFecha(res.data.desde),
-            cargabilidad: res.data.cargabilidad
+            cargabilidad: res.data.cargabilidad,
+            nivel : res.data.nivel,
+            nivel_ingles: res.data.nivel_ingles,
+            staff_days: res.data.staff_days,
+            ytd_unassigned: res.data.ytd_unassigned,
+            ytd_recovery: res.data.ytd_recovery,
+            bd: res.data.bd,
+            estado_laboral: res.data.estado_laboral,
+            lead_usuario: res.data.lead_usuario,
+            lead_id: res.data.lead_id,
+            ubicacion: res.data.ubicacion
           };
         }
       },

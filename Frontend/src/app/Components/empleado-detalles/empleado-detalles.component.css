@@ -41,12 +41,19 @@
 
 .izquierda-superior {
   flex: 1 1 45%;
-  min-width: 250px;
+  min-width: 290px;
+  column-count: 1;
 }
 
 .izquierda-habilidades {
   flex: 1 1 45%;
   min-width: 250px;
+}
+
+.people_lead {
+  flex: 1 1 45%;
+  min-width: 250px;
+  padding-top: 15px;
 }
 
 .habilidades {
@@ -130,6 +137,7 @@
   -ms-overflow-style: none; /* For Internet Explorer and Edge */
   padding: 1rem 0.5rem 1rem 0.5rem;
 }
+
 
 .linea-tiempo::-webkit-scrollbar {
   display: none; /* For Chrome, Safari, and Opera */
@@ -370,6 +378,39 @@ button .material-icons {
 }
 
 
+.h3-tooltip-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tooltip {
+  position: relative;
+  cursor: pointer;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: max-content;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  padding: 6px 8px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  top: 0; 
+  left: 115px;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 15px;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
 
 
 

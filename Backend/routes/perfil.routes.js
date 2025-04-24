@@ -1,15 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { supabaseAnon } = require('../supabase');
-const supabase = supabaseAnon;
+const { supabaseAdmin } = require('../supabase');
+const supabase = supabaseAdmin;
 
 // Obtener info básica del empleado
 router.get('/empleado/info/:id', async (req, res) => {
   const { id } = req.params;
 
   const { data, error } = await supabase
-    .from('empleado')
-    .select('nombre, apellido_paterno, apellido_materno, correo, usuario, fecha_ingreso, cargabilidad')
+    .rpc('get_empleados_con_info_all')
     .eq('empleado_id', id)
     .single();
 
@@ -27,10 +26,21 @@ router.get('/empleado/info/:id', async (req, res) => {
     success: true,
     data: {
       nombre: nombreCompleto,
-      correo: data.correo,
+      correo: data.email,
       usuario: data.usuario,
       desde: data.fecha_ingreso,
-      cargabilidad: data.cargabilidad
+      cargabilidad: data.cargabilidad,
+      nivel: data.nivel,
+      nivel_grupo: data.nivel_grupo,
+      nivel_ingles: data.nivel_ingles,
+      staff_days: data.staff_days,
+      ytd_unassigned: data.ytd_unassigned,
+      ytd_recovery: data.ytd_recovery,
+      bd: data.bd,
+      estado_laboral: data.estado_laboral,
+      lead_usuario: data.lead_usuario,
+      lead_id: data.lead_id,
+      ubicacion: data.ubicacion
     }
   });
 });
