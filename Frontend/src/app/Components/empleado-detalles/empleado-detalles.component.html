@@ -24,7 +24,15 @@
 
         <p><strong><span class="material-icons">email</span> Correo:</strong> {{ info.correo }}</p>
         <p><strong><span class="material-icons">person</span> Usuario:</strong> {{ info.usuario }}</p>
-        <p><strong><span class="material-icons">bar_chart</span> Estado Laboral:</strong> {{ info.estado_laboral }}</p>
+        <p>
+          <strong><span class="material-icons">bar_chart</span> Estado Laboral: </strong>
+            <span *ngIf="!editandoInfo">{{ nuevoEstado | titlecase }}</span>
+          <select *ngIf="editandoInfo" [(ngModel)]="nuevoEstado">
+            <option value="bench">Bench</option>
+            <option value="active">Active</option>
+            <option value="vacations">Vacations</option>
+          </select>
+        </p>
         <p><strong><span class="material-icons">bar_chart</span> Cargabilidad:</strong> {{ info.cargabilidad }}%</p>
         <p><strong><span class="material-icons">person</span> People Lead:</strong> {{ info.lead_usuario }}</p>
 
@@ -71,9 +79,17 @@
     <div class="derecha"></div>
 
     <button
+      class="boton-cancelar"
+      *ngIf="editandoInfo && esMiPerfil"
+      (click)="cancelarEdicion()"
+    >
+      <span class="material-icons">cancel</span>
+      Cancelar
+    </button>
+    <button
       class="boton-editar"
       *ngIf="esMiPerfil"
-      (click)="toggleEditarInfo()"
+      (click)="editandoInfo ? guardarCambios() : toggleEditarInfo()"
     >
       <span class="material-icons">{{ editandoInfo ? 'save' : 'edit' }}</span>
       {{ editandoInfo ? 'Guardar' : 'Editar' }}

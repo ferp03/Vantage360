@@ -203,6 +203,24 @@ router.put('/empleado/cambiar-contrasena/:id', async (req, res) => {
   return res.status(200).json({ success: true, message: 'Contraseña actualizada correctamente' });
 });
 
+// Guardar los cambios hechos en el perfil del empleado
+router.put('/empleado/cambiar-datos/:id', async (req, res) => {
+  const { id } = req.params;
+  const { estado_laboral } = req.body;
+
+  const {data, error} = await supabase
+    .from('empleado')
+    .update({estado_laboral: estado_laboral})
+    .eq('empleado_id', id);
+
+  if(error){
+    console.log('Error al cambiar el estado laboral', error.message);
+    return res.status(500).json({ success: false, error: 'Error al cambiar el estado laboral' });
+  }
+
+  return res.status(200).json({ success: true, message: 'Estado laboral actualizado correctamente' });
+})
+
 // Crear nueva experiencia laboral
 router.post('/empleado/:id/experiencia', async (req, res) => {
   const { id } = req.params;
