@@ -124,8 +124,15 @@
             <label>
               <span class="material-icons">device_hub</span> Título:
             </label>
-            <input [(ngModel)]="experiencia.titulo" [class.error-input]="errores[i].titulo" />
+            <select 
+              [(ngModel)]="experiencia.capability_id" 
+              [class.error-input]="errores[i].titulo"
+              (ngModelChange)="experiencia.titulo = obtenerNombreCapability(experiencia.capability_id)">
+              <option [ngValue]="undefined" disabled>{{ capabilities.length ? 'Selecciona un título' : 'Cargando opciones...' }}</option>
+              <option *ngFor="let cap of capabilities" [ngValue]="cap.id">{{ cap.nombre }}</option>
+            </select>
             <span class="error" *ngIf="errores[i].titulo">Campo requerido</span>
+            <span class="error" *ngIf="capabilities.length === 0">No se pudieron cargar las opciones. Intenta de nuevo.</span>
           </div>
 
           <div class="campo-grupo">

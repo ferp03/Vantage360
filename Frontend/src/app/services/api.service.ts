@@ -119,5 +119,9 @@ export class ApiService {
   // Crear nueva habilidad
   agregarHabilidad(empleadoId: string, datos: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/empleado/${empleadoId}/habilidad`, datos);
-  }  
+  } 
+  // Añadir este método a api.service.ts
+  getCapabilities(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/capabilities`);
+  } 
 }

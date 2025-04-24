@@ -12,7 +12,13 @@ interface ExperienciaLaboral {
   fin: string;
   descripcion: string;
   esNueva?: boolean;
-  esPuestoActual?: boolean; // Nuevo campo agregado
+  esPuestoActual?: boolean;
+  capability_id?: number; // Añadir este campo
+}
+
+interface Capability {
+  id: number;
+  nombre: string;
 }
 
 interface ErroresExperiencia {
@@ -53,6 +59,7 @@ export class EmpleadoDetallesComponent implements OnInit {
   habilidades: string[] = [];
   cursos: Curso[] = [];
   experiencias: ExperienciaLaboral[] = [];
+  capabilities: Capability[] = [];
 
   editandoInfo = false;
   editandoTrayectoria = false;
@@ -92,8 +99,36 @@ export class EmpleadoDetallesComponent implements OnInit {
       this.cargarHabilidades();
       this.cargarCursos();
       this.cargarTrayectoria();
+      this.cargarCapabilities();
     });
   }
+  cargarCapabilities() {
+    console.log('Intentando cargar capabilities...');
+    this.apiService.getCapabilities().subscribe({
+      next: (res: any) => {
+        console.log('Respuesta completa de capabilities:', res);
+        if (res.success) {
+          this.capabilities = res.data;
+          console.log('Capabilities cargadas:', this.capabilities);
+        } else {
+          console.error('Error al cargar capabilities:', res.error);
+        }
+      },
+      error: (err: any) => {
+        console.error('Error al obtener capabilities:', err);
+        // Usar datos de prueba si falla la carga
+        this.capabilities = [
+          { id: 1, nombre: 'Agile' },
+          { id: 2, nombre: 'Back End Engineering' },
+          { id: 3, nombre: 'Business Analyst' },
+          { id: 4, nombre: 'Capital Markets Processes' },
+          { id: 5, nombre: 'Cloud' }
+        ];
+        console.log('Usando capabilities de prueba');
+      }
+    });
+  }
+  
 
   cargarInfoBasica() {
     if (!this.empleadoId) return;
@@ -150,12 +185,22 @@ export class EmpleadoDetallesComponent implements OnInit {
             } else {
               exp.esPuestoActual = false;
             }
+            // Asegurarse de que capability_id esté asignado si viene en los datos
+            if (exp.capability_id) {
+              exp.capability_id = exp.capability_id;
+            }
           });
           this.ordenarExp();
         }
       },
       error: (err) => console.error('Error al obtener trayectoria:', err)
     });
+  }
+  
+  obtenerNombreCapability(id: number | undefined): string {
+    if (!id) return '';
+    const capability = this.capabilities.find(c => c.id === id);
+    return capability ? capability.nombre : '';
   }
 
   ordenarExp() {
@@ -171,6 +216,8 @@ export class EmpleadoDetallesComponent implements OnInit {
     const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES', opciones);
     return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
   }
+
+
 
   toggleEditarInfo() {
     if (!this.esMiPerfil) return;
@@ -229,7 +276,6 @@ export class EmpleadoDetallesComponent implements OnInit {
       titulo_proyecto: !exp.titulo_proyecto?.trim(),
       empresa: !exp.empresa?.trim(),
       inicio: !exp.inicio?.trim(),
-      // Solo validamos fin si no es puesto actual
       fin: !exp.esPuestoActual && !exp.fin?.trim(),
       descripcion: !exp.descripcion?.trim(),
       fechaInvalida: false
@@ -249,7 +295,8 @@ export class EmpleadoDetallesComponent implements OnInit {
         descripcion: exp.descripcion,
         fecha_inicio: exp.inicio,
         fecha_fin: exp.esPuestoActual ? null : exp.fin,
-        es_puesto_actual: exp.esPuestoActual
+        es_puesto_actual: exp.esPuestoActual,
+        capability_id: exp.capability_id // Añadir este campo al payload
       };
 
       if (exp.esNueva) {
@@ -286,6 +333,7 @@ export class EmpleadoDetallesComponent implements OnInit {
     }
   }
 
+
   agregarExperiencia() {
     if (!this.esMiPerfil) return;
     
@@ -297,7 +345,8 @@ export class EmpleadoDetallesComponent implements OnInit {
       fin: '',
       descripcion: '',
       esNueva: true,
-      esPuestoActual: false // Por defecto, no es puesto actual
+      esPuestoActual: false,
+      capability_id: undefined // Inicializar el nuevo campo
     };
     
     this.experiencias.unshift(nueva);

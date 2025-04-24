@@ -89,13 +89,41 @@ router.get('/empleado/:id/certificaciones', async (req, res) => {
   });
 });
 
+// obtener capabilities
+router.get('/capabilities', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('capability')
+      .select('capability_id, nombre')
+      .order('nombre');
+
+    if (error) {
+      console.error('Error al obtener capabilities:', error.message);
+      return res.status(500).json({ success: false, error: 'No se pudieron obtener las capabilities' });
+    }
+
+    // Transformar los datos para que coincidan con lo que espera el frontend
+    const transformedData = data.map(item => ({
+      id: item.capability_id,  // Mapear capability_id a id
+      nombre: item.nombre
+    }));
+
+    return res.status(200).json({
+      success: true,
+      data: transformedData
+    });
+  } catch (err) {
+    console.error('Error inesperado:', err);
+    return res.status(500).json({ success: false, error: 'Error del servidor' });
+  }
+});
 // Obtener trayectoria laboral 
 router.get('/empleado/:id/trayectoria', async (req, res) => {
   const { id } = req.params;
 
   const { data, error } = await supabase
     .from('historial_laboral')
-    .select('historial_id, titulo_puesto, titulo_proyecto, empresa, descripcion, fecha_inicio, fecha_fin')
+    .select('historial_id, titulo_puesto, titulo_proyecto, empresa, descripcion, fecha_inicio, fecha_fin, capability_id')
     .eq('empleado_id', id)
     .order('fecha_inicio', { ascending: false });
 
@@ -111,7 +139,8 @@ router.get('/empleado/:id/trayectoria', async (req, res) => {
     empresa: entry.empresa,
     inicio: entry.fecha_inicio,
     fin: entry.fecha_fin,
-    descripcion: entry.descripcion
+    descripcion: entry.descripcion,
+    capability_id: entry.capability_id
   }));
 
   return res.status(200).json({
@@ -196,14 +225,25 @@ router.put('/empleado/cambiar-contrasena/:id', async (req, res) => {
 // Crear nueva experiencia laboral
 router.post('/empleado/:id/experiencia', async (req, res) => {
   const { id } = req.params;
-  const { titulo_puesto, titulo_proyecto, empresa, descripcion, fecha_inicio, fecha_fin } = req.body;
+  const { 
+    titulo_puesto, 
+    titulo_proyecto, 
+    empresa, 
+    descripcion, 
+    fecha_inicio, 
+    fecha_fin, 
+    capability_id, 
+    es_puesto_actual 
+  } = req.body;
 
-  if (!titulo_puesto || !titulo_proyecto || !empresa || !descripcion || !fecha_inicio || !fecha_fin) {
+  if (!titulo_puesto || !titulo_proyecto || !empresa || !descripcion || !fecha_inicio) {
     return res.status(400).json({ success: false, error: 'Faltan campos requeridos' });
   }
 
   try {
-    // Don't specify historial_id, let Supabase auto-generate it
+    // Usar fecha_fin null si es puesto actual
+    const fecha_fin_final = es_puesto_actual ? null : fecha_fin;
+    
     const { data, error } = await supabase
       .from('historial_laboral')
       .insert([{
@@ -213,9 +253,10 @@ router.post('/empleado/:id/experiencia', async (req, res) => {
         empresa,
         descripcion,
         fecha_inicio,
-        fecha_fin
+        fecha_fin: fecha_fin_final,
+        capability_id
       }])
-      .select(); // Add this to return the created record with its ID
+      .select();
 
     if (error) {
       console.error('Error al crear nueva experiencia:', error.message);
@@ -237,11 +278,23 @@ router.post('/empleado/:id/experiencia', async (req, res) => {
 // Actualizar experiencia laboral existente
 router.put('/empleado/experiencia/:historial_id', async (req, res) => {
   const { historial_id } = req.params;
-  const { titulo_puesto, titulo_proyecto, empresa, descripcion, fecha_inicio, fecha_fin } = req.body;
+  const { 
+    titulo_puesto, 
+    titulo_proyecto, 
+    empresa, 
+    descripcion, 
+    fecha_inicio, 
+    fecha_fin, 
+    capability_id,
+    es_puesto_actual
+  } = req.body;
 
-  if (!titulo_puesto || !titulo_proyecto || !empresa || !descripcion || !fecha_inicio || !fecha_fin) {
+  if (!titulo_puesto || !titulo_proyecto || !empresa || !descripcion || !fecha_inicio) {
     return res.status(400).json({ success: false, error: 'Faltan campos requeridos' });
   }
+
+  // Usar fecha_fin null si es puesto actual
+  const fecha_fin_final = es_puesto_actual ? null : fecha_fin;
 
   const { error } = await supabase
     .from('historial_laboral')
@@ -251,7 +304,8 @@ router.put('/empleado/experiencia/:historial_id', async (req, res) => {
       empresa, 
       descripcion, 
       fecha_inicio, 
-      fecha_fin 
+      fecha_fin: fecha_fin_final,
+      capability_id
     })
     .eq('historial_id', historial_id);
 
