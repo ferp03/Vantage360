@@ -124,14 +124,11 @@
         *ngFor="let experiencia of experiencias; let i = index"
       >
         <button
-          *ngIf="editandoTrayectoria && esMiPerfil"
+          *ngIf="editandoTrayectoria && esMiPerfil && editandoIndice !== i"
           class="boton-editar-cuadro"
-          (click)="toggleEditarTrayectoria(i)"
+          (click)="iniciarEdicionExperiencia(i)"
         >
-          <span class="material-icons">
-            {{ editandoIndice === i ? 'save' : 'edit' }}
-          </span>
-          {{ editandoIndice === i ? 'Guardar' : 'Editar' }}
+          <span class="material-icons">edit</span> Editar
         </button>
   
         <div *ngIf="editandoIndice !== i">
@@ -142,7 +139,145 @@
             {{ experiencia.inicio }} - {{ experiencia.fin }}
           </small>
         </div>
-  
+
+        <div *ngIf="editandoIndice === i" class="modo-edicion experiencia-form">
+          <div class="campo-grupo">
+            <label>
+              <span class="material-icons">device_hub</span> Capability:
+            </label>
+            <select 
+              [(ngModel)]="experiencia.capability_id" 
+              [class.error-input]="errores[i].titulo"
+              (ngModelChange)="experiencia.titulo = obtenerNombreCapability(experiencia.capability_id)">
+              <option [ngValue]="undefined" disabled>{{ capabilities.length ? 'Selecciona una opción' : 'Cargando opciones...' }}</option>
+              <option *ngFor="let cap of capabilities" [ngValue]="cap.id">{{ cap.nombre }}</option>
+            </select>
+            <span class="error" *ngIf="errores[i].titulo">Campo requerido</span>
+            <span class="error" *ngIf="capabilities.length === 0">No se pudieron cargar las opciones. Intenta de nuevo.</span>
+          </div>
+
+          <div class="campo-grupo">
+            <label>Proyecto:</label>
+            <input [(ngModel)]="experiencia.titulo_proyecto" [class.error-input]="errores[i].titulo_proyecto" />
+            <span class="error" *ngIf="errores[i].titulo_proyecto">Campo requerido</span>
+          </div>
+
+          <div class="campo-grupo">
+            <label><span class="material-icons">business</span> Empresa:</label>
+            <input [(ngModel)]="experiencia.empresa" [class.error-input]="errores[i].empresa" />
+            <span class="error" *ngIf="errores[i].empresa">Campo requerido</span>
+          </div>
+
+          <div class="campo-checkbox">
+            <input type="checkbox" id="puestoActual{{i}}" [ngModel]="experiencia.esPuestoActual" (ngModelChange)="experiencia.esPuestoActual = $event; togglePuestoActual(i)" />
+            <label for="puestoActual{{i}}">
+              <span class="material-icons">work</span> Es mi puesto actual
+            </label>
+          </div>
+
+          <div class="fechas-container">
+            <div class="campo-grupo">
+              <label><span class="material-icons">event_available</span> Inicio:</label>
+              <input
+                type="date"
+                [(ngModel)]="experiencia.inicio"
+                [class.error-input]="errores[i].inicio"
+                (change)="validarFechas(i)"
+              />
+              <span class="error" *ngIf="errores[i].inicio">Campo requerido</span>
+            </div>
+
+            <div class="campo-grupo" *ngIf="!experiencia.esPuestoActual">
+              <label><span class="material-icons">event_busy</span> Fin:</label>
+              <input
+                type="date"
+                [(ngModel)]="experiencia.fin"
+                [class.error-input]="errores[i].fin || errores[i].fechaInvalida"
+                (change)="validarFechas(i); errores[i].fin = !experiencia.fin"
+                (input)="errores[i].fin = !experiencia.fin"
+              />
+              <span class="error" *ngIf="errores[i].fin">Campo requerido</span>
+              <span class="error" *ngIf="errores[i].fechaInvalida">
+                La fecha de fin no puede ser anterior a la fecha de inicio
+              </span>
+            </div>
+          </div>
+
+          <div class="campo-grupo">
+            <label>Descripción:</label>
+            <textarea
+              [(ngModel)]="experiencia.descripcion"
+              [class.error-input]="errores[i].descripcion"
+            ></textarea>
+            <span class="error" *ngIf="errores[i].descripcion">
+              Campo requerido
+            </span>
+          </div>
+
+          <div class="acciones">
+            <div class="botones-principales">
+              <button class="boton-guardar" (click)="guardarExperienciaForzado(i)">
+                <span class="material-icons">save</span> Guardar
+              </button>
+              <button class="boton-cancelar" (click)="cancelarEdicionExperiencia(i)">
+                <span class="material-icons">cancel</span> Cancelar
+              </button>
+            </div>
+            <button class="boton-eliminar" (click)="eliminarExperiencia(i)">
+              <span class="material-icons">delete</span> Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="boton-editar-trayectoria-global">
+      <button
+        (click)="guardarTrayectoria()"
+        class="boton-editar"
+        *ngIf="esMiPerfil"
+      >
+        <span class="material-icons">{{ editandoTrayectoria ? 'save' : 'edit' }}</span>
+        {{ editandoTrayectoria ? 'Guardar' : 'Editar' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="modal" *ngIf="mostrarModalContrasena">
+    <div class="modal-contenido">
+      <h3><span class="material-icons">lock</span> Cambiar contraseña</h3>
+
+      <label><span class="material-icons">vpn_key</span> Contraseña actual:</label>
+      <input type="password" [(ngModel)]="contrasenaActual" />
+      <span class="error" *ngIf="erroresPass.actual">Campo requerido</span>
+
+      <label>
+        <span class="material-icons">lock_open</span> Nueva contraseña:
+      </label>
+      <input type="password" [(ngModel)]="nuevaContrasena" />
+      <span class="error" *ngIf="erroresPass.nueva"
+        >La contraseña debe tener al menos 8 caracteres</span
+      >
+
+      <label>
+        <span class="material-icons">lock_outline</span> Confirmar nueva contraseña:
+      </label>
+      <input type="password" [(ngModel)]="confirmarContrasena" />
+      <span class="error" *ngIf="erroresPass.confirmar"
+        >Las contraseñas no coinciden</span
+      >
+
+      <div class="acciones-modal">
+        <button (click)="confirmarCambioContrasena()">
+          <span class="material-icons">check</span> Confirmar
+        </button>
+        <button class="cancelar" (click)="cerrarModalContrasena()">
+          <span class="material-icons">close</span> Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+<!-- </div> -->
         <div *ngIf="editandoIndice === i">
           <!-- Campos para edición -->
           <input [(ngModel)]="experiencia.titulo" placeholder="Título" />

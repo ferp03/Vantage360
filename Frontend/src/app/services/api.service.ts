@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../envs/environment';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -102,6 +103,25 @@ export class ApiService {
     return this.http.put(`${this.apiUrl}/empleado/experiencia/${historialId}`, datos);
   }
   
+  // ELIMINAR experiencia existente
+  deleteExperiencia(historialId: number): Observable<any> {
+    // Convertir explícitamente a número para asegurar consistencia de tipos
+    const id = Number(historialId);
+    
+    console.log(`[ApiService] Enviando solicitud de eliminación para historial_id: ${id}, tipo: ${typeof id}`);
+    
+    // Usar el endpoint correcto y asegurar que se manejan los errores
+    return this.http.delete<any>(`${this.apiUrl}/empleado/experiencia/${id}`)
+      .pipe(
+        catchError(error => {
+          console.error('[ApiService] Error completo al eliminar experiencia:', error);
+          
+          // Rethrow para que el componente pueda manejarlo
+          return throwError(() => error);
+        })
+      );
+  }
+  
   // Validar contraseña actual
   validarContrasena(id: string, actualContrasena: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/empleado/validar-contrasena/${id}`, {
@@ -119,24 +139,28 @@ export class ApiService {
   // Crear nueva habilidad
   agregarHabilidad(empleadoId: string, datos: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/empleado/${empleadoId}/habilidad`, datos);
-  }
+  } 
+  // Añadir este método a api.service.ts
+  getCapabilities(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/capabilities`);
+  } 
 
   actualizarEmpleado(empleadoId: string, datosActualizados: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/empleado/cambiar-datos/${empleadoId}`, datosActualizados);
   }
 
   // Crear nuevo curso con archivo 
-crearCurso(empleadoId: string, formData: FormData): Observable<any> {
-  return this.http.post(`${this.apiUrl}/empleado/${empleadoId}/curso`, formData);
-}
+  crearCurso(empleadoId: string, formData: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/empleado/${empleadoId}/curso`, formData);
+  }
 
-// Obtener cursos de un empleado
-obtenerCursosEmpleado(empleadoId: string): Observable<any> {
-  return this.http.get(`${this.apiUrl}/empleado/${empleadoId}/cursos`);
-}
+  // Obtener cursos de un empleado
+  obtenerCursosEmpleado(empleadoId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/empleado/${empleadoId}/cursos`);
+  }
 
-// Actualizar curso 
-actualizarCurso(cursoId: string, formData: FormData): Observable<any> {
-  return this.http.put(`${this.apiUrl}/curso/${cursoId}`, formData);
-}
-}
+  // Actualizar curso 
+  actualizarCurso(cursoId: string, formData: FormData): Observable<any> {
+    return this.http.put(`${this.apiUrl}/curso/${cursoId}`, formData);
+  }
+
