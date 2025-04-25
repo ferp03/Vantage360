@@ -60,6 +60,14 @@
   opacity: 0.8;
 }
 
+
+/* version flex con columns */
+.certificate-list {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
 /* Lista de certificados - Versión Grid */
 .certificate-list-grid {
   display: grid;
