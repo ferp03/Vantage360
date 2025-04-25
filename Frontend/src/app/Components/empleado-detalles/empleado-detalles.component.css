@@ -546,3 +546,9 @@
 .boton-editar-cuadro:hover {
   background-color: #1976d2;
 }
+
+.material-icons {
+  vertical-align: middle;
+  font-size: 1.25em;
+  margin-right: .35em;
+}
