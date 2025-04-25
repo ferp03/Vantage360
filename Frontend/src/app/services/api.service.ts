@@ -32,10 +32,7 @@ export class ApiService {
   }
 
   guardarCertificado(formData: FormData): Observable<any> {
-    const headers = new HttpHeaders({
-    });
-
-    return this.http.post(`${this.apiUrl}/certificados`, formData, { headers });
+    return this.http.post(`${this.apiUrl}/certificado`, formData);
   }
 
   //obtenerCertificados(): Observable<any> {
