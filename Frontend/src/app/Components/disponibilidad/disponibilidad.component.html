@@ -56,6 +56,16 @@
         </select>
       </div>
 
+      <!-- Capability -->
+      <div class="filtro-item">
+        <label for="filtroCapability">Capability:</label>
+        <select id="filtroCapability" [(ngModel)]="filtros.capability" (change)="aplicarFiltros()">
+          <option value="">Todas</option>
+          <option *ngFor="let c of capabilities" [value]="c">{{c}}</option>
+        </select>
+      </div>
+
+
       <!-- Habilidad -->
       <div class="filtro-item">
         <label for="filtroHabilidad">Habilidad:</label>
@@ -96,6 +106,8 @@
           <tr>
             <th>Empleado</th>
             <th>Rol</th>
+            <th>Capability</th>
+            <th>Habilidades</th>
             <th>Cargabilidad</th>
             <th>Estado</th>
             <th>Acciones</th>
@@ -115,7 +127,7 @@
                 <div>
                   <!-- Clic en el nombre para ir a detalles -->
                   <p class="nombre">
-                    {{empleado.nombre}} {{empleado.apellido_paterno}}
+                    {{empleado.nombre}} {{empleado.apellido_paterno}} {{empleado.apellido_materno}}
                   </p>
                   <p class="usuario">{{empleado.usuario}}</p>
                 </div>
@@ -124,6 +136,15 @@
 
             <td>
               <span class="chip" *ngFor="let rol of empleado.roles">{{ rol.nombre }}</span>
+            </td>
+
+            <td>
+              <span>{{ empleado.capability }}</span>
+            </td>
+
+            <td>
+              <span class="chip small" *ngFor="let hab of empleado.habilidades.slice(0, 3)">{{ hab.nombre }}</span>
+              <span class="chip small" *ngIf="empleado.habilidades.length > 3">+{{ empleado.habilidades.length - 3 }}</span>
             </td>
 
             <td>
@@ -174,11 +195,9 @@
           <div class="form-group">
             <label for="estado">Estado laboral:</label>
             <select id="estado" [(ngModel)]="nuevoEstado">
-              <option value="Activo">Activo</option>
-              <option value="Vacaciones">Vacaciones</option>
-              <option value="Licencia">Licencia</option>
-              <option value="Capacitación">Capacitación</option>
-              <option value="Baja temporal">Baja temporal</option>
+              <option value="active">Activo</option>
+              <option value="bench">Banca</option>
+              <option value="vacations">Vacaciones</option>
             </select>
           </div>
 
@@ -188,8 +207,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn-cancelar" (click)="cancelarActualizacion()">Cancelar</button>
-          <button class="btn-guardar" (click)="actualizarDisponibilidad()">Guardar cambios</button>
+          <button class="btn-cancelar" (click)="cancelarActualizacion()"><span class="material-icons">cancel</span>Cancelar</button>
+          <button class="btn-guardar" (click)="actualizarDisponibilidad()"><span class="material-icons">save</span>Guardar cambios</button>
         </div>
       </div>
     </div>

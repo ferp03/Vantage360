@@ -144,4 +144,23 @@ export class ApiService {
   getCapabilities(): Observable<any> {
     return this.http.get(`${this.apiUrl}/capabilities`);
   } 
-}
+
+  actualizarEmpleado(empleadoId: string, datosActualizados: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/empleado/cambiar-datos/${empleadoId}`, datosActualizados);
+  }
+
+  // Crear nuevo curso con archivo 
+  crearCurso(empleadoId: string, formData: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/empleado/${empleadoId}/curso`, formData);
+  }
+
+  // Obtener cursos de un empleado
+  obtenerCursosEmpleado(empleadoId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/empleado/${empleadoId}/cursos`);
+  }
+
+  // Actualizar curso 
+  actualizarCurso(cursoId: string, formData: FormData): Observable<any> {
+    return this.http.put(`${this.apiUrl}/curso/${cursoId}`, formData);
+  }
+

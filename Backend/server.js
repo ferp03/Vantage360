@@ -10,6 +10,7 @@ const perfilRoutes = require('./routes/perfil.routes');
 const updateRoutes = require('./routes/update.routes');
 const availabilityRoutes = require('./routes/availability.routes'); 
 const certificateRoutes = require('./routes/certificate.routes');
+const cursosRoutes = require('./routes/curso.routes');
 
 const app = express();
 const port = 3000;
@@ -27,6 +28,7 @@ app.use(perfilRoutes);
 app.use(updateRoutes);
 app.use(availabilityRoutes);
 app.use(certificateRoutes);
+app.use(cursosRoutes);
 
 // Iniciar el servidor
 app.listen(port, () => {
