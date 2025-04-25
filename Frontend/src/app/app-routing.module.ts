@@ -29,6 +29,7 @@ const routes: Routes = [
       { path: 'empleado-detalles/:id', component: EmpleadoDetallesComponent, canActivate: [AuthGuard]},
       { path: 'registro-habilidades/:id', component: RegistroHabilidadesComponent, canActivate: [AuthGuard]},
       { path: 'cursos_certificados', component: MenucurycertComponent, canActivate: [AuthGuard] },
+      { path: 'reset-password', component: ResetPasswordComponent}
     ]
   },
 
