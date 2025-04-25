@@ -5,6 +5,7 @@
   display: block;
 }
 
+/* Estilos base del dashboard */
 .certifications-dashboard {
   position: absolute;
   top: 0;
@@ -14,14 +15,28 @@
   padding: 5rem 3.6rem 3rem;
   display: flex;
   flex-direction: column;
+  align-items: center;
   background: linear-gradient(160deg, #000000, #221928);
   overflow-y: auto;
+  box-sizing: border-box;
   font-family: 'Roboto', Arial, sans-serif;
 }
 
+/* Contenedor principal */
+.certifications-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Encabezado */
 .dashboard-header {
   margin-bottom: 30px;
   color: white;
+  width: 100%;
+  text-align: center;
 }
 
 .header-row {
@@ -45,16 +60,29 @@
   opacity: 0.8;
 }
 
-/* Lista de certificados */
-.certificate-list {
+/* Lista de certificados - Versión Grid */
+.certificate-list-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 25px;
   width: 100%;
 }
 
-/* Tarjeta de certificado */
+/* Lista de certificados - Versión Horizontal */
+/* .certificate-list-horizontal {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 25px;
+  padding: 10px 0;
+  min-height: 300px;
+  overflow-x: auto;
+  width: 100%;
+} */
+
+/* Tarjeta de certificado (común para ambos modos) */
 .certificate-card {
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   padding: 25px;
@@ -64,6 +92,7 @@
   box-shadow: 1px 2px 6px rgba(185, 152, 247, 0.3);
   transition: transform 0.2s, box-shadow 0.2s;
   border: 1px solid rgba(185, 152, 247, 0.1);
+  width: 280px;
 }
 
 .certificate-card:hover {
@@ -72,6 +101,7 @@
   background: rgba(35, 35, 50, 0.4);
 }
 
+/* Encabezado de tarjeta */
 .certificate-header {
   margin-bottom: 20px;
   position: relative;
@@ -190,21 +220,31 @@
   transform: translateY(-2px);
 }
 
-.btn-download, .btn-delete {
-  padding: 5px 10px;
+.btn-download {
+  background-color: #9668e6;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 7.5px 12px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
-.btn-download {
-  background-color: #4CAF50;
-  color: white;
+.btn-download:hover {
+  background: #7d4ee0;
+  transform: translateY(-2px);
 }
 
 .btn-delete {
   background-color: #f44336;
   color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 /* Mensajes de estado */
@@ -224,28 +264,41 @@
 }
 
 /* Responsive */
+@media (max-width: 900px) {
+  .certificate-card {
+    width: 260px;
+    padding: 20px;
+  }
+}
+
 @media (max-width: 768px) {
   .certifications-dashboard {
-    padding: 3rem 2rem;
+    padding: 3rem 1.5rem;
   }
   
-  .certificate-list {
+  .certificate-list-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
   }
+  
+  /* .certificate-list-horizontal {
+    justify-content: flex-start;
+    padding-bottom: 20px;
+  } */
 }
 
 @media (max-width: 480px) {
   .certifications-dashboard {
-    padding: 2rem 1.5rem;
+    padding: 2rem 1rem;
   }
   
-  .certificate-list {
+  .certificate-list-grid {
     grid-template-columns: 1fr;
   }
   
   .certificate-card {
-    padding: 20px;
+    width: 100%;
+    padding: 15px;
   }
   
   .certificate-header h3 {
@@ -255,9 +308,5 @@
   .btn-certificate {
     padding: 8px 12px;
     font-size: 0.85rem;
-  }
-  
-  .modal-add-certificate {
-    padding: 20px;
   }
 }
