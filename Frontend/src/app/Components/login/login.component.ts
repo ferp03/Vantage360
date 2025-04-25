@@ -22,7 +22,14 @@ export class LoginComponent {
 
   constructor(private auth: AuthService, private router: Router, private api: ApiService) {}
 
+  //Funcion que elimina espacios de correo
+  removeSpaces(email: string): string {
+    return email.replace(/\s+/g, '');
+  }
+
+
   login(): void {
+    this.email = this.removeSpaces(this.email); // Eliminar espacios del correo
     this.auth.login(this.email, this.password).subscribe({
       next: (response: any) => {
         if (response.success) {
@@ -45,6 +52,7 @@ export class LoginComponent {
   }
 
   signup(): void {
+    this.email = this.removeSpaces(this.email); // Eliminar espacios del correo
     if (!this.name || !this.patlastname || !this.password || !this.email) {
       this.mensaje = 'Debes llenar los campos obligatorios.';
       return;
