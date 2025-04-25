@@ -17,9 +17,11 @@ export class DisponibilidadComponent implements OnInit {
     rol: '',
     habilidad: '',
     capability: '',
+    nivel: null,
     soloDisponibles: false
   };
 
+  nivelesUnicos: number[] = [];
   rolesUnicos: string[] = [];
   habilidadesUnicas: string[] = [];
   capabilities: string[] = [];
@@ -71,20 +73,24 @@ export class DisponibilidadComponent implements OnInit {
   }
 
   extraerFiltrosUnicos(): void {
+    // Niveles
+    const niveles = this.empleados.map(emp => emp.nivel)
+    this.nivelesUnicos = [...new Set(niveles)].sort((a, b) => a - b);
+
     // Roles únicos
     const todosRoles = this.empleados.flatMap(emp =>
       emp.roles.map((r: any) => r.nombre)
     );
-    this.rolesUnicos = [...new Set(todosRoles)];
+    this.rolesUnicos = [...new Set(todosRoles)].sort((a, b) => a.localeCompare(b)); 
 
     // Habilidades únicas
     const todasHabilidades = this.empleados.flatMap(emp =>
       emp.habilidades.map((h: any) => h.nombre)
     );
-    this.habilidadesUnicas = [...new Set(todasHabilidades)];
+    this.habilidadesUnicas = [...new Set(todasHabilidades)].sort((a, b) => a.localeCompare(b)); 
 
     // Capabilities únicos
-    const todasCapabilities = this.empleados.map(emp => emp.capability);
+    const todasCapabilities = this.empleados.map(emp => emp.capability ? emp.capability : 'Ninguna');
     this.capabilities = [...new Set(todasCapabilities)];
   }
 
@@ -95,12 +101,18 @@ export class DisponibilidadComponent implements OnInit {
         return false;
       }
 
+      // Filtro por nivel
+      if (this.filtros.nivel && emp.nivel !== Number(this.filtros.nivel)) {
+        return false;
+      }
+
       // Filtro por rol
       if (this.filtros.rol && !emp.roles.some((r: any) => r.nombre === this.filtros.rol)) {
         return false;
       }
 
-      if (this.filtros.capability && emp.capability !== this.filtros.capability) {
+      // Filtro por capability
+      if (this.filtros.capability && (emp.capability || 'Ninguna') !== this.filtros.capability) {
         return false;
       }
 
@@ -133,6 +145,7 @@ export class DisponibilidadComponent implements OnInit {
       rol: '',
       habilidad: '',
       capability: '',
+      nivel: null,
       soloDisponibles: false
     };
     this.searchText = '';

@@ -47,6 +47,15 @@
 
     <!-- Filtros avanzados -->
     <div class="filtros-avanzados">
+      <!-- Nivel -->
+      <div class="filtro-item">
+        <label for="nivel">Nivel:</label>
+        <select id="nivel" [(ngModel)]="filtros.nivel" (change)="aplicarFiltros()">
+          <option [ngValue]="null">Todos</option>
+          <option *ngFor="let nivel of nivelesUnicos" [value]="nivel">{{ nivel }}</option>
+        </select>
+      </div>
+
       <!-- Rol -->
       <div class="filtro-item">
         <label for="filtroRol">Rol:</label>
@@ -105,6 +114,7 @@
         <thead>
           <tr>
             <th>Empleado</th>
+            <th>Nivel</th>
             <th>Rol</th>
             <th>Capability</th>
             <th>Habilidades</th>
@@ -132,6 +142,10 @@
                   <p class="usuario">{{empleado.usuario}}</p>
                 </div>
               </div>
+            </td>
+
+            <td>
+              <span>{{ empleado.nivel }}</span>
             </td>
 
             <td>
