@@ -104,9 +104,9 @@ router.get('/empleados/disponibilidad', async (req, res) => {
       }
 
       // Verificar estado laboral
-      if (empleado.estado_laboral && empleado.estado_laboral === 'vacations') {
+      if (empleado.estado_laboral && empleado.estado_laboral === 'vacaciones') {
         disponible = false;
-        razon = empleado.estado_laboral; // Ejemplo: "En licencia", "Vacaciones", etc.
+        razon = 'Vacaciones'; // Ejemplo: "En licencia", "Vacaciones", etc.
       }
 
       // Verificar número de proyectos

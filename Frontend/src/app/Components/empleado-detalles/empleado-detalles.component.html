@@ -12,9 +12,9 @@
           <strong><span class="material-icons">notifications</span> Estado Laboral: </strong>
           <span *ngIf="!editandoInfo">{{ nuevoEstado | titlecase }}</span>
           <select *ngIf="editandoInfo" [(ngModel)]="nuevoEstado">
-            <option value="bench">Bench</option>
-            <option value="active">Active</option>
-            <option value="vacations">Vacations</option>
+            <option value="banca">Banca</option>
+            <option value="activo">Activo</option>
+            <option value="vacaciones">Vacaciones</option>
           </select>
         </p>
         <p><strong><span class="material-icons">person</span> People Lead:</strong> {{ info.lead_usuario }}</p>
