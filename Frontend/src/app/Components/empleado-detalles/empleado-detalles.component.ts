@@ -72,6 +72,7 @@ export class EmpleadoDetallesComponent implements OnInit {
   capabilities: Capability[] = [];
 
   experienciasOriginales: { [key: number]: ExperienciaLaboral } = {};
+  private trayectoriaOriginal: ExperienciaLaboral[] = [];
 
   editandoInfo = false;
   editandoTrayectoria = false;
@@ -298,6 +299,11 @@ export class EmpleadoDetallesComponent implements OnInit {
     }
     this.experienciasOriginales[index] = { ...this.experiencias[index] };
   }
+
+  
+
+
+
 
   guardarExperiencia(index: number) {
     if (!this.esMiPerfil || !this.editandoTrayectoria) return;
@@ -670,4 +676,8 @@ export class EmpleadoDetallesComponent implements OnInit {
     this.nuevoEstado = this.info.estado_laboral;
     this.editandoInfo = false; // Salir del modo edición
   }
+
+  
+
+
 }

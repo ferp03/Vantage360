@@ -6,21 +6,21 @@
         <!-- Login -->
         <div *ngIf="isLogin" class="login-form-container">
             <form (submit)="login()" class="login-form">
-                <label>Email:</label>
+                <label>Correo:</label>
                 <input type="text" [(ngModel)]="email" name="email" required>
                 
-                <label>Password:</label>
+                <label>Contraseña:</label>
                 <input type="password" [(ngModel)]="password" name="password" required>
                 
                 <div class="button-container">
-                    <button type="submit">Log in</button>
+                    <button type="submit">Inicar Sesion</button>
                 </div>
                 
                 <p *ngIf="mensaje" class="error">{{mensaje}}</p>
             </form>
-            <p style="color: rgb(0, 0, 0); margin: 12px;" (click)="isSignUp=true; isLogin=false">Don't have an account? <span style=" cursor: pointer; text-decoration: underline;">Sign up</span></p>
-            <p style="color: rgb(0, 0, 0); margin: 12px;">or</p>
-            <p style="color: rgb(2, 2, 2); margin: 12px; cursor: pointer; text-decoration: underline;" (click)="forgot()">Forgot my password</p>
+            <p style="color: rgb(0, 0, 0); margin: 12px;" (click)="isSignUp=true; isLogin=false">No tienes cuenta? <span style=" cursor: pointer; text-decoration: underline;">Registrar</span></p>
+            <p style="color: rgb(0, 0, 0); margin: 12px;">o</p>
+            <p style="color: rgb(2, 2, 2); margin: 12px; cursor: pointer; text-decoration: underline;" (click)="forgot()">Olvide mi contraseña</p>
         </div>
         
         <!-- Sign Up -->
@@ -48,31 +48,31 @@
                     
                     <div class="column right-column">
                         <div class="form-group">
-                            <label><span style="color: red;">*</span>Email:</label>
+                            <label><span style="color: red;">*</span>Correo:</label>
                             <input type="text" [(ngModel)]="email" name="email" required>
                         </div>
                         
                         <div class="form-group">
-                            <label><span style="color: red;">*</span>Password:</label>
+                            <label><span style="color: red;">*</span>Contraseña:</label>
                             <input type="password" [(ngModel)]="password" name="password" required>
                         </div>
                         
                         <div class="form-group">
-                            <label><span style="color: red;">*</span>Confirm password:</label>
+                            <label><span style="color: red;">*</span>Confirmar Contra:</label>
                             <input type="password" [(ngModel)]="password2" name="password2" required>
                         </div>
                     </div>
                 </div>
                 
                 <div class="button-container">
-                    <button type="submit">Sign up</button>
+                    <button type="submit">Registrar</button>
                 </div>
                 
                 <p *ngIf="mensaje" class="error">{{mensaje}}</p>
             </form>
-            <p style="color: rgb(0, 0, 0); margin: 12px;" (click)="isSignUp=false; isLogin=true;">Already have an account? <span style=" cursor: pointer; text-decoration: underline;">Login</span></p>
+            <p style="color: rgb(0, 0, 0); margin: 12px;" (click)="isSignUp=false; isLogin=true;">Ya tienes cuenta? <span style=" cursor: pointer; text-decoration: underline;">Iniciar Sesion</span></p>
             <p style="color: rgb(0, 0, 0); margin: 12px;">or</p>
-            <p style="color: rgb(0, 0, 0); margin: 12px; cursor: pointer; text-decoration: underline;" (click)="forgot()">Forgot my password</p>
+            <p style="color: rgb(0, 0, 0); margin: 12px; cursor: pointer; text-decoration: underline;" (click)="forgot()">Olvide mi contraseña</p>
         </div>
     </div>
 </div>
