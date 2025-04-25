@@ -1,34 +1,15 @@
 <div class="contenedor-detalle">
-  <h1>Mi perfil</h1>
+  <h1><span class="material-icons">account_circle</span> {{ info.nombre }}</h1>
   <div class="caja-info" [ngClass]="{ 'editando': editandoInfo }">
+  <h2><span class="material-icons">info</span>Informacion Personal</h2>
   <div class="caja-info-superior">
-
-      
     <div class="izquierda" [ngClass]="{ 'modo-edicion': editandoInfo }">
       <div class="izquierda-superior">
-        
-        <div class="h3-tooltip-container">
-          <h2>{{ info.nombre }}</h2>
-          <div class="tooltip">
-            <span class="material-icons">info</span>
-            <div class="tooltip-text">
-              <p><strong>Desde:</strong> {{ info.desde }}</p>
-              <p><strong>Ciudad:</strong> {{ info.ubicacion }}</p>
-              <p><strong>Nivel:</strong> {{ info.nivel }}</p>
-              <p><strong>Nivel Inglés:</strong> {{ info.nivel_ingles }}</p>
-              <p><strong>Staff Days:</strong> {{ info.staff_days }}</p>
-              <p><strong>YTD Unassigned:</strong> {{ info.ytd_unassigned }}%</p>
-              <p><strong>YTD Recovery:</strong> {{ info.ytd_recovery }}%</p>
-              <p><strong>Bench Days:</strong> {{ info.bd }}%</p>
-            </div>
-          </div>
-        </div>
-        
         
         <p><strong><span class="material-icons">email</span> Correo:</strong> {{ info.correo }}</p>
         <p><strong><span class="material-icons">person</span> Usuario:</strong> {{ info.usuario }}</p>
         <p>
-          <strong><span class="material-icons">bar_chart</span> Estado Laboral: </strong>
+          <strong><span class="material-icons">notifications</span> Estado Laboral: </strong>
           <span *ngIf="!editandoInfo">{{ nuevoEstado | titlecase }}</span>
           <select *ngIf="editandoInfo" [(ngModel)]="nuevoEstado">
             <option value="bench">Bench</option>
@@ -36,12 +17,10 @@
             <option value="vacations">Vacations</option>
           </select>
         </p>
-        <p><strong><span class="material-icons">bar_chart</span> Cargabilidad:</strong> {{ info.cargabilidad }}%</p>
         <p><strong><span class="material-icons">person</span> People Lead:</strong> {{ info.lead_usuario }}</p>
-        
-        
-        
-        
+        <p><strong><span class="material-icons">calendar_today</span> Desde:</strong> {{ info.desde }}</p>
+        <p><strong><span class="material-icons">pin_drop</span> Ciudad:</strong> {{ info.ubicacion }}</p>
+
         
         <button
         *ngIf="editandoInfo && esMiPerfil"
@@ -68,24 +47,16 @@
       <div class="etiquetas-habilidad">
         <span *ngFor="let habilidad of habilidades">{{ habilidad }}</span>
       </div>
-      
       <h4><span class="material-icons">school</span> Certificados</h4>
       <ul>
         <li *ngFor="let certificado of certificados">{{ certificado.nombre }}</li>
       </ul>
     </div>
-    
-    
   </div>
     </div>
-  
-    <div class="derecha"></div>
-    
-    
+    <div class="derecha"></div> 
   </div>
-
-  <div class="botones">
-    
+  <div class="botones"> 
     <button
     class="boton-cancelar"
     *ngIf="editandoInfo && esMiPerfil"
@@ -105,9 +76,27 @@
   </div>
 </div>
 
+<div class="caja-info">
+  <h2><span class="material-icons">assessment</span> Estadísticas</h2>
+  <div class="caja-info-superior">
+    <div class="izquierda">
+      <div class="izquierda-superior">
+        <p><strong><span class="material-icons">bar_chart</span> Cargabilidad:</strong> {{ info.cargabilidad }}%</p>
+        <p><strong><span class="material-icons">bar_chart</span> Nivel:</strong> {{ info.nivel }}</p>
+        <p><strong><span class="material-icons">bar_chart</span> Nivel Inglés:</strong> {{ info.nivel_ingles }}</p>
+        <p><strong><span class="material-icons">bar_chart</span> Staff Days:</strong> {{ info.staff_days }}</p>
+        <p><strong><span class="material-icons">bar_chart</span> YTD Unassigned:</strong> {{ info.ytd_unassigned }}%</p>
+        <p><strong><span class="material-icons">bar_chart</span> YTD Recovery:</strong> {{ info.ytd_recovery }}%</p>
+        <p><strong><span class="material-icons">bar_chart</span> Bench Days:</strong> {{ info.bd }}%</p>
+      </div>
+    </div>
+    <div class="derecha"></div>
+  </div>
+</div>
+
 
   <div class="carrera" [ngClass]="{ 'modo-edicion': editandoTrayectoria }">
-    <h3><span class="material-icons">work</span> Trayectoria Laboral</h3>
+    <h2><span class="material-icons">work</span> Trayectoria Laboral</h2>
   
     <div class="linea-tiempo">
       <div
