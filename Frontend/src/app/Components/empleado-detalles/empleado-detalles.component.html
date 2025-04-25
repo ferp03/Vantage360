@@ -133,6 +133,7 @@
   
         <div *ngIf="editandoIndice !== i">
           <h4><span class="material-icons">device_hub</span> {{ experiencia.titulo }}</h4>
+          <h4><span class="material-icons">business</span>{{ experiencia.empresa }}</h4>
           <p>{{ experiencia.descripcion }}</p>
           <small>
             <span class="material-icons">calendar_today</span>
@@ -277,9 +278,9 @@
       </div>
     </div>
   </div>
-<!-- </div> -->
-        <div *ngIf="editandoIndice === i">
-          <!-- Campos para edición -->
+</div>
+        <!-- <<div *ngIf="editandoIndice === i">
+         
           <input [(ngModel)]="experiencia.titulo" placeholder="Título" />
           <textarea [(ngModel)]="experiencia.descripcion" placeholder="Descripción"></textarea>
           <input [(ngModel)]="experiencia.inicio" placeholder="Fecha de inicio" />
@@ -287,7 +288,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
   
-</div>
+<!-- </div> -->
 

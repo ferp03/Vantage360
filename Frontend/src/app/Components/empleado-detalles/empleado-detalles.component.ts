@@ -110,7 +110,6 @@ export class EmpleadoDetallesComponent implements OnInit {
   
       this.cargarInfoBasica();
       this.cargarHabilidades();
-      this.cargarCursos();
       
       // Primero cargamos las capabilities, y después la trayectoria
       this.cargarCapabilities().then(() => {
@@ -135,19 +134,9 @@ export class EmpleadoDetallesComponent implements OnInit {
         },
         error: (err: any) => {
           console.error('Error al obtener capabilities:', err);
-          this.capabilities = [
-            { id: 1, nombre: 'Agile' },
-            { id: 2, nombre: 'Back End Engineering' },
-            { id: 3, nombre: 'Business Analyst' },
-            { id: 4, nombre: 'Capital Markets Processes' },
-            { id: 5, nombre: 'Cloud' }
-          ];
-          console.log('Usando capabilities de prueba');
-          resolve(); // Resolvemos la promesa con capabilities de respaldo
         }
       });
       this.cargarCertificados();
-      this.cargarTrayectoria();
     });
   }
 

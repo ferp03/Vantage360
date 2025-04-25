@@ -164,3 +164,4 @@ export class ApiService {
     return this.http.put(`${this.apiUrl}/curso/${cursoId}`, formData);
   }
 
+}
