@@ -1,25 +1,54 @@
 <div class="certifications-dashboard">
   <header class="dashboard-header">
-    <h1>V360</h1>
     <h2>Mis Certificados</h2>
   </header>
+  <div class="certifications-container">  
+    <!-- Estado de carga -->
+    <div *ngIf="loading" class="loading">
+      <p>Cargando tus certificados...</p>
+    </div>
   
-  <section class="certificates-container">
-    <div class="certificate-list">
-      <div class="certificate-item" *ngFor="let cert of certificados">
-        <h3>{{ cert.nombre_curso }}</h3>
-        <p>Institución: {{ cert.institucion }}</p>
-        <p>Fecha: {{ cert.fecha_emision | date }}</p>
-        
+    <!-- Mensaje de error -->
+    <div *ngIf="error && !loading" class="error-message">
+      {{ error }}
+    </div>
+  
+    <!-- Lista vacía -->
+    <div *ngIf="!loading && !error && certificados.length === 0">
+      <p>No tienes certificados registrados.</p>
+    </div>
+  
+    <!-- Lista de certificados -->
+    <div *ngIf="!loading && !error && certificados.length > 0" class="certificate-list">
+      <div *ngFor="let cert of certificados" class="certificate-card">
+        <div class="certificate-header">
+          <h3>{{ cert.nombre }}</h3>
+          <span class="institution">{{ cert.institucion }}</span>
+        </div>
+  
+        <div class="certificate-dates">
+          <div>
+            <strong>Emitido:</strong> 
+            {{ cert.fecha_emision | date:'dd/MM/yyyy' }}
+          </div>
+          <div>
+            <strong>Vence:</strong> 
+            {{ cert.fecha_vencimiento | date:'dd/MM/yyyy' }}
+          </div>
+        </div>
+  
         <div class="certificate-actions">
-          <a [href]="cert.archivo_url" target="_blank" class="btn btn-view">
+          <button 
+            (click)="descargarCertificado(cert.archivo)" 
+            class="btn-download">
             Ver Certificado
-          </a>
-          <button (click)="eliminarCertificado(cert.id)" class="btn btn-delete">
+          </button>
+          <button 
+            (click)="eliminarCertificado(cert.certificacion_id)" 
+            class="btn-delete">
             Eliminar
           </button>
         </div>
       </div>
     </div>
-  </section>
-</div>
+  </div>

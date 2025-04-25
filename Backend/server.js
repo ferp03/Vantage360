@@ -12,6 +12,7 @@ const availabilityRoutes = require('./routes/availability.routes');
 const certificateRoutes = require('./routes/certificate.routes');
 const cursosRoutes = require('./routes/curso.routes');
 
+
 const app = express();
 const port = 3000;
 

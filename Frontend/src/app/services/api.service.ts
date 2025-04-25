@@ -33,20 +33,24 @@ export class ApiService {
   }
 
   guardarCertificado(formData: FormData): Observable<any> {
-    const headers = new HttpHeaders({
-    });
-
-    return this.http.post(`${this.apiUrl}/certificados`, formData, { headers });
+    return this.http.post(`${this.apiUrl}/certificado`, formData);
   }
 
-  obtenerCertificados(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/certificados`);
+  //obtenerCertificados(): Observable<any> {
+    //return this.http.get(`${this.apiUrl}/certificados`);
+  //}
+
+  // eliminarCertificado(id: string): Observable<any> {
+  //  return this.http.delete(`${this.apiUrl}/certificados/${id}`);
+  //}
+
+  obtenerCertificadosPorEmpleado(empleadoId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/empleado/api/${empleadoId}`);
   }
 
-  eliminarCertificado(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/certificados/${id}`);
+  eliminarCertificado(capabilityId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${capabilityId}`);
   }
-
 
   // Obtener todos los empleados con su información de disponibilidad
   getEmpleadosDisponibilidad(): Observable<any> {

@@ -1,79 +1,185 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { supabaseAnon } = require('../supabase');
+const { supabaseAnon, supabaseAdmin } = require('../supabase');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const upload = multer();
+// Configuración de Multer
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-// Ruta para subir archivo
-router.post('/upload', upload.single('file'), async (req, res) => {
-  const file = req.file;
-  if (!file) {
-    return res.status(400).json({ error: 'No se subió ningún archivo.' });
-  }
+// Ruta para obtener todos los certificados de un empleado
+router.get('/empleado/api/:empleado_id', async (req, res) => {
+  const { empleado_id } = req.params;
 
   try {
-    const fileName = `${Date.now()}_${file.originalname}`;
-
-    const { data, error } = await supabaseAnon.storage
-      .from('certificaciones')
-      .upload(fileName, file.buffer, {
-        contentType: file.mimetype,
-      });
+    const { data, error } = await supabaseAnon
+      .from('certificacion')
+      .select('*')
+      .eq('empleado_id', empleado_id);
 
     if (error) {
-      console.error('Error al subir archivo a Supabase:', error.message);
-      return res.status(500).json({ error: 'Error al subir archivo a Supabase.' });
+      console.error('Error al obtener certificados:', error.message);
+      return res.status(500).json({ error: 'Error al obtener certificados' });
     }
 
-    const filePath = data.path;
-
-    return res.status(200).json({
-      success: true,
-      message: 'Archivo subido exitosamente',
-      filePath: filePath,
-    });
+    return res.status(200).json({ data });
   } catch (err) {
     console.error('Error inesperado:', err);
-    return res.status(500).json({ error: 'Error inesperado al procesar el archivo.' });
+    return res.status(500).json({ error: 'Error inesperado al obtener certificados' });
   }
 });
 
+// Ruta para subir certificados
+router.post('/certificado', upload.single('archivo'), async (req, res) => {
+  const { nombre, institucion, fecha_emision, fecha_vencimiento, empleado_id } = req.body;
+  const archivo = req.file;
+
+  // Validación de campos
+  //if (!archivo || !nombre || !institucion || !fecha_emision || !fecha_vencimiento || !empleado_id) {
+    //return res.status(400).json({ 
+      //success: false, 
+      //error: 'Faltan campos requeridos: archivo, nombre, institución, fechas o ID de empleado' 
+    //});
+  //}
+
+  try {
+    // 1. Subir archivo al bucket "certificaciones"
+    const fileName = `certificaciones/${Date.now()}_${archivo.originalname}`;
+    console.log(`Subiendo archivo ${fileName}...`);
+
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from('certificaciones')
+      .upload(fileName, archivo.buffer, {
+        contentType: archivo.mimetype,
+        upsert: false
+      });
+
+    if (uploadError) {
+      console.error('Error al subir archivo:', uploadError);
+      return res.status(500).json({
+        success: false,
+        error: 'Error al subir el archivo: ' + uploadError.message
+      });
+    }
+
+    // 2. Obtener URL pública con mayor tiempo de expiración (7 días)
+    const { data: signedUrlData, error: signedUrlError } = await supabaseAdmin.storage
+      .from('certificaciones')
+      .createSignedUrl(fileName, 60 * 60 * 24 * 7); // 7 días de validez
+
+    if (signedUrlError) {
+      console.error('Error al generar URL:', signedUrlError);
+      return res.status(500).json({
+        success: false,
+        error: 'Error al generar URL del archivo: ' + signedUrlError.message
+      });
+    }
+
+    // 3. Insertar metadatos en la tabla certificacion
+    const { data, error: dbError } = await supabaseAdmin
+      .from('certificacion')
+      .insert([{
+        nombre,
+        institucion,
+        fecha_emision,
+        fecha_vencimiento,
+        empleado_id,
+        archivo: signedUrlData.signedUrl
+      }])
+      .select();
+
+    if (dbError) {
+      console.error('Error en base de datos:', dbError);
+      return res.status(500).json({
+        success: false,
+        error: 'Error al guardar en base de datos: ' + dbError.message
+      });
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: 'Certificado subido correctamente',
+      data: {
+        certificado_id: data[0].certificacion_id,
+        archivo: signedUrlData.signedUrl
+      }
+    });
+
+  } catch (err) {
+    console.error('Error completo:', err);
+    return res.status(500).json({
+      success: false,
+      error: 'Error inesperado: ' + err.message
+    });
+  }
+});
+
+// Ruta para obtener certificados de un empleado
+router.get('/empleado/:empleado_id/certificados', async (req, res) => {
+  const { empleado_id } = req.params;
+
+  try {
+    const { data, error } = await supabaseAnon
+      .from('certificacion')
+      .select('*')
+      .eq('empleado_id', empleado_id)
+      .order('fecha_emision', { ascending: false });
+
+    if (error) {
+      console.error('Error al obtener certificados:', error.message);
+      return res.status(500).json({ 
+        success: false, 
+        error: 'Error al obtener certificados' 
+      });
+    }
+
+    return res.status(200).json({ 
+      success: true,
+      data 
+    });
+
+  } catch (err) {
+    console.error('Error inesperado:', err);
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Error inesperado al obtener certificados' 
+    });
+  }
+});
+
+
+// Ruta para crear nuevo certificado
 router.post('/certificado', async (req, res) => {
-  const { name, issueDate, expiryDate, institution, file } = req.body;
+  const { nombre, fecha_emision, fecha_vencimiento, institucion, archivo, empleado_id } = req.body;
   
-  // Verificar si todos los campos necesarios están presentes
-  if (!name || !issueDate || !expiryDate || !institution ||  !file) {
+  if (!nombre || !fecha_emision || !fecha_vencimiento || !institucion || !archivo || !empleado_id) {
     return res.status(400).json({ success: false, error: 'Faltan campos requeridos' });
   }
 
   try {
-    // Realizar la inserción en la base de datos (ejemplo usando supabase)
     const { data, error } = await supabaseAnon
       .from('certificacion')
-      .insert([
-        {
-          nombre: name,
-          fecha_emision: issueDate,
-          fecha_vencimiento: expiryDate,
-          institucion: institution,
-          archivo: file, 
-        },
-      ]);
+      .insert([{
+        nombre,
+        fecha_emision,
+        fecha_vencimiento,
+        institucion,
+        archivo,
+        empleado_id
+      }])
+      .select(); // Esto devuelve el registro insertado
 
-    // Si hay un error en la inserción
     if (error) {
-      console.error('Error al guardar en base de datos:', error.message);
-      return res.status(500).json({ success: false, error: 'Error al guardar en base de datos' });
+      console.error('Error al guardar certificado:', error.message);
+      return res.status(500).json({ success: false, error: 'Error al guardar certificado' });
     }
 
-    // Si la inserción es exitosa
     return res.status(200).json({
       success: true,
       message: 'Certificado guardado exitosamente',
-      data: data,
+      data: data[0] // Devuelve el primer (y único) registro insertado
     });
   } catch (err) {
     console.error('Error inesperado:', err);
@@ -81,5 +187,26 @@ router.post('/certificado', async (req, res) => {
   }
 });
 
+// Ruta para eliminar certificado
+router.delete('/:capability_id', async (req, res) => {
+  const { capability_id } = req.params;
+
+  try {
+    const { error } = await supabaseAnon
+      .from('certificacion')
+      .delete()
+      .eq('capability_id', capability_id);
+
+    if (error) {
+      console.error('Error al eliminar certificado:', error.message);
+      return res.status(500).json({ success: false, error: 'Error al eliminar certificado' });
+    }
+
+    return res.status(200).json({ success: true, message: 'Certificado eliminado exitosamente' });
+  } catch (err) {
+    console.error('Error inesperado:', err);
+    return res.status(500).json({ success: false, error: 'Error inesperado al eliminar certificado' });
+  }
+});
 
 module.exports = router;

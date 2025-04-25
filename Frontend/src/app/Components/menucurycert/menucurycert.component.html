@@ -48,7 +48,7 @@
   <div class="skills-container" (click)="$event.stopPropagation()">
     <div class="skills-box">
       <h2>Subir Certificado</h2>
-      
+
       <form #certificadoForm="ngForm" (ngSubmit)="subirCertificado(certificadoForm)">
         <div class="form-group" [class.error]="nombre.invalid && (nombre.dirty || nombre.touched || formSubmitted)">
           <label for="nombre">Nombre del certificado</label>
@@ -91,6 +91,21 @@
             [class.invalid]="fecha.invalid && (fecha.dirty || fecha.touched || formSubmitted)" 
             required>
           <span class="error-message" *ngIf="fecha.invalid && (fecha.dirty || fecha.touched || formSubmitted)">
+            Este campo es obligatorio
+          </span>
+        </div>
+
+        <div class="form-group" [class.error]="fechaVencimiento.invalid && (fechaVencimiento.dirty || fechaVencimiento.touched || formSubmitted)">
+          <label for="fechaVencimiento">Fecha de vencimiento</label>
+          <input 
+            type="date" 
+            id="fechaVencimiento" 
+            [(ngModel)]="certificado.fechaVencimiento" 
+            name="fechaVencimiento"
+            #fechaVencimiento="ngModel"
+            [class.invalid]="fechaVencimiento.invalid && (fechaVencimiento.dirty || fechaVencimiento.touched || formSubmitted)" 
+            required>
+          <span class="error-message" *ngIf="fechaVencimiento.invalid && (fechaVencimiento.dirty || fechaVencimiento.touched || formSubmitted)">
             Este campo es obligatorio
           </span>
         </div>
