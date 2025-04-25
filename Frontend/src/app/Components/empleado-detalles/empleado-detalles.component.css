@@ -484,6 +484,7 @@
   .boton-eliminar {
     background-color: #ff0000;
     color: white;
+    border: none;
   }
 
   .modo-edicion input:focus,
