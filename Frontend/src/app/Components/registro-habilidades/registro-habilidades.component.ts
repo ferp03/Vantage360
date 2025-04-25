@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-registro-habilidades',
@@ -13,7 +14,7 @@ export class RegistroHabilidadesComponent implements OnInit {
   @ViewChild('toast') toast!: ElementRef;
   @ViewChild('skillsForm') skillsForm!: ElementRef;
 
-  empleadoId!: string;
+  private empleadoId: string | null = null;
 
   skillName: string = '';
   skillCategory: string = '';
@@ -24,11 +25,12 @@ export class RegistroHabilidadesComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,  
     private apiService: ApiService,
-    private location: Location
+    private location: Location,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.empleadoId = this.route.snapshot.paramMap.get('id') || '';
+    this.empleadoId = this.authService.userId;
   }
 
   onSubmit(form: NgForm): void {
@@ -43,7 +45,7 @@ export class RegistroHabilidadesComponent implements OnInit {
       console.error('Faltan campos requeridos');
       return;
     }
-
+    if (!this.empleadoId) return;
     this.apiService.agregarHabilidad(
       this.empleadoId,
       {
