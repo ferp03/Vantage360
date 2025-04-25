@@ -93,7 +93,7 @@
     <div class="derecha"></div>
   </div>
 </div>
-
+  
 
   <div class="carrera" [ngClass]="{ 'modo-edicion': editandoTrayectoria }">
     <h2><span class="material-icons">work</span> Trayectoria Laboral</h2>
@@ -230,8 +230,31 @@
         <span class="material-icons">{{ editandoTrayectoria ? 'save' : 'edit' }}</span>
         {{ editandoTrayectoria ? 'Guardar' : 'Editar' }}
       </button>
+
+      <div class="botones"> 
+        <button
+        class="boton-cancelar"
+        *ngIf="editandoInfo && esMiPerfil"
+        (click)="cancelarEdicion()"
+        >
+        <span class="material-icons">cancel</span>
+        Cancelar
+      </button>
+      <button
+      class="boton-editar"
+      *ngIf="esMiPerfil"
+      (click)="editandoInfo" ? guardarTrayectoria() 
+      >
+      <span class="material-icons">{{ editandoInfo ? 'save' : 'edit' }}</span>
+      {{ editandoInfo ? 'Guardar' : 'Editar' }}
+      </button>
+      </div>
     </div>
-  </div>
+
+
+
+  
+
 
   <div class="modal" *ngIf="mostrarModalContrasena">
     <div class="modal-contenido">

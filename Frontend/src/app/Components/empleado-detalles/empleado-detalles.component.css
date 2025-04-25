@@ -1,3 +1,5 @@
+  
+  
   .contenedor-detalle {
     display: flex;
     flex-direction: column;
@@ -106,6 +108,7 @@
   }
 
   .boton-editar,
+  .boton-guardar,
   .boton-cambiar-pass,
   .boton-agregar,
   .boton-editar-cuadro {
@@ -121,6 +124,7 @@
   }
 
   .boton-editar:hover,
+  .boton-guardar:hover,
   .boton-cambiar-pass:hover,
   .boton-agregar:hover,
   .boton-editar-cuadro:hover {
@@ -203,12 +207,7 @@
     margin-top: 0.5rem;
     background-color: #aaa;
     color: white;
-    padding: 0.5rem 1.2rem;
     border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    transition: background-color 0.2s ease;
   }
 
   .boton-cancelar:hover {
@@ -470,16 +469,21 @@
 }
 
   .boton-guardar,
-.boton-cancelar,
+  .boton-cancelar,
   .boton-eliminar {
     display: flex;
     align-items: center;
     padding: 8px 15px;
     border-radius: 4px;
     font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  gap: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    gap: 5px;
+  }
+
+  .boton-eliminar {
+    background-color: #ff0000;
+    color: white;
   }
 
   .modo-edicion input:focus,
@@ -537,7 +541,7 @@
   }
 
 .boton-eliminar:hover {
-  background-color: #d32f2f;
+  background-color: #ff00008f;
 }
 
 .boton-editar-cuadro {
