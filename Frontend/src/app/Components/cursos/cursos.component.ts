@@ -14,11 +14,9 @@ export class CursosComponent implements OnInit {
   cursosPorPagina = 4;
   paginaActual = 1;
   totalPaginas = 1;
-  
-  // Error handling
   error: string | null = null;
   loading: boolean = false;
-
+  guardandoCurso: boolean = false;
   mostrarFormulario = false;
 
   nuevoCurso = {
@@ -28,6 +26,7 @@ export class CursosComponent implements OnInit {
   };
 
   archivoSeleccionado: File | null = null;
+
   formErrores = {
     nombre: '',
     fecha_emision: '',
@@ -37,56 +36,35 @@ export class CursosComponent implements OnInit {
 
   empleadoId: string = '';
 
-  constructor(
-    private api: ApiService,
-    private authService: AuthService
-  ) {}
+  constructor(private api: ApiService, private authService: AuthService) {}
 
   ngOnInit() {
-    // Get user ID from AuthService
     const userId = this.authService.userId;
-    
-    console.log('AuthService userId:', userId);
-    
     if (userId) {
       this.empleadoId = userId;
-      console.log('Using userId from AuthService:', this.empleadoId);
       this.obtenerCursos();
     } else {
       this.error = 'No se pudo obtener el ID del usuario. Por favor, vuelve a iniciar sesión.';
-      console.error('No user ID available from auth service');
     }
   }
 
   obtenerCursos() {
-    console.log('Obteniendo cursos para empleadoId:', this.empleadoId);
     this.loading = true;
     this.error = null;
-    
+
     this.api.obtenerCursosEmpleado(this.empleadoId).subscribe({
       next: (res) => {
-        console.log('API response:', res);
         this.loading = false;
-        
         if (res && res.data) {
           this.cursos = res.data;
-          console.log('Cursos obtenidos:', this.cursos.length);
-          
-          if (this.cursos.length === 0) {
-            console.log('No se encontraron cursos para este usuario');
-          }
-          
           this.ordenarCursosPorFecha();
           this.actualizarPaginacion();
         } else {
-          console.error('Formato de respuesta inválido:', res);
           this.error = 'Formato de respuesta inválido';
         }
       },
       error: (err: HttpErrorResponse) => {
         this.loading = false;
-        console.error('Error al obtener cursos:', err);
-        
         if (err.status === 401) {
           this.error = 'Sesión expirada. Por favor, vuelve a iniciar sesión.';
         } else if (err.status === 403) {
@@ -126,6 +104,7 @@ export class CursosComponent implements OnInit {
 
   cerrarFormulario() {
     this.mostrarFormulario = false;
+    this.guardandoCurso = false;
     this.archivoSeleccionado = null;
     this.nuevoCurso = {
       nombre: '',
@@ -172,12 +151,24 @@ export class CursosComponent implements OnInit {
       valido = false;
     }
 
+    if (this.nuevoCurso.fecha_emision && this.nuevoCurso.fecha_vencimiento) {
+      const fechaEmision = new Date(this.nuevoCurso.fecha_emision);
+      const fechaVencimiento = new Date(this.nuevoCurso.fecha_vencimiento);
+
+      if (fechaVencimiento < fechaEmision) {
+        this.formErrores.fecha_vencimiento = 'La fecha de vencimiento no puede ser anterior a la fecha de emisión.';
+        valido = false;
+      }
+    }
+
     if (!this.archivoSeleccionado) {
       this.formErrores.archivo = 'Debes adjuntar un archivo.';
       valido = false;
     }
 
     if (!valido) return;
+
+    this.guardandoCurso = true;
 
     const formData = new FormData();
     formData.append('nombre', this.nuevoCurso.nombre);
@@ -186,19 +177,13 @@ export class CursosComponent implements OnInit {
     formData.append('archivo', this.archivoSeleccionado!);
 
     this.api.crearCurso(this.empleadoId, formData).subscribe({
-      next: (res) => {
-        console.log('Curso guardado:', res);
+      next: () => {
         this.obtenerCursos();
         this.cerrarFormulario();
       },
       error: (err) => {
-        console.error('Error al guardar curso:', err);
-        
-        if (err.status === 401) {
-          this.error = 'Sesión expirada. Por favor, vuelve a iniciar sesión.';
-        } else {
-          this.error = `Error al guardar curso: ${err.error?.message || err.message || 'Desconocido'}`;
-        }
+        this.guardandoCurso = false;
+        this.error = `Error al guardar curso: ${err.error?.message || err.message || 'Desconocido'}`;
       }
     });
   }

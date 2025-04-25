@@ -19,7 +19,6 @@
       <div class="course-header">
         <h3>{{ curso.nombre }}</h3>
       </div>
-  
       <div class="course-dates">
         <div class="date-label">
           <span class="date-icon material-icons">calendar_today</span>
@@ -30,14 +29,12 @@
           <span>Vence: {{ curso.fecha_vencimiento }}</span>
         </div>
       </div>
-  
       <div class="course-description" *ngIf="curso.descripcion">
         <div class="description-title">
           <span class="material-icons">info</span> Descripción:
         </div>
         <div>{{ curso.descripcion }}</div>
       </div>
-  
       <div class="course-actions">
         <a [href]="curso.archivo" target="_blank" class="btn btn-certificate">
           <span class="certificate-icon material-icons">school</span>
@@ -46,13 +43,11 @@
       </div>
     </div>
   </section>
-  
 
   <div class="pagination">
     <button (click)="cambiarPagina(paginaActual - 1)" [disabled]="paginaActual === 1">
       <span class="material-icons">chevron_left</span>
     </button>
-
     <button (click)="cambiarPagina(paginaActual + 1)" [disabled]="paginaActual === totalPaginas">
       <span class="material-icons">chevron_right</span>
     </button>
@@ -64,9 +59,11 @@
         <h2>Agregar Curso</h2>
         <button class="btn-cerrar" (click)="cerrarFormulario()">×</button>
       </div>
-
       <div class="modal-body">
         <form>
+          <div class="loading-indicator" *ngIf="guardandoCurso">
+            <span class="spinner"></span> Guardando curso...
+          </div>
 
           <div class="form-group">
             <label>Nombre del curso</label>
@@ -99,9 +96,8 @@
 
           <div class="acciones">
             <button type="button" (click)="cerrarFormulario()">Cancelar</button>
-            <button type="button" (click)="guardarCurso()">Guardar</button>
+            <button type="button" (click)="guardarCurso()" [disabled]="guardandoCurso">Guardar</button>
           </div>
-
         </form>
       </div>
     </div>
