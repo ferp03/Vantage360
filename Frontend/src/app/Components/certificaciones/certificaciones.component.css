@@ -1,25 +1,22 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
-:host {
-  display: block;
-}
-
 /* Estilos base del dashboard */
 .certifications-dashboard {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  min-height: 100vh;
-  padding: 5rem 3.6rem 3rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  background: linear-gradient(160deg, #000000, #221928);
-  overflow-y: auto;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 92vh;
+  width: 100vw;
+  background: var(--accenture-gray-50);
+  padding: 3.6rem;
+  padding-top: 0;
   box-sizing: border-box;
-  font-family: 'Roboto', Arial, sans-serif;
+  overflow-y: scroll;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
 }
 
 /* Contenedor principal */
@@ -34,30 +31,9 @@
 /* Encabezado */
 .dashboard-header {
   margin-bottom: 30px;
-  color: white;
+  color: black;
   width: 100%;
   text-align: center;
-}
-
-.header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.header-text h1 {
-  margin: 0 0 10px;
-  font-size: 2rem;
-  color: #ffffff;
-}
-
-.header-text p {
-  color: #fff;
-  margin: 0;
-  font-size: 1rem;
-  opacity: 0.8;
 }
 
 
@@ -95,18 +71,16 @@
   flex-direction: column;
   padding: 25px;
   border-radius: 8px;
-  background: rgba(35, 35, 50, 0.3);
-  backdrop-filter: blur(5px);
-  box-shadow: 1px 2px 6px rgba(185, 152, 247, 0.3);
-  transition: transform 0.2s, box-shadow 0.2s;
-  border: 1px solid rgba(185, 152, 247, 0.1);
+  background: transparent;
+  border: 1px solid hsl(var(--ring));
+  box-shadow: 1px 2px 6px #B998F7;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 280px;
 }
 
 .certificate-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(185, 152, 247, 0.4);
-  background: rgba(35, 35, 50, 0.4);
+  box-shadow: 0 6px 12px #B998F7;
 }
 
 /* Encabezado de tarjeta */
@@ -118,7 +92,7 @@
 .certificate-header h3 {
   margin: 0;
   font-size: 1.4rem;
-  color: #fff;
+  color: black;
   position: relative;
   padding-bottom: 10px;
 }
@@ -157,7 +131,7 @@
   flex-direction: column;
   gap: 12px;
   margin-bottom: 20px;
-  color: white;
+  color: black;
 }
 
 .date-item {
@@ -259,16 +233,15 @@
 .loading, .error-message {
   text-align: center;
   padding: 40px;
-  color: #fff;
   font-size: 1.1rem;
 }
 
 .loading {
-  color: #B998F7;
+  color: var(--accenture-gray-500);
 }
 
 .error-message {
-  color: #e74c3c;
+  color: var(--accent-red);
 }
 
 /* Responsive */
