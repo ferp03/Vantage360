@@ -1,8 +1,50 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400&display=swap');
 
-* {
-  font-family: 'Geist', sans-serif;
+:root {
+  /* Colors */
+  --border: 0, 0%, 90%;
+  --input: 0, 0%, 98%;
+  --ring: 0, 0%, 80%;
+  --background: 0, 0%, 100%;
+  --foreground: 0, 0%, 10%;
+
+  --primary: 270, 100%, 50%;
+  --primary-foreground: 270, 100%, 95%;
+  --secondary: 240, 100%, 50%;
+  --secondary-foreground: 240, 100%, 95%;
+  --destructive: 0, 100%, 50%;
+  --destructive-foreground: 0, 100%, 95%;
+  --muted: 210, 10%, 50%;
+  --muted-foreground: 210, 10%, 95%;
+  --accent: 180, 100%, 50%;
+  --accent-foreground: 180, 100%, 95%;
+  --popover: 0, 0%, 98%;
+  --popover-foreground: 0, 0%, 10%;
+  --card: 0, 0%, 100%;
+  --card-foreground: 0, 0%, 10%;
+
+  /* Accenture colors */
+  --accenture-black: #000000;
+  --accenture-white: #ffffff;
+  --accenture-gray-50: #f7f7f7;
+  --accenture-gray-100: #e3e3e3;
+  --accenture-gray-200: #c8c8c8;
+  --accenture-gray-300: #a4a4a4;
+  --accenture-gray-400: #818181;
+  --accenture-gray-500: #666666;
+  --accenture-gray-600: #515151;
+  --accenture-gray-700: #434343;
+  --accenture-gray-800: #383838;
+  --accenture-gray-900: #313131;
+  --accenture-gray-950: #1a1a1a;
+
+  /* Additional accent colors */
+  --accent-teal: #00D8C9;
+  --accent-blue: #0076C8;
+  --accent-green: #00A87E;
+  --accent-red: #FF4F5E;
 }
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: 'Geist', sans-serif; }
+

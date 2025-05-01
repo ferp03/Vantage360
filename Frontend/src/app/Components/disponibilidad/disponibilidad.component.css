@@ -6,7 +6,10 @@
   left: 0;
   height: 90vh;
   width: 100vw;
-  background: linear-gradient(160deg, #000000, #221928);
+
+
+  background: linear-gradient(160deg, hsl(var(--accenture-black)), hsl(var(--accenture-gray-900)));
+
   padding: 3.6rem;
   padding-top: 0;
   box-sizing: border-box;
@@ -24,7 +27,7 @@
 }
 
 .titulo h1 {
-  color: white;
+  color: hsl(var(--foreground));
 }
 
 /* Filtros avanzados */
@@ -34,18 +37,20 @@
   justify-content: space-between;
   margin: 15px 0;
   padding: 15px;
-  background-color: rgba(55, 55, 75, 0.3);
+  /* background-color: rgba(55, 55, 75, 0.3);
+  border: 1px solid rgba(138, 86, 232, 0.2); */
+  background-color: hsl(var(--input));
+  border: 1px solid hsl(var(--ring));
   border-radius: 8px;
-  border: 1px solid rgba(138, 86, 232, 0.2);
 }
 
-.filtro-item {
+/* .filtro-item {
   margin-right: 15px;
   margin-bottom: 10px;
-}
+} */
 
 .filtro-item label {
-  color: white;
+  color: hsl(var(--accenture-black));
   margin-right: 8px;
   font-size: 14px;
 }
@@ -53,9 +58,9 @@
 .filtro-item select, .filtro-item input {
   padding: 8px;
   border-radius: 4px;
-  border: 1px solid rgba(138, 86, 232, 0.3);
-  background-color: rgba(55, 55, 75, 0.5);
-  color: white;
+  background-color: hsl(var(--input));
+  border: 1px solid hsl(var(--ring));
+  color: hsl(var(--foreground));
 }
 
 .filtro-item.checkbox {
@@ -73,15 +78,16 @@
 
 .btn-limpiar {
   padding: 8px 15px;
-  background-color: #9668e6;
-  color: white;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .btn-limpiar:hover {
-  background-color: #8452d8;
+  background-color: hsl(var(--primary-foreground));
+  color: hsl(var(--primary));
 }
 
 /* Tabla de empleados */
@@ -92,22 +98,22 @@
 .tabla-empleados {
   width: 100%;
   border-collapse: collapse;
-  background-color: rgba(35, 35, 50, 0.7);
-  border-radius: 8px;
+  background-color: hsl(var(--card));
   overflow: hidden;
+  border-radius: 8px 8px 2px 2px;
 }
 
 .tabla-empleados th {
-  background-color: #9668e6;
-  color: white;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
   text-align: left;
   padding: 12px 15px;
 }
 
 .tabla-empleados td {
   padding: 10px 15px;
-  border-bottom: 1px solid rgba(138, 86, 232, 0.1);
-  color: white;
+  color: hsl(var(--foreground));
+  border-bottom: 1px solid hsl(var(--ring));
 }
 
 .tabla-empleados tr:last-child td {
@@ -115,7 +121,7 @@
 }
 
 .tabla-empleados tr.disponible {
-  background-color: rgba(76, 175, 80, 0.05);
+  background-color: hsl(var(--accent-green));
 }
 
 .tabla-empleados tr.no-disponible {
@@ -139,10 +145,10 @@
 .nombre {
   font-weight: bold;
   margin: 0;
-  color: white;
+  color: hsl(var(--accenture-black));;
 }
 
-.usuario {
+.usuario, .correo {
   color: #b3b3b3;
   font-size: 12px;
   margin: 0;
@@ -157,7 +163,7 @@
   font-size: 12px;
   margin-right: 5px;
   margin-bottom: 5px;
-  color: white;
+  color: hsl(var(--accenture-black));;
 }
 
 .chip.small {
@@ -190,7 +196,7 @@
   transform: translate(-50%, -50%);
   font-size: 12px;
   font-weight: bold;
-  color: white;
+  color: hsl(var(--accenture-black));
 }
 
 /* Estado de disponibilidad */
@@ -214,15 +220,16 @@
 /* Botones de acción */
 .btn-accion {
   padding: 6px 12px;
-  background-color: #9668e6;
-  color: white;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .btn-accion:hover {
-  background-color: #8452d8;
+  background-color: hsl(var(--primary-foreground));
+  color: hsl(var(--primary));
 }
 
 /* Paginación */
@@ -258,7 +265,7 @@
 }
 
 .pagination span {
-  color: white;
+  color: hsl(var(--accenture-black));
 }
 
 /* Modal de edición */
@@ -277,7 +284,8 @@
 
 .modal {
   width: 400px;
-  background-color: #212130;
+  background-color: hsl(var(--card));
+  color: hsl(var(--foreground));
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -288,8 +296,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  background-color: #9668e6;
-  color: white;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
 }
 
 .modal-header h3 {
@@ -306,7 +314,7 @@
 
 .modal-content {
   padding: 20px;
-  color: white;
+  color: black;
 }
 
 .form-group select, .form-group input {
@@ -315,7 +323,7 @@
   border: 1px solid rgba(138, 86, 232, 0.3);
   border-radius: 4px;
   background-color: rgba(55, 55, 75, 0.5);
-  color: white;
+  color: black;
 }
 
 .btn-guardar, .btn-cancelar {
@@ -333,12 +341,13 @@
 }
 
 .btn-guardar {
-  background-color: #9668e6;
-  color: white;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
 }
 
 .btn-cancelar {
-  background-color: #aaa;
+  background-color: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
 }
 
 .btn-guardar:hover {
@@ -365,7 +374,6 @@
   --width-of-input: 200px;
   --height-of-input: 40px;
   --border-height: 2px;
-  --input-bg: rgba(55, 55, 75, 0.5);
   --border-color: #9668e6;
   --border-radius: 30px;
   --after-border-radius: 1px;
@@ -377,7 +385,7 @@
   padding-inline: 0.8em;
   border-radius: var(--border-radius);
   transition: border-radius 0.5s ease;
-  background: var(--input-bg);
+  background: var(--accenture-gray-100);
 }
 
 .input {
@@ -388,7 +396,8 @@
   padding-inline: 0.5em;
   padding-block: 0.7em;
   border: none;
-  color: white;
+  /* color: hsl(var(--input)); */
+  color: black;
 }
 
 .form:before {
@@ -431,5 +440,5 @@ input:not(:placeholder-shown) ~ .reset {
 
 .form-group{
   max-width: 340px;
-  padding-bottom: 8px;
+  padding-top: 10px;
 }

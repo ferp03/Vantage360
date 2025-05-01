@@ -123,7 +123,7 @@
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style="border: 1px solid hsl(var(--ring));">
           <tr
             *ngFor="let empleado of paginatedEmpleados"
             [ngClass]="{'disponible': empleado.disponible, 'no-disponible': !empleado.disponible}"
@@ -139,7 +139,8 @@
                   <p class="nombre">
                     {{empleado.nombre}} {{empleado.apellido_paterno}} {{empleado.apellido_materno}}
                   </p>
-                  <p class="usuario">{{empleado.usuario}}</p>
+                  <p class="usuario">&#64;{{empleado.usuario}}</p>
+                  <p class="correo">{{empleado.email}}</p>
                 </div>
               </div>
             </td>
@@ -203,7 +204,8 @@
         <div class="modal-content">
           <div class="empleado-detalle">
             <p class="nombre">{{empleadoSeleccionado?.nombre}} {{empleadoSeleccionado?.apellido_paterno}}</p>
-            <p class="correo">{{empleadoSeleccionado?.correo}}</p>
+            <p class="usuario">&#64;{{empleadoSeleccionado?.usuario}}</p>
+            <p class="correo">{{empleadoSeleccionado?.email}}</p>
           </div>
 
           <div class="form-group">
