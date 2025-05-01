@@ -38,7 +38,7 @@
   justify-content: center;
   padding: 1.5rem 1rem; 
   border-radius: 12px; 
-  border: 3px solid #9668e6;
+  border: 1px solid hsl(var(--ring));
   box-shadow: 1px 2px 6px #B998F7;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
