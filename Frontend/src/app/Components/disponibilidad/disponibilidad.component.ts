@@ -28,7 +28,7 @@ export class DisponibilidadComponent implements OnInit {
 
   searchText: string = '';
   currentPage: number = 1;
-  itemsPerPage: number = 7;
+  itemsPerPage: number = 6;
   cargando: boolean = true;
   error: string = '';
 

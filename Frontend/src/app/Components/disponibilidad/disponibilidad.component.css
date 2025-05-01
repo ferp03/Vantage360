@@ -4,12 +4,9 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 90vh;
+  height: 92vh;
   width: 100vw;
-
-
-  background: linear-gradient(160deg, hsl(var(--accenture-black)), hsl(var(--accenture-gray-900)));
-
+  background: var(--accenture-gray-50);
   padding: 3.6rem;
   padding-top: 0;
   box-sizing: border-box;
