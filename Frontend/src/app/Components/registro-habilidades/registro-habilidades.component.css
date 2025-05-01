@@ -1,37 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
-:host {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: 0;
-    padding: 0;
-    overflow: auto;
-    background: linear-gradient(160deg, #000000, #221928);
-    font-family: 'Roboto', sans-serif;
-  }
-  
   .skills-container {
-    min-height: 100vh;
-    margin-top: 40px;
-    width: 100%;
     display: flex;
+    flex-direction: column;
+    position: absolute;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    bottom: 0;
+    left: 0;
+    height: 92vh;
+    width: 100vw;
+    background: var(--accenture-gray-50);
+    padding: 3.6rem;
+    padding-top: 0;
     box-sizing: border-box;
+    overflow-y: scroll;
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Internet Explorer and Edge */
   }
   
   .skills-box {
-    /* background: rgba(35, 35, 50, 0.7); */
-    backdrop-filter: blur(10px);
+    background: transparent;
     padding: 30px;
     border-radius: 8px;
+    border: 1px solid hsl(var(--ring));
     box-shadow: 1px 2px 6px #B998F7;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
     max-width: 450px;
     text-align: center;
@@ -39,7 +32,7 @@
   }
   
   .skills-box h2 {
-    color: white;
+    color: black;
     margin-bottom: 25px;
     font-size: 24px;
   }
@@ -59,7 +52,7 @@
   
   label {
     font-weight: bold;
-    color: white;
+    color: black;
     margin-bottom: 5px;
     font-size: 14px;
   }
@@ -67,7 +60,7 @@
   input, select, textarea {
     padding: 12px 15px;
     background: rgba(255, 255, 255, 0.9);
-    border: 1px solid #ddd;
+    border: 1px solid var(--ring);
     border-radius: 8px;
     font-size: 16px;
     width: 100%;
@@ -131,7 +124,7 @@
   .back-button {
     background: none;
     border: none;
-    color: white;
+    color: black;
     cursor: pointer;
     font-size: 16px;
     padding: 5px 0;
