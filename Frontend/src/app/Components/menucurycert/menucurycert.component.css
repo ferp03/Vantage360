@@ -4,23 +4,20 @@
   position: absolute;
   left: 0;
   bottom: 0;
-  margin-top: 40px;
-  height: 100vh;
+  height: 92vh;
   width: 100vw;
-  background: linear-gradient(160deg, #000000, #221928);
-  color: white;
-  padding: 3rem;
-  font-family: Arial, sans-serif;
+  background: var(--accenture-gray-50);
+  padding: 3.6rem;
+  padding-top: 0;
   box-sizing: border-box;
   overflow-y: auto;
-  padding-top: 5rem; 
 }
 
 .contenedor-modulos h1 {
   margin-bottom: 2rem;
   text-align: center;
   font-size: 2.2rem;
-  color: #ffffff;
+  color: black;
 }
 
 .grid-modulos {
@@ -57,7 +54,7 @@
 
 .modulo p {
   font-size: 0.9rem; 
-  color: #cccccc;
+  color: balck;
   line-height: 1.4;
 }
 
@@ -90,7 +87,7 @@
   justify-content: center;  
   gap: 0.5rem;              
   font-size: 1.3rem; 
-  color: #ffffff;
+  color: black;
   margin-bottom: 0.7rem; 
 }
 
