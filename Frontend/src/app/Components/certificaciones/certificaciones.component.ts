@@ -4,11 +4,11 @@ import { AuthService } from 'src/app/auth/auth.service';
 
 interface Certificado {
   certificacion_id: number;
-  nombre: string;          
-  fecha_emision: string;   
+  nombre: string;
+  fecha_emision: string;
   fecha_vencimiento: string;
-  institucion: string;     
-  archivo: string;         
+  institucion: string;
+  archivo: string;
 }
 
 @Component({
@@ -18,9 +18,14 @@ interface Certificado {
 })
 export class CertificacionesComponent implements OnInit {
   certificados: Certificado[] = [];
+  certificadosPaginados: Certificado[] = [];
+  certificadosPorPagina = 3;
+  paginaActual = 1;
+  totalPaginas = 1;
   loading = true;
   error: string | null = null;
-  empleado: '' = "";
+  empleado = '';
+
   constructor(
     private apiService: ApiService,
     private authService: AuthService
@@ -32,7 +37,7 @@ export class CertificacionesComponent implements OnInit {
 
   private cargarCertificados(): void {
     const empleado_id = this.authService.userId;
-    
+
     if (!empleado_id) {
       this.error = 'No se pudo identificar al usuario';
       this.loading = false;
@@ -42,6 +47,8 @@ export class CertificacionesComponent implements OnInit {
     this.apiService.obtenerCertificadosPorEmpleado(empleado_id).subscribe({
       next: (response) => {
         this.certificados = response.data || [];
+        this.totalPaginas = Math.ceil(this.certificados.length / this.certificadosPorPagina);
+        this.actualizarPaginacion();
         this.loading = false;
       },
       error: (err) => {
@@ -52,18 +59,17 @@ export class CertificacionesComponent implements OnInit {
     });
   }
 
-  eliminarCertificado(id: number): void {
-    if (!confirm('¿Estás seguro de eliminar este certificado?')) return;
+  actualizarPaginacion(): void {
+    const inicio = (this.paginaActual - 1) * this.certificadosPorPagina;
+    const fin = inicio + this.certificadosPorPagina;
+    this.certificadosPaginados = this.certificados.slice(inicio, fin);
+  }
 
-    this.apiService.eliminarCertificado(id).subscribe({
-      next: () => {
-        this.certificados = this.certificados.filter(c => c.certificacion_id !== id);
-      },
-      error: (err) => {
-        console.error('Error al eliminar:', err);
-        this.error = 'No se pudo eliminar el certificado';
-      }
-    });
+  cambiarPagina(nuevaPagina: number): void {
+    if (nuevaPagina >= 1 && nuevaPagina <= this.totalPaginas) {
+      this.paginaActual = nuevaPagina;
+      this.actualizarPaginacion();
+    }
   }
 
   descargarCertificado(url: string): void {

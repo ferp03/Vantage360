@@ -291,3 +291,43 @@
     font-size: 0.85rem;
   }
 }
+
+.pagination-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.pagination-modern {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.pagination-modern button {
+  background: #b998f7;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.pagination-modern button:hover:not(:disabled) {
+  background: #a07cf5;
+  transform: translateY(-2px);
+}
+
+.pagination-modern button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  color: #666;
+}

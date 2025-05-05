@@ -11,6 +11,8 @@
   padding-top: 0;
   box-sizing: border-box;
   overflow-y: auto;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
 }
 
 .contenedor-modulos h1 {
@@ -186,11 +188,13 @@ body.modal-abierto {
   display: flex;
   justify-content: center;
   align-items: center;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
 }
 
 .skills-container {
   width: 100%;
-  margin-top: 40px;
+  margin-top: 110px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
