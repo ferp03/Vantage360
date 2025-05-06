@@ -20,11 +20,11 @@ export class MenucurycertComponent {
     archivo: null as File | null
   };
   
+  guardandoCertificado: boolean = false;
   nombreArchivo: string = '';
   archivoInvalido: boolean = false;
   mostrarModalCertificado: boolean = false;
   formSubmitted: boolean = false;
-  isLoading: boolean = false;
 
   constructor(
     private router: Router,
@@ -96,7 +96,7 @@ export class MenucurycertComponent {
     }
     
     if (form.valid && !this.archivoInvalido && this.certificado.archivo) {
-      this.isLoading = true;
+      this.guardandoCertificado = true;
       
       const formData = new FormData();
       formData.append('nombre', this.certificado.nombre);
@@ -109,7 +109,6 @@ export class MenucurycertComponent {
       
       if (!empleadoId) {
         console.error('No se pudo obtener el ID del empleado');
-        this.isLoading = false;
         return;
       }
   
@@ -117,18 +116,14 @@ export class MenucurycertComponent {
       
       this.apiService.guardarCertificado(formData).subscribe({
         next: (response) => {
+          this.guardandoCertificado = false;
           console.log('Certificado subido exitosamente', response);
-          this.isLoading = false;
           this.cerrarModalSubirCertificado();
-          // Mostrar notificación de éxito
-          alert('Certificado subido exitosamente!');
           // Puedes recargar la lista de certificados aquí si es necesario
         },
         error: (error) => {
           console.error('Error al subir certificado', error);
-          this.isLoading = false;
-          // Mostrar notificación de error
-          alert(`Error al subir certificado: ${error.error?.error || error.message}`);
+          this.guardandoCertificado = false;
         }
       });
     } else {

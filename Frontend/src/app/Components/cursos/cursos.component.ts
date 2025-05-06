@@ -11,7 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class CursosComponent implements OnInit {
   cursos: any[] = [];
   cursosPaginados: any[] = [];
-  cursosPorPagina = 4;
+  cursosPorPagina = 3;
   paginaActual = 1;
   totalPaginas = 1;
   error: string | null = null;

@@ -1,16 +1,11 @@
 <div class="courses-dashboard">
   <header class="courses-header">
-    <div class="header-row">
-      <div class="header-text">
-        <h1>Mis Cursos</h1>
-        <p>Gestiona tu progreso de aprendizaje</p>
-      </div>
-      <div class="header-button">
-        <button class="btn-discreto" (click)="abrirFormulario()">
-          <span class="material-icons">add_circle_outline</span>
-          <span>Agregar Curso</span>
-        </button>
-      </div>
+    <div class="header-content">
+      <h1>Mis Cursos</h1>
+      <button class="btn-discreto" (click)="abrirFormulario()">
+        <span class="material-icons">add_circle_outline</span>
+        <span>Agregar Curso</span>
+      </button>
     </div>
   </header>
 
@@ -21,12 +16,10 @@
       </div>
       <div class="course-dates">
         <div class="date-label">
-          <span class="date-icon material-icons">calendar_today</span>
-          <span>Emisión: {{ curso.fecha_emision }}</span>
+          <div><strong>Emitido:</strong> {{ curso.fecha_emision | date:'dd/MM/yyyy' }}</div>
         </div>
         <div class="date-label">
-          <span class="date-icon material-icons">schedule</span>
-          <span>Vence: {{ curso.fecha_vencimiento }}</span>
+          <div><strong>Vence:</strong> {{ curso.fecha_vencimiento | date:'dd/MM/yyyy' }}</div>
         </div>
       </div>
       <div class="course-description" *ngIf="curso.descripcion">
@@ -36,14 +29,13 @@
         <div>{{ curso.descripcion }}</div>
       </div>
       <div class="course-actions">
-        <a [href]="curso.archivo" target="_blank" class="btn btn-certificate">
+        <a [href]="curso.archivo" target="_blank" class="btn-certificate">
           <span class="certificate-icon material-icons">school</span>
           Ver Curso
         </a>
       </div>
     </div>
   </section>
-
   <div class="pagination">
     <button (click)="cambiarPagina(paginaActual - 1)" [disabled]="paginaActual === 1">
       <span class="material-icons">chevron_left</span>
@@ -53,50 +45,71 @@
     </button>
   </div>
 
-  <div class="modal-overlay" *ngIf="mostrarFormulario">
-    <div class="modal-contenido formulario-curso">
-      <div class="modal-header">
+  <div class="modal-overlay" *ngIf="mostrarFormulario" (click)="cerrarFormulario()">
+    <div class="skills-container" (click)="$event.stopPropagation()">
+      <div class="skills-box">
         <h2>Agregar Curso</h2>
-        <button class="btn-cerrar" (click)="cerrarFormulario()">×</button>
-      </div>
-      <div class="modal-body">
+        
         <form>
           <div class="loading-indicator" *ngIf="guardandoCurso">
             <span class="spinner"></span> Guardando curso...
           </div>
-
+  
           <div class="form-group">
-            <label>Nombre del curso</label>
-            <input type="text" [(ngModel)]="nuevoCurso.nombre" name="nombre" />
-            <div class="error-message" *ngIf="formErrores.nombre">{{ formErrores.nombre }}</div>
+            <label for="nombre">Nombre del curso</label>
+            <input 
+              type="text" 
+              id="nombre" 
+              [(ngModel)]="nuevoCurso.nombre" 
+              name="nombre"
+              [class.invalid]="formErrores.nombre" 
+              required />
+            <span class="error-message" *ngIf="formErrores.nombre">{{ formErrores.nombre }}</span>
           </div>
-
+  
           <div class="form-group">
-            <label>Fecha de emisión</label>
-            <input type="date" [(ngModel)]="nuevoCurso.fecha_emision" name="fecha_emision" />
-            <div class="error-message" *ngIf="formErrores.fecha_emision">{{ formErrores.fecha_emision }}</div>
+            <label for="fecha_emision">Fecha de emisión</label>
+            <input 
+              type="date" 
+              id="fecha_emision" 
+              [(ngModel)]="nuevoCurso.fecha_emision" 
+              name="fecha_emision"
+              [class.invalid]="formErrores.fecha_emision" 
+              required />
+            <span class="error-message" *ngIf="formErrores.fecha_emision">{{ formErrores.fecha_emision }}</span>
           </div>
-
+  
           <div class="form-group">
-            <label>Fecha de vencimiento</label>
-            <input type="date" [(ngModel)]="nuevoCurso.fecha_vencimiento" name="fecha_vencimiento" />
-            <div class="error-message" *ngIf="formErrores.fecha_vencimiento">{{ formErrores.fecha_vencimiento }}</div>
+            <label for="fecha_vencimiento">Fecha de vencimiento</label>
+            <input 
+              type="date" 
+              id="fecha_vencimiento" 
+              [(ngModel)]="nuevoCurso.fecha_vencimiento" 
+              name="fecha_vencimiento"
+              [class.invalid]="formErrores.fecha_vencimiento" 
+              required />
+            <span class="error-message" *ngIf="formErrores.fecha_vencimiento">{{ formErrores.fecha_vencimiento }}</span>
           </div>
-
+  
           <div class="form-group">
             <label>Archivo del curso</label>
-            <div class="etiqueta-archivo" (click)="fileInput?.click()">
+            <div class="etiqueta-archivo" [class.invalid]="formErrores.archivo">
               <span class="nombre-archivo">{{ archivoSeleccionado?.name || 'Ningún archivo seleccionado' }}</span>
-              <span class="boton-examinar">Examinar</span>
-              <input #fileInput type="file" hidden (change)="onArchivoSeleccionado($event)" />
+              <label class="boton-examinar" for="archivo-curso">Examinar</label>
             </div>
-            <span class="hint-archivo">Formatos aceptados: PDF, JPG, PNG</span>
-            <div class="error-message" *ngIf="formErrores.archivo">{{ formErrores.archivo }}</div>
+            <input 
+              type="file" 
+              id="archivo-curso" 
+              (change)="onArchivoSeleccionado($event)" 
+              accept=".pdf,.jpg,.png" 
+              style="display: none;" />
+            <span class="hint-archivo" [class.error]="formErrores.archivo">Formatos aceptados: PDF, JPG, PNG</span>
+            <span class="error-message" *ngIf="formErrores.archivo">{{ formErrores.archivo }}</span>
           </div>
-
+          
           <div class="acciones">
             <button type="button" (click)="cerrarFormulario()">Cancelar</button>
-            <button type="button" (click)="guardarCurso()" [disabled]="guardandoCurso">Guardar</button>
+            <button type="button" (click)="guardarCurso()">Guardar</button>
           </div>
         </form>
       </div>

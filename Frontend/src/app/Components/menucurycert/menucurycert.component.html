@@ -50,6 +50,9 @@
       <h2>Subir Certificado</h2>
 
       <form #certificadoForm="ngForm" (ngSubmit)="subirCertificado(certificadoForm)">
+        <div class="loading-indicator" *ngIf="guardandoCertificado">
+          <span class="spinner"></span> Guardando certificado...
+        </div>
         <div class="form-group" [class.error]="nombre.invalid && (nombre.dirty || nombre.touched || formSubmitted)">
           <label for="nombre">Nombre del certificado</label>
           <input 
