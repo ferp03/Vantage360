@@ -36,7 +36,7 @@ export class LoginComponent {
           if(this.auth.roles.includes('delivery lead') || this.auth.roles.includes('people lead')){
             this.router.navigate(['/empleados']);
           }else{
-            this.router.navigate(['/miscursos']);
+            this.router.navigate(['/cursos_certificados']);
           }
         } else {
           this.mensaje = response.error;

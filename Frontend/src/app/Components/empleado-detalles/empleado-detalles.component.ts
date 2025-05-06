@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/auth/auth.service';
+import { Location } from '@angular/common';
 
 interface ExperienciaLaboral {
   historial_id?: number;
@@ -100,7 +101,8 @@ export class EmpleadoDetallesComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private location: Location
   ) {}
 
   ngOnInit() {
@@ -108,14 +110,21 @@ export class EmpleadoDetallesComponent implements OnInit {
       this.empleadoId = params.get('id');
       const idUsuarioLogueado = this.authService.userId;
       this.esMiPerfil = (idUsuarioLogueado == this.empleadoId);
+
+      // Asegurar que solamente perfiles de admin o el propio usario pueda acceder a esta pagina
+      const roles = this.authService.roles;
+      const rolesPremitidos = ['delivery lead', 'people lead'];
+      if(!this.esMiPerfil && !roles.some(rol => rolesPremitidos.includes(rol))){
+        this.location.back();
+      }
+    });
   
-      this.cargarInfoBasica();
-      this.cargarHabilidades();
+    this.cargarInfoBasica();
+    this.cargarHabilidades();
       
       // Primero cargamos las capabilities, y después la trayectoria
-      this.cargarCapabilities().then(() => {
-        this.cargarTrayectoria();
-      });
+    this.cargarCapabilities().then(() => {
+      this.cargarTrayectoria();
     });
   }
 
