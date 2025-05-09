@@ -149,7 +149,7 @@
 
 .certificate-actions {
   display: flex;
-  gap: 12px;
+  justify-content: space-between; /* Cambiado de gap a space-between */
   margin-top: 20px;
 }
 
