@@ -33,6 +33,10 @@
           <span class="certificate-icon material-icons">school</span>
           Ver Curso
         </a>
+        <button class="btn-eliminar" (click)="confirmarEliminarCurso(curso.curso_id)">
+          <span class="material-icons">delete</span>
+          Eliminar
+        </button>
       </div>
     </div>
   </section>
@@ -43,6 +47,28 @@
     <button (click)="cambiarPagina(paginaActual + 1)" [disabled]="paginaActual === totalPaginas">
       <span class="material-icons">chevron_right</span>
     </button>
+  </div>
+
+  <div class="modal-overlay" *ngIf="mostrarModalConfirmacion" (click)="cancelarEliminar()">
+    <div class="modal-confirmacion" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Confirmar eliminación</h2>
+      </div>
+      <div class="modal-body">
+        <div class="modal-icon">
+          <span class="material-icons warning">warning</span>
+        </div>
+        <p>¿Estás seguro que deseas eliminar este curso?</p>
+        <p class="modal-subtitle">Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancelar" (click)="cancelarEliminar()">Cancelar</button>
+        <button class="btn-confirmar" (click)="eliminarCurso()" [disabled]="eliminandoCurso">
+          <span class="spinner" *ngIf="eliminandoCurso"></span>
+          <span>{{ eliminandoCurso ? 'Eliminando...' : 'Eliminar' }}</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="modal-overlay" *ngIf="mostrarFormulario" (click)="cerrarFormulario()">

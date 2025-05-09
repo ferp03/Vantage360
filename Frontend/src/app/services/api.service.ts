@@ -167,5 +167,10 @@ export class ApiService {
   actualizarCurso(cursoId: string, formData: FormData): Observable<any> {
     return this.http.put(`${this.apiUrl}/curso/${cursoId}`, formData);
   }
+   
+  // Eliminar curso
+  eliminarCurso(empleadoId: string, cursoId: string) {
+    return this.http.delete<any>(`${this.apiUrl}/empleado/${empleadoId}/curso/${cursoId}`);
+  }
 
 }

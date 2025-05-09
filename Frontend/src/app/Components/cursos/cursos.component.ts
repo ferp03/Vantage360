@@ -18,6 +18,9 @@ export class CursosComponent implements OnInit {
   loading: boolean = false;
   guardandoCurso: boolean = false;
   mostrarFormulario = false;
+  mostrarModalConfirmacion = false;
+  eliminandoCurso = false;
+  cursoIdAEliminar: string | null = null;
 
   nuevoCurso = {
     nombre: '',
@@ -124,6 +127,35 @@ export class CursosComponent implements OnInit {
     if (archivo) {
       this.archivoSeleccionado = archivo;
     }
+  }
+
+  confirmarEliminarCurso(cursoId: string) {
+    this.cursoIdAEliminar = cursoId;
+    this.mostrarModalConfirmacion = true;
+  }
+
+  cancelarEliminar() {
+    this.mostrarModalConfirmacion = false;
+    this.cursoIdAEliminar = null;
+  }
+
+  eliminarCurso() {
+    if (!this.cursoIdAEliminar) return;
+    
+    this.eliminandoCurso = true;
+    
+    this.api.eliminarCurso(this.empleadoId, this.cursoIdAEliminar).subscribe({
+      next: () => {
+        this.obtenerCursos(); // Recargar la lista de cursos
+        this.mostrarModalConfirmacion = false;
+        this.cursoIdAEliminar = null;
+        this.eliminandoCurso = false;
+      },
+      error: (err) => {
+        this.eliminandoCurso = false;
+        this.error = `Error al eliminar curso: ${err.error?.message || err.message || 'Desconocido'}`;
+      }
+    });
   }
 
   guardarCurso() {

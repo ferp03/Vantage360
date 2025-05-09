@@ -93,4 +93,55 @@ router.get('/empleado/:id/cursos', async (req, res) => {
   });
 });
 
+router.delete('/empleado/:id/curso/:cursoId', async (req, res) => {
+  const { id, cursoId } = req.params;
+  
+  try {
+    const { data: curso, error: selectError } = await supabase
+      .from('curso')
+      .select('archivo')
+      .eq('curso_id', cursoId)
+      .eq('empleado_id', id)
+      .single();
+    
+    if (selectError || !curso) {
+      console.error('Error al obtener información del curso:', selectError?.message);
+      return res.status(404).json({ success: false, error: 'Curso no encontrado' });
+    }
+    
+    const fileNameMatch = curso.archivo.match(/\/([^\/]+)(?:\?|$)/);
+    const fileName = fileNameMatch ? fileNameMatch[1] : null;
+    
+    if (fileName) {
+      const { error: storageError } = await supabase.storage
+        .from('cursos')
+        .remove([fileName]);
+      
+      if (storageError) {
+        console.error('Error al eliminar archivo:', storageError.message);
+      }
+    }
+    
+    const { error: deleteError } = await supabase
+      .from('curso')
+      .delete()
+      .eq('curso_id', cursoId)
+      .eq('empleado_id', id);
+    
+    if (deleteError) {
+      console.error('Error al eliminar curso:', deleteError.message);
+      return res.status(500).json({ success: false, error: 'No se pudo eliminar el curso' });
+    }
+    
+    return res.status(200).json({
+      success: true,
+      message: 'Curso eliminado correctamente'
+    });
+    
+  } catch (err) {
+    console.error('Error inesperado:', err);
+    return res.status(500).json({ success: false, error: 'Error del servidor' });
+  }
+});
+
 module.exports = router;
