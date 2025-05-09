@@ -25,6 +25,9 @@ export class CertificacionesComponent implements OnInit {
   loading = true;
   error: string | null = null;
   empleado = '';
+  mostrarModalConfirmacion = false;
+  eliminandoCertificado = false;
+  certificacionIdAEliminar: number | null = null;
 
   constructor(
     private apiService: ApiService,
@@ -75,4 +78,45 @@ export class CertificacionesComponent implements OnInit {
   descargarCertificado(url: string): void {
     window.open(url, '_blank');
   }
+
+  confirmarEliminarCertificado(certificacionId: number): void {
+    this.certificacionIdAEliminar = certificacionId;
+    this.mostrarModalConfirmacion = true;
+  }
+
+  cancelarEliminar(): void {
+    this.mostrarModalConfirmacion = false;
+    this.certificacionIdAEliminar = null;
+  }
+
+  eliminarCertificado(): void {
+    if (!this.certificacionIdAEliminar) return;
+    
+    this.eliminandoCertificado = true;
+    
+    this.apiService.eliminarCertificado(this.certificacionIdAEliminar).subscribe({
+      next: () => {
+        this.certificados = this.certificados.filter(
+          c => c.certificacion_id !== this.certificacionIdAEliminar
+        );
+        this.totalPaginas = Math.ceil(this.certificados.length / this.certificadosPorPagina);
+        
+        if (this.paginaActual > this.totalPaginas && this.totalPaginas > 0) {
+          this.paginaActual = this.totalPaginas;
+        }
+        
+        this.actualizarPaginacion();
+        this.mostrarModalConfirmacion = false;
+        this.certificacionIdAEliminar = null;
+        this.eliminandoCertificado = false;
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        this.error = 'Error al eliminar certificado';
+        this.eliminandoCertificado = false;
+      }
+    });
+  }
 }
+
+

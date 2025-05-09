@@ -209,4 +209,53 @@ router.delete('/:capability_id', async (req, res) => {
   }
 });
 
+router.delete('/certificado/:certificacion_id', async (req, res) => {
+  const { certificacion_id } = req.params;
+
+  try {
+    const { data: certificado, error: selectError } = await supabaseAnon
+      .from('certificacion')
+      .select('archivo')
+      .eq('certificacion_id', certificacion_id)
+      .single();
+    
+    if (selectError || !certificado) {
+      console.error('Error al obtener información del certificado:', selectError?.message);
+      return res.status(404).json({ success: false, error: 'Certificado no encontrado' });
+    }
+    
+    const fileNameMatch = certificado.archivo.match(/\/([^\/]+)(?:\?|$)/);
+    const fileName = fileNameMatch ? fileNameMatch[1] : null;
+    
+    if (fileName) {
+      const { error: storageError } = await supabaseAdmin.storage
+        .from('certificaciones')
+        .remove([`certificaciones/${fileName}`]);
+      
+      if (storageError) {
+        console.error('Error al eliminar archivo de certificado:', storageError.message);
+      }
+    }
+    
+    const { error: deleteError } = await supabaseAnon
+      .from('certificacion')
+      .delete()
+      .eq('certificacion_id', certificacion_id);
+    
+    if (deleteError) {
+      console.error('Error al eliminar certificado de la base de datos:', deleteError.message);
+      return res.status(500).json({ success: false, error: 'No se pudo eliminar el certificado' });
+    }
+    
+    return res.status(200).json({
+      success: true,
+      message: 'Certificado eliminado correctamente'
+    });
+    
+  } catch (err) {
+    console.error('Error inesperado al eliminar certificado:', err);
+    return res.status(500).json({ success: false, error: 'Error del servidor' });
+  }
+});
+
 module.exports = router;

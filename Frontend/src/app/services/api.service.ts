@@ -48,10 +48,6 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/empleado/api/${empleadoId}`);
   }
 
-  eliminarCertificado(capabilityId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${capabilityId}`);
-  }
-
   // Obtener todos los empleados con su información de disponibilidad
   getEmpleadosDisponibilidad(): Observable<any> {
     return this.http.get(`${this.apiUrl}/empleados/disponibilidad`);
@@ -173,4 +169,8 @@ export class ApiService {
     return this.http.delete<any>(`${this.apiUrl}/empleado/${empleadoId}/curso/${cursoId}`);
   }
 
+  // Eliminar certificado
+  eliminarCertificado(certificacionId: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/certificado/${certificacionId}`);
+}
 }
