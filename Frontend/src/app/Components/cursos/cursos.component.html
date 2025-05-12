@@ -22,17 +22,33 @@
           <div><strong>Vence:</strong> {{ curso.fecha_vencimiento | date:'dd/MM/yyyy' }}</div>
         </div>
       </div>
+
+      <div class="course-progress" *ngIf="curso.porcentaje_completado != null">
+        <strong>Progreso:</strong> {{ curso.porcentaje_completado }}%
+        <div class="progress-bar-container">
+          <div class="progress-bar" [style.width.%]="curso.porcentaje_completado"></div>
+        </div>
+      </div>
+
       <div class="course-description" *ngIf="curso.descripcion">
         <div class="description-title">
           <span class="material-icons">info</span> Descripción:
         </div>
         <div>{{ curso.descripcion }}</div>
       </div>
-      <div class="course-actions">
-        <a [href]="curso.archivo" target="_blank" class="btn-certificate">
-          <span class="certificate-icon material-icons">school</span>
-          Ver Curso
+
+      <div class="ver-curso-wrapper">
+        <a [href]="curso.archivo" target="_blank" class="btn-ver-curso">
+        <span class="material-icons">school</span>
+        Ver Curso
         </a>
+      </div>
+
+      <div class="course-actions">
+        <button class="btn-certificate" (click)="editarCurso(curso)">
+          <span class="certificate-icon material-icons">edit</span>
+          Editar
+        </button>
         <button class="btn-eliminar" (click)="confirmarEliminarCurso(curso.curso_id)">
           <span class="material-icons">delete</span>
           Eliminar
@@ -40,6 +56,7 @@
       </div>
     </div>
   </section>
+
   <div class="pagination">
     <button (click)="cambiarPagina(paginaActual - 1)" [disabled]="paginaActual === 1">
       <span class="material-icons">chevron_left</span>
@@ -74,68 +91,58 @@
   <div class="modal-overlay" *ngIf="mostrarFormulario" (click)="cerrarFormulario()">
     <div class="skills-container" (click)="$event.stopPropagation()">
       <div class="skills-box">
-        <h2>Agregar Curso</h2>
-        
+        <h2>{{ cursoIdAEditar ? 'Editar Curso' : 'Agregar Curso' }}</h2>
         <form>
           <div class="loading-indicator" *ngIf="guardandoCurso">
             <span class="spinner"></span> Guardando curso...
           </div>
-  
+
           <div class="form-group">
             <label for="nombre">Nombre del curso</label>
-            <input 
-              type="text" 
-              id="nombre" 
-              [(ngModel)]="nuevoCurso.nombre" 
-              name="nombre"
-              [class.invalid]="formErrores.nombre" 
-              required />
+            <input type="text" id="nombre" [(ngModel)]="nuevoCurso.nombre" name="nombre" [class.invalid]="formErrores.nombre" required />
             <span class="error-message" *ngIf="formErrores.nombre">{{ formErrores.nombre }}</span>
           </div>
-  
+
           <div class="form-group">
             <label for="fecha_emision">Fecha de emisión</label>
-            <input 
-              type="date" 
-              id="fecha_emision" 
-              [(ngModel)]="nuevoCurso.fecha_emision" 
-              name="fecha_emision"
-              [class.invalid]="formErrores.fecha_emision" 
-              required />
+            <input type="date" id="fecha_emision" [(ngModel)]="nuevoCurso.fecha_emision" name="fecha_emision" [class.invalid]="formErrores.fecha_emision" required />
             <span class="error-message" *ngIf="formErrores.fecha_emision">{{ formErrores.fecha_emision }}</span>
           </div>
-  
+
           <div class="form-group">
             <label for="fecha_vencimiento">Fecha de vencimiento</label>
-            <input 
-              type="date" 
-              id="fecha_vencimiento" 
-              [(ngModel)]="nuevoCurso.fecha_vencimiento" 
-              name="fecha_vencimiento"
-              [class.invalid]="formErrores.fecha_vencimiento" 
-              required />
+            <input type="date" id="fecha_vencimiento" [(ngModel)]="nuevoCurso.fecha_vencimiento" name="fecha_vencimiento" [class.invalid]="formErrores.fecha_vencimiento" required />
             <span class="error-message" *ngIf="formErrores.fecha_vencimiento">{{ formErrores.fecha_vencimiento }}</span>
           </div>
-  
+
+          <div class="form-group">
+            <label for="porcentaje_completado">Porcentaje completado (%)</label>
+            <input type="number" id="porcentaje_completado" [(ngModel)]="nuevoCurso.porcentaje_completado" name="porcentaje_completado" min="0" max="100" [class.invalid]="formErrores.porcentaje_completado" />
+            <span class="error-message" *ngIf="formErrores.porcentaje_completado">{{ formErrores.porcentaje_completado }}</span>
+          </div>
+
           <div class="form-group">
             <label>Archivo del curso</label>
             <div class="etiqueta-archivo" [class.invalid]="formErrores.archivo">
               <span class="nombre-archivo">{{ archivoSeleccionado?.name || 'Ningún archivo seleccionado' }}</span>
               <label class="boton-examinar" for="archivo-curso">Examinar</label>
             </div>
-            <input 
-              type="file" 
-              id="archivo-curso" 
-              (change)="onArchivoSeleccionado($event)" 
-              accept=".pdf,.jpg,.png" 
-              style="display: none;" />
+            <input type="file" id="archivo-curso" (change)="onArchivoSeleccionado($event)" accept=".pdf,.jpg,.png" style="display: none;" />
             <span class="hint-archivo" [class.error]="formErrores.archivo">Formatos aceptados: PDF, JPG, PNG</span>
             <span class="error-message" *ngIf="formErrores.archivo">{{ formErrores.archivo }}</span>
           </div>
-          
+
+           <div class="form-group">
+            <label for="es_obligatorio">¿Es obligatorio?</label>
+            <select id="es_obligatorio" [(ngModel)]="nuevoCurso.es_obligatorio" name="es_obligatorio">
+              <option [ngValue]="true">Sí</option>
+              <option [ngValue]="false">No</option>
+            </select>
+          </div>
+
           <div class="acciones">
             <button type="button" (click)="cerrarFormulario()">Cancelar</button>
-            <button type="button" (click)="guardarCurso()">Guardar</button>
+            <button type="button" (click)="guardarCurso()">{{ cursoIdAEditar ? 'Actualizar' : 'Guardar' }}</button>
           </div>
         </form>
       </div>

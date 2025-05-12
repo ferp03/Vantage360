@@ -660,6 +660,93 @@
   gap: 12px;
 }
 
+.course-progress {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.progress-bar-container {
+  background: #e0e0e0;
+  border-radius: 10px;
+  height: 8px;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.progress-bar {
+  background: #9668e6;
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s ease-in-out;
+}
+
+.course-actions {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.course-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.btn-ver,
+.btn-editar {
+  background-color: #9668e6;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background 0.3s ease, transform 0.2s ease;
+  width: 100%;
+}
+
+.btn-ver:hover,
+.btn-editar:hover {
+  background-color: #7d4ee0;
+  transform: translateY(-2px);
+}
+
+.ver-curso-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.btn-ver-curso {
+  background-color: transparent;
+  border: 1px solid #9668e6;
+  color: #9668e6;
+  font-size: 0.85rem;
+  padding: 0px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: 45%;
+  box-sizing: border-box;
+  transition: background 0.3s ease, color 0.3s ease;
+  height: 28px; 
+}
+
+.btn-ver-curso:hover {
+  background-color: #f2edfb;
+  color: #7d4ee0;
+}
+
 @media (max-width: 480px) {
   .course-actions {
     flex-direction: column;

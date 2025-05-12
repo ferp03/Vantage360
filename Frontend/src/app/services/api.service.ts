@@ -173,4 +173,10 @@ export class ApiService {
   eliminarCertificado(certificacionId: number): Observable<any> {
   return this.http.delete(`${this.apiUrl}/certificado/${certificacionId}`);
 }
+
+// Editar Curso
+editarCurso(empleadoId: string, cursoId: string, cursoData: FormData) {
+  return this.http.put(`/api/empleados/${empleadoId}/cursos/${cursoId}`, cursoData);
+}
+
 }
