@@ -18,6 +18,7 @@ import { DisponibilidadComponent } from './Components/disponibilidad/disponibili
 import { MenucurycertComponent } from './Components/menucurycert/menucurycert.component'; 
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ParticipacionPComponent } from './Components/participacion-p/participacion-p.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CertificacionesComponent,
     RegistroHabilidadesComponent,
     DisponibilidadComponent,
-    MenucurycertComponent
+    MenucurycertComponent,
+    ParticipacionPComponent
   ],
   imports: [
     BrowserModule,

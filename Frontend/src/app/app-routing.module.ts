@@ -12,6 +12,7 @@ import { CertificacionesComponent } from './Components/certificaciones/certifica
 import { RegistroHabilidadesComponent } from './Components/registro-habilidades/registro-habilidades.component';
 import { DisponibilidadComponent } from './Components/disponibilidad/disponibilidad.component';
 import { MenucurycertComponent } from './Components/menucurycert/menucurycert.component';
+import { ParticipacionPComponent } from './Components/participacion-p/participacion-p.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -28,7 +29,8 @@ const routes: Routes = [
       { path: 'certificates', component: CertificacionesComponent, canActivate: [AuthGuard]},
       { path: 'empleado-detalles/:id', component: EmpleadoDetallesComponent, canActivate: [AuthGuard]},
       { path: 'registro-habilidades/:id', component: RegistroHabilidadesComponent, canActivate: [AuthGuard]},
-      { path: 'cursos_certificados', component: MenucurycertComponent, canActivate: [AuthGuard] }
+      { path: 'cursos_certificados', component: MenucurycertComponent, canActivate: [AuthGuard] },
+      {path: 'participacion_p',component: ParticipacionPComponent, canActivate: [AuthGuard] }
     ]
   },
 
