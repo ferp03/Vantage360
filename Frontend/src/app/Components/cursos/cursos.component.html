@@ -13,6 +13,12 @@
     <div class="course-card" *ngFor="let curso of cursosPaginados">
       <div class="course-header">
         <h3>{{ curso.nombre }}</h3>
+        <div class="curso-obligatorio-status" *ngIf="curso.es_obligatorio">
+          <span class="chip-obligatorio">Curso obligatorio</span>
+        </div>
+      <div class="curso-obligatorio-status" *ngIf="!curso.es_obligatorio">
+          <span class="chip-opcional">Curso opcional</span>
+      </div>
       </div>
       <div class="course-dates">
         <div class="date-label">

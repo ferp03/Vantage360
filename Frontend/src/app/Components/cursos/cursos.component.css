@@ -722,12 +722,15 @@
 .ver-curso-wrapper {
   display: flex;
   justify-content: flex-start;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  margin-top: -2px;
+  padding-left: 0; 
+  margin-left: -11px; 
 }
 
 .btn-ver-curso {
   background-color: transparent;
-  border: 1px solid #9668e6;
+  border: none;
   color: #9668e6;
   font-size: 0.85rem;
   padding: 0px 12px;
@@ -736,7 +739,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  width: 45%;
+  width: auto;
   box-sizing: border-box;
   transition: background 0.3s ease, color 0.3s ease;
   height: 28px; 
@@ -745,6 +748,29 @@
 .btn-ver-curso:hover {
   background-color: #f2edfb;
   color: #7d4ee0;
+}
+
+.curso-obligatorio-status {
+  margin-top: 4px;
+}
+
+.chip-obligatorio,
+.chip-opcional {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.chip-obligatorio {
+  background-color: #ff4f5e;
+  color: white;
+}
+
+.chip-opcional {
+  background-color: #e0e0e0;
+  color: #333;
 }
 
 @media (max-width: 480px) {
