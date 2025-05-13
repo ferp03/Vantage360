@@ -58,7 +58,10 @@ export class EmpleadoDetallesComponent implements OnInit {
     estado_laboral: ' ',
     lead_usuario: ' ',
     lead_id: ' ',
-    ubicacion: ' '
+    ubicacion: ' ',
+    titulo_proyecto: ' ',
+    fecha_inicio: ' ',
+    capability_proyecto: ' '
   };
 
   erroresInfo = {
@@ -155,6 +158,7 @@ export class EmpleadoDetallesComponent implements OnInit {
     this.apiService.getEmpleadoInfo(this.empleadoId).subscribe({
       next: (res) => {
         if (res.success) {
+          console.log('Respuesta completa de info básica:', res);
           this.info = {
             nombre: res.data.nombre,
             correo: res.data.correo,
@@ -170,7 +174,11 @@ export class EmpleadoDetallesComponent implements OnInit {
             estado_laboral: res.data.estado_laboral,
             lead_usuario: res.data.lead_usuario,
             lead_id: res.data.lead_id,
-            ubicacion: res.data.ubicacion
+            ubicacion: res.data.ubicacion,
+            titulo_proyecto: res.data.titulo_proyecto ? res.data.titulo_proyecto : "No hay proyecto actual",
+            fecha_inicio: res.data.fecha_inicio ? res.data.fecha_inicio : "Fecha no disponible",
+            capability_proyecto: res.data.capability_proyecto ? res.data.capability_proyecto : "No hay puesto actual",
+
           };
         this.nuevoEstado = this.info.estado_laboral;
 
@@ -308,10 +316,6 @@ export class EmpleadoDetallesComponent implements OnInit {
     }
     this.experienciasOriginales[index] = { ...this.experiencias[index] };
   }
-
-  
-
-
 
 
   guardarExperiencia(index: number) {
