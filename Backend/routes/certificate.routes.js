@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { supabaseAnon, supabaseAdmin } = require('../supabase');
+const { supabaseAdmin } = require('../supabase');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -14,7 +14,7 @@ router.get('/empleado/api/:empleado_id', async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
-    const { data, error } = await supabaseAnon
+    const { data, error } = await supabaseAdmin
       .from('certificacion')
       .select('*')
       .eq('empleado_id', empleado_id);
@@ -121,7 +121,7 @@ router.get('/empleado/:empleado_id/certificados', async (req, res) => {
   const { empleado_id } = req.params;
 
   try {
-    const { data, error } = await supabaseAnon
+    const { data, error } = await supabaseAdmin
       .from('certificacion')
       .select('*')
       .eq('empleado_id', empleado_id)
@@ -159,7 +159,7 @@ router.post('/certificado', async (req, res) => {
   }
 
   try {
-    const { data, error } = await supabaseAnon
+    const { data, error } = await supabaseAdmin
       .from('certificacion')
       .insert([{
         nombre,
@@ -192,7 +192,7 @@ router.delete('/:capability_id', async (req, res) => {
   const { capability_id } = req.params;
 
   try {
-    const { error } = await supabaseAnon
+    const { error } = await supabaseAdmin
       .from('certificacion')
       .delete()
       .eq('capability_id', capability_id);
@@ -213,7 +213,7 @@ router.delete('/certificado/:certificacion_id', async (req, res) => {
   const { certificacion_id } = req.params;
 
   try {
-    const { data: certificado, error: selectError } = await supabaseAnon
+    const { data: certificado, error: selectError } = await supabaseAdmin
       .from('certificacion')
       .select('archivo')
       .eq('certificacion_id', certificacion_id)
@@ -237,7 +237,7 @@ router.delete('/certificado/:certificacion_id', async (req, res) => {
       }
     }
     
-    const { error: deleteError } = await supabaseAnon
+    const { error: deleteError } = await supabaseAdmin
       .from('certificacion')
       .delete()
       .eq('certificacion_id', certificacion_id);

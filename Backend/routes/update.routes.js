@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { supabaseAnon } = require('../supabase');
-const supabase = supabaseAnon;
+const { supabaseAdmin } = require('../supabase');
+const supabase = supabaseAdmin;
 
 // Funciones de validación
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);

@@ -1,8 +1,8 @@
 const express = require('express');
 const multer = require('multer');
 const router = express.Router();
-const { supabaseAnon } = require('../supabase');
-const supabase = supabaseAnon;
+const { supabaseAdmin } = require('../supabase');
+const supabase = supabaseAdmin;
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });

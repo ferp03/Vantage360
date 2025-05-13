@@ -279,7 +279,7 @@
       <span class="error" *ngIf="erroresPass.confirmar"
         >Las contraseñas no coinciden</span
       >
-
+      <p *ngIf="erroresPass.mensajeError">{{erroresPass.mensajeError}}</p>
       <div class="acciones-modal">
         <button (click)="confirmarCambioContrasena()">
           <span class="material-icons">check</span> Confirmar

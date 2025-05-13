@@ -123,10 +123,9 @@ export class ApiService {
   }
   
   // Validar contraseña actual
-  validarContrasena(id: string, actualContrasena: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/empleado/validar-contrasena/${id}`, {
-      params: { actualContrasena }
-    });
+  validarContrasena(id: string, actualContrasena: string, correo: string): Observable<any> {
+    const datos = {"actualContrasena": actualContrasena, "email": correo};
+    return this.http.post(`${this.apiUrl}/empleado/validar-contrasena/${id}`, datos);
   }
   
   // Cambiar contraseña
