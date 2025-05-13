@@ -13,26 +13,30 @@
     <div class="course-card" *ngFor="let curso of cursosPaginados">
       <div class="course-header">
         <h3>{{ curso.nombre }}</h3>
-        <div class="curso-obligatorio-status" *ngIf="curso.es_obligatorio">
+        <div class="curso-obligatorio-status" *ngIf="curso.obligatorio">
           <span class="chip-obligatorio">Curso obligatorio</span>
         </div>
-      <div class="curso-obligatorio-status" *ngIf="!curso.es_obligatorio">
+      <div class="curso-obligatorio-status" *ngIf="!curso.obligatorio">
           <span class="chip-opcional">Curso opcional</span>
       </div>
       </div>
-      <div class="course-dates">
+      <div class="course-dates" *ngIf="curso.fecha_emision">
         <div class="date-label">
           <div><strong>Emitido:</strong> {{ curso.fecha_emision | date:'dd/MM/yyyy' }}</div>
         </div>
-        <div class="date-label">
+        <div class="date-label" *ngIf="curso.fecha_vencimiento">
           <div><strong>Vence:</strong> {{ curso.fecha_vencimiento | date:'dd/MM/yyyy' }}</div>
         </div>
       </div>
+      <div *ngIf="!curso.archivo && !curso.fecha_emision && !curso.fecha_vencimiento" class="curso-incompleto-msg">
+  <em>Este curso aún no está completo</em>
+</div>
 
-      <div class="course-progress" *ngIf="curso.porcentaje_completado != null">
-        <strong>Progreso:</strong> {{ curso.porcentaje_completado }}%
+
+      <div class="course-progress" *ngIf="curso.progreso != null">
+        <strong>Progreso:</strong> {{ curso.progreso }}%
         <div class="progress-bar-container">
-          <div class="progress-bar" [style.width.%]="curso.porcentaje_completado"></div>
+          <div class="progress-bar" [style.width.%]="curso.progreso"></div>
         </div>
       </div>
 
@@ -43,10 +47,10 @@
         <div>{{ curso.descripcion }}</div>
       </div>
 
-      <div class="ver-curso-wrapper">
+        <div class="ver-curso-wrapper" *ngIf="curso.archivo">
         <a [href]="curso.archivo" target="_blank" class="btn-ver-curso">
-        <span class="material-icons">school</span>
-        Ver Curso
+          <span class="material-icons">school</span>
+          Ver Curso
         </a>
       </div>
 
@@ -111,20 +115,20 @@
 
           <div class="form-group">
             <label for="fecha_emision">Fecha de emisión</label>
-            <input type="date" id="fecha_emision" [(ngModel)]="nuevoCurso.fecha_emision" name="fecha_emision" [class.invalid]="formErrores.fecha_emision" required />
+            <input type="date" id="fecha_emision" [(ngModel)]="nuevoCurso.fecha_emision" name="fecha_emision" [class.invalid]="formErrores.fecha_emision"/>
             <span class="error-message" *ngIf="formErrores.fecha_emision">{{ formErrores.fecha_emision }}</span>
           </div>
 
           <div class="form-group">
             <label for="fecha_vencimiento">Fecha de vencimiento</label>
-            <input type="date" id="fecha_vencimiento" [(ngModel)]="nuevoCurso.fecha_vencimiento" name="fecha_vencimiento" [class.invalid]="formErrores.fecha_vencimiento" required />
+            <input type="date" id="fecha_vencimiento" [(ngModel)]="nuevoCurso.fecha_vencimiento" name="fecha_vencimiento" [class.invalid]="formErrores.fecha_vencimiento"/>
             <span class="error-message" *ngIf="formErrores.fecha_vencimiento">{{ formErrores.fecha_vencimiento }}</span>
           </div>
 
           <div class="form-group">
-            <label for="porcentaje_completado">Porcentaje completado (%)</label>
-            <input type="number" id="porcentaje_completado" [(ngModel)]="nuevoCurso.porcentaje_completado" name="porcentaje_completado" min="0" max="100" [class.invalid]="formErrores.porcentaje_completado" />
-            <span class="error-message" *ngIf="formErrores.porcentaje_completado">{{ formErrores.porcentaje_completado }}</span>
+            <label for="progreso">Porcentaje completado (%)</label>
+            <input type="number" id="progreso" [(ngModel)]="nuevoCurso.progreso" name="progreso" min="0" max="100" [class.invalid]="formErrores.progreso" />
+            <span class="error-message" *ngIf="formErrores.progreso">{{ formErrores.progreso }}</span>
           </div>
 
           <div class="form-group">
@@ -139,8 +143,8 @@
           </div>
 
            <div class="form-group">
-            <label for="es_obligatorio">¿Es obligatorio?</label>
-            <select id="es_obligatorio" [(ngModel)]="nuevoCurso.es_obligatorio" name="es_obligatorio">
+            <label for="obligatorio">¿Es obligatorio?</label>
+            <select id="obligatorio" [(ngModel)]="nuevoCurso.obligatorio" name="obligatorio">
               <option [ngValue]="true">Sí</option>
               <option [ngValue]="false">No</option>
             </select>

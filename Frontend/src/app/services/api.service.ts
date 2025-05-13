@@ -175,8 +175,7 @@ export class ApiService {
 }
 
 // Editar Curso
-editarCurso(empleadoId: string, cursoId: string, cursoData: FormData) {
-  return this.http.put(`/api/empleados/${empleadoId}/cursos/${cursoId}`, cursoData);
+editarCurso(empleadoId: string, cursoId: string, formData: FormData): Observable<any> {
+  return this.http.put(`${this.apiUrl}/empleado/${empleadoId}/curso/${cursoId}`, formData);
 }
-
 }

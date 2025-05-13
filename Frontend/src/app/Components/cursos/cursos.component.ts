@@ -27,8 +27,8 @@ export class CursosComponent implements OnInit {
     nombre: '',
     fecha_emision: '',
     fecha_vencimiento: '',
-    porcentaje_completado: 0,
-    es_obligatorio: false
+    progreso: 0,
+    obligatorio: false
   };
 
   archivoSeleccionado: File | null = null;
@@ -38,7 +38,7 @@ export class CursosComponent implements OnInit {
     fecha_emision: '',
     fecha_vencimiento: '',
     archivo: '',
-    porcentaje_completado: ''
+    progreso: ''
   };
 
   empleadoId: string = '';
@@ -111,15 +111,15 @@ export class CursosComponent implements OnInit {
       nombre: '',
       fecha_emision: '',
       fecha_vencimiento: '',
-      porcentaje_completado: 0,
-      es_obligatorio: false
+      progreso: 0,
+      obligatorio: false
     };
     this.formErrores = {
       nombre: '',
       fecha_emision: '',
       fecha_vencimiento: '',
       archivo: '',
-      porcentaje_completado: ''
+      progreso: ''
     };
   }
 
@@ -161,8 +161,8 @@ export class CursosComponent implements OnInit {
       nombre: curso.nombre,
       fecha_emision: curso.fecha_emision,
       fecha_vencimiento: curso.fecha_vencimiento,
-      porcentaje_completado: curso.porcentaje_completado || 0,
-      es_obligatorio: curso.es_obligatorio ?? false
+      progreso: curso.progreso || 0,
+      obligatorio: curso.obligatorio ?? false
     };
     this.archivoSeleccionado = null;
     this.cursoIdAEditar = curso.curso_id;
@@ -175,7 +175,7 @@ export class CursosComponent implements OnInit {
       fecha_emision: '',
       fecha_vencimiento: '',
       archivo: '',
-      porcentaje_completado: ''
+      progreso: ''
     };
 
     let valido = true;
@@ -185,33 +185,20 @@ export class CursosComponent implements OnInit {
       valido = false;
     }
 
-    if (!this.nuevoCurso.fecha_emision) {
-      this.formErrores.fecha_emision = 'La fecha de emisión es obligatoria.';
-      valido = false;
-    }
-
-    if (!this.nuevoCurso.fecha_vencimiento) {
-      this.formErrores.fecha_vencimiento = 'La fecha de vencimiento es obligatoria.';
-      valido = false;
-    }
-
-    const fechaEmision = new Date(this.nuevoCurso.fecha_emision);
-    const fechaVencimiento = new Date(this.nuevoCurso.fecha_vencimiento);
-    if (fechaVencimiento < fechaEmision) {
+    if (
+      this.nuevoCurso.fecha_emision &&
+      this.nuevoCurso.fecha_vencimiento &&
+      new Date(this.nuevoCurso.fecha_vencimiento) < new Date(this.nuevoCurso.fecha_emision)
+    ) {
       this.formErrores.fecha_vencimiento = 'La fecha de vencimiento no puede ser anterior.';
       valido = false;
     }
 
     if (
-      this.nuevoCurso.porcentaje_completado < 0 ||
-      this.nuevoCurso.porcentaje_completado > 100
+      this.nuevoCurso.progreso < 0 ||
+      this.nuevoCurso.progreso > 100
     ) {
-      this.formErrores.porcentaje_completado = 'Debe estar entre 0 y 100.';
-      valido = false;
-    }
-
-    if (!this.archivoSeleccionado && !this.cursoIdAEditar) {
-      this.formErrores.archivo = 'Debes adjuntar un archivo.';
+      this.formErrores.progreso = 'Debe estar entre 0 y 100.';
       valido = false;
     }
 
@@ -221,38 +208,28 @@ export class CursosComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('nombre', this.nuevoCurso.nombre);
-    formData.append('fecha_emision', this.nuevoCurso.fecha_emision);
-    formData.append('fecha_vencimiento', this.nuevoCurso.fecha_vencimiento);
-    formData.append('porcentaje_completado', this.nuevoCurso.porcentaje_completado.toString());
-    formData.append('es_obligatorio', this.nuevoCurso.es_obligatorio ? 'true' : 'false');
-
+    formData.append('fecha_emision', this.nuevoCurso.fecha_emision || '');
+    formData.append('fecha_vencimiento', this.nuevoCurso.fecha_vencimiento || '');
+    formData.append('progreso', this.nuevoCurso.progreso.toString());
+    formData.append('obligatorio', this.nuevoCurso.obligatorio ? 'true' : 'false');
 
     if (this.archivoSeleccionado) {
       formData.append('archivo', this.archivoSeleccionado);
     }
 
-    if (this.cursoIdAEditar) {
-      this.api.editarCurso(this.empleadoId, this.cursoIdAEditar, formData).subscribe({
-        next: () => {
-          this.obtenerCursos();
-          this.cerrarFormulario();
-        },
-        error: (err) => {
-          this.guardandoCurso = false;
-          this.error = `Error al actualizar curso: ${err.error?.message || err.message || 'Desconocido'}`;
-        }
-      });
-    } else {
-      this.api.crearCurso(this.empleadoId, formData).subscribe({
-        next: () => {
-          this.obtenerCursos();
-          this.cerrarFormulario();
-        },
-        error: (err) => {
-          this.guardandoCurso = false;
-          this.error = `Error al guardar curso: ${err.error?.message || err.message || 'Desconocido'}`;
-        }
-      });
-    }
+    const request$ = this.cursoIdAEditar
+      ? this.api.editarCurso(this.empleadoId, this.cursoIdAEditar, formData)
+      : this.api.crearCurso(this.empleadoId, formData);
+
+    request$.subscribe({
+      next: () => {
+        this.obtenerCursos();
+        this.cerrarFormulario();
+      },
+      error: (err) => {
+        this.guardandoCurso = false;
+        this.error = `Error al ${this.cursoIdAEditar ? 'actualizar' : 'guardar'} curso: ${err.error?.message || err.message || 'Desconocido'}`;
+      }
+    });
   }
 }

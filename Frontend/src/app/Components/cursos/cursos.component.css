@@ -105,6 +105,7 @@
   flex: 0 0 auto;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   padding: 25px;
   border-radius: 8px;
   background: transparent;
@@ -112,6 +113,7 @@
   box-shadow: 1px 2px 6px #B998F7;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 280px;
+  min-height: 350px;
 }
 
 .course-card:hover {
@@ -215,6 +217,14 @@
   font-size: 18px;
 }
 
+.curso-incompleto-msg {
+  font-style: italic;
+  color: #999;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 35px;
+}
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -269,11 +279,11 @@
 
 .skills-container {
   width: 100%;
-  margin-top: 40px;
+  margin-top: 220px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 3px;
+  padding: 10px;
   box-sizing: border-box;
 }
 
@@ -661,7 +671,7 @@
 }
 
 .course-progress {
-  margin-top: 10px;
+  margin-top: -3px;
   font-size: 0.9rem;
   color: #333;
 }
@@ -671,7 +681,7 @@
   border-radius: 10px;
   height: 8px;
   width: 100%;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
 .progress-bar {
@@ -723,7 +733,7 @@
   display: flex;
   justify-content: flex-start;
   margin-bottom: 15px;
-  margin-top: -2px;
+  margin-top: 15px;
   padding-left: 0; 
   margin-left: -11px; 
 }
