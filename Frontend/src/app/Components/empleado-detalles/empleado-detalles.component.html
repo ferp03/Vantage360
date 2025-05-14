@@ -6,7 +6,7 @@
     <div class="izquierda" [ngClass]="{ 'modo-edicion': editandoInfo }">
       <div class="izquierda-superior">
         
-        <p><strong><span class="material-icons">email</span> Correo:</strong> {{ info.correo }}</p>
+        <p><strong><span class="material-icons">email</span> </strong> {{ info.correo }}</p>
         <p><strong><span class="material-icons">person</span> Usuario:</strong> {{ info.usuario }}</p>
         <p>
           <strong><span class="material-icons">notifications</span> Estado Laboral: </strong>
@@ -77,7 +77,7 @@
 </div>
 
 <div class="caja-info">
-  <h2><span class="material-icons">assessment</span> Estadísticas</h2>
+  <h2><span class="material-icons">assessment</span> Informe</h2>
   <div class="caja-info-superior">
     <div class="izquierda">
       <div class="izquierda-superior">
@@ -88,6 +88,9 @@
         <p><strong><span class="material-icons">bar_chart</span> YTD Unassigned:</strong> {{ info.ytd_unassigned }}%</p>
         <p><strong><span class="material-icons">bar_chart</span> YTD Recovery:</strong> {{ info.ytd_recovery }}%</p>
         <p><strong><span class="material-icons">bar_chart</span> Bench Days:</strong> {{ info.bd }}%</p>
+        <p><strong><span class="material-icons">assignment</span> Proyecto Actual:</strong> {{ info.titulo_proyecto }}</p>
+        <p><strong><span class="material-icons">person</span> Puesto:</strong> {{ info.capability_proyecto }}</p>
+        <p><strong><span class="material-icons">calendar_today</span> Fecha de Inicio:</strong> {{ info.fecha_inicio }}</p>
       </div>
     </div>
     <div class="derecha"></div>

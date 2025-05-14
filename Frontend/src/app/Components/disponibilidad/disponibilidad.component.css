@@ -319,7 +319,7 @@
   padding: 8px;
   border: 1px solid rgba(138, 86, 232, 0.3);
   border-radius: 4px;
-  background-color: rgba(55, 55, 75, 0.5);
+  background-color: var(--accenture-gray-100);;
   color: black;
 }
 
@@ -343,7 +343,7 @@
 }
 
 .btn-cancelar {
-  background-color: hsl(var(--muted));
+  background-color: var(--accenture-gray-500);
   color: hsl(var(--muted-foreground));
 }
 
@@ -353,7 +353,7 @@
 }
 
 .btn-cancelar:hover {
-  background-color: #888;
+  background-color: var(--accenture-gray-600);;
   transform: translateY(-2px);
 }
 

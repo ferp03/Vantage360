@@ -50,14 +50,17 @@
     flex-direction: row;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 1rem;
+    column-count: 1;  
   }
 
   .izquierda-superior {
-    flex: 1 1 45%;
-    min-width: 290px;
-    column-count: 1;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  column-gap: 50px;
+  max-height: calc(7 * 60px); /* asume 40px por fila */
+  padding-right: 15px;
+}
 
   .izquierda-habilidades {
     flex: 1 1 45%;
@@ -201,19 +204,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #333;
+    background: var(--accenture-gray-200);
     border: 2px dashed #aaa;
   }
 
   .boton-cancelar {
     margin-top: 0.5rem;
-    background-color: #aaa;
+    background-color: var(--accenture-gray-500);
     color: white;
     border: none;
   }
 
   .boton-cancelar:hover {
-    background-color: #888;
+    background-color: var(--accenture-gray-600);
   }
 
   .error {
@@ -267,7 +270,7 @@
   flex-direction: column;
   gap: 18px;
   padding: 20px 15px;
-  background-color: rgba(20, 20, 30, 0.6);
+  background-color: #adacac;
   border-radius: 10px;
   box-shadow: inset 0 0 20px rgba(138, 86, 232, 0.1);
 }
