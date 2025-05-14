@@ -33,7 +33,7 @@ const routes: Routes = [
   },
 
   // Ruta catch-all (opcional)
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: 'login', pathMatch: 'full' }
 ];
 
 @NgModule({

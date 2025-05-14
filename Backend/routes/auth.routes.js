@@ -146,7 +146,7 @@ router.post('/login', async (req, res) => {
     }
   
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'http://localhost:4200/reset-password?fromEmail=true'
+      redirectTo: 'http://localhost:4200/reset-password'
     });
   
     if (error) {
