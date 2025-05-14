@@ -19,8 +19,13 @@ router.get('/empleado/info/:id', async (req, res) => {
       error: 'No se pudo obtener la información del empleado',
     });
   }
+  
+  let nombreCompleto = `${data.nombre} ${data.apellido_paterno}`;
 
-  const nombreCompleto = `${data.nombre} ${data.apellido_paterno} ${data.apellido_materno}`;
+  if(data.apellido_materno){
+    nombreCompleto = `${data.nombre} ${data.apellido_paterno} ${data.apellido_materno}`;
+  }
+
   
   return res.status(200).json({
     success: true,
@@ -179,32 +184,27 @@ router.put('/empleado/info/:id', async (req, res) => {
 });
 
 // Validar contraseña actual
-router.get('/empleado/validar-contrasena/:id', async (req, res) => {
+router.post('/empleado/validar-contrasena/:id', async (req, res) => {
   const { id } = req.params;
-  const { actualContrasena } = req.query;
+  const { email, actualContrasena } = req.body;
 
-  if (!actualContrasena) {
-    return res.status(400).json({ success: false, error: 'Contraseña actual requerida' });
-  }
+  console.log(email);
+  console.log(actualContrasena);
+  
 
-  const { data, error } = await supabase
-    .from('empleado')
-    .select('contraseña')
-    .eq('empleado_id', id)
-    .single();
+  // Verificar contraseña con signIn
+  const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+    email,
+    password: actualContrasena
+  });
 
-  if (error || !data) {
-    return res.status(404).json({ success: false, error: 'Empleado no encontrado' });
-  }
-
-  if (data.contraseña !== actualContrasena) {
-    return res.status(401).json({ success: false, error: 'Contraseña incorrecta' });
+  if (loginError) {
+    return res.status(401).json({ success: false, message: 'Contraseña incorrecta' });
   }
 
   return res.status(200).json({ success: true, message: 'Contraseña válida' });
 });
 
-// Cambiar contraseña
 router.put('/empleado/cambiar-contrasena/:id', async (req, res) => {
   const { id } = req.params;
   const { nuevaContrasena } = req.body;
@@ -216,10 +216,9 @@ router.put('/empleado/cambiar-contrasena/:id', async (req, res) => {
     });
   }
 
-  const { error } = await supabase
-    .from('empleado')
-    .update({ contraseña: nuevaContrasena })
-    .eq('empleado_id', id);
+  const { data, error } = await supabase.auth.admin.updateUserById(id, {
+    password: nuevaContrasena
+  });
 
   if (error) {
     console.error('Error al cambiar contraseña:', error.message);

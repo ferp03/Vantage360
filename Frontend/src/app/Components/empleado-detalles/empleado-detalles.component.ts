@@ -89,6 +89,7 @@ export class EmpleadoDetallesComponent implements OnInit {
     actual: false,
     nueva: false,
     confirmar: false,
+    mensajeError: ""
   };
 
   nuevoEstado: string = '';
@@ -582,7 +583,7 @@ export class EmpleadoDetallesComponent implements OnInit {
     this.contrasenaActual = '';
     this.nuevaContrasena = '';
     this.confirmarContrasena = '';
-    this.erroresPass = { actual: false, nueva: false, confirmar: false };
+    this.erroresPass = { actual: false, nueva: false, confirmar: false, mensajeError: "" };
   }
 
   confirmarCambioContrasena() {
@@ -602,10 +603,11 @@ export class EmpleadoDetallesComponent implements OnInit {
 
     if (!this.empleadoId) return;
 
-    this.apiService.validarContrasena(this.empleadoId, actualTrim).subscribe({
+    this.apiService.validarContrasena(this.empleadoId, actualTrim, this.info.correo).subscribe({
       next: (res) => {
         if (!res.success) {
           this.erroresPass.actual = true;
+          this.erroresPass.mensajeError = res.error;
           return;
         }
 

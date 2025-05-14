@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
-const { supabaseAnon } = require('../supabase');
+const { supabaseAdmin } = require('../supabase');
 dotenv.config();
 
-const supabase = supabaseAnon;
+const supabase = supabaseAdmin;
 const JWT_SECRET = process.env.JWT_SECRET;
 
 router.post('/login', async (req, res) => {
@@ -69,18 +69,6 @@ router.post('/login', async (req, res) => {
     if (!name || !patlastname || !email || !password) {
       return res.status(400).json({success: false, error: 'Faltan campos requeridos' });
     }
-  
-    // Validar que el username no exista en la tabla usuarios
-    // const { data: existingUsername, error: usernameCheckError } = await supabase
-    //   .from('empleado')
-    //   .select('empleado_id')
-    //   .eq('usuario', username)
-    //   .single();
-  
-    // if (existingUsername) {
-    //   console.log('Ese nombre de usuario ya está en uso.');
-    //   return res.status(400).json({success: false, error: 'Ese nombre de usuario ya está en uso.'});
-    // }
 
     // Validar que el email no exista en auth.users
     const { data: existingEmail, error: emailCheckError } = await supabase
@@ -158,7 +146,7 @@ router.post('/login', async (req, res) => {
     }
   
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'http://localhost:4200/reset-password?fromEmail=true'
+      redirectTo: 'http://localhost:4200/reset-password'
     });
   
     if (error) {
