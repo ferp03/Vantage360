@@ -36,19 +36,33 @@ router.post('/certificado', upload.single('archivo'), async (req, res) => {
   const { nombre, institucion, fecha_emision, fecha_vencimiento, empleado_id } = req.body;
   const archivo = req.file;
 
-  // Validación de campos
-  //if (!archivo || !nombre || !institucion || !fecha_emision || !fecha_vencimiento || !empleado_id) {
-    //return res.status(400).json({ 
-      //success: false, 
-      //error: 'Faltan campos requeridos: archivo, nombre, institución, fechas o ID de empleado' 
-    //});
-  //}
+  if (!archivo || !nombre || !institucion || !fecha_emision || !fecha_vencimiento || !empleado_id) {
+    return res.status(400).json({ 
+      success: false, 
+      error: 'Faltan campos requeridos: archivo, nombre, institución, fechas o ID de empleado' 
+    });
+  }
 
   try {
-    // 1. Subir archivo al bucket "certificaciones"
-    const fileName = `certificaciones/${Date.now()}_${archivo.originalname}`;
-    console.log(`Subiendo archivo ${fileName}...`);
+    // ✅ Verificar si ya existe un certificado con el mismo nombre para este empleado (insensible a mayúsculas)
+    const { data: existente, error: errorDup } = await supabaseAdmin
+      .from('certificacion')
+      .select('certificacion_id')
+      .eq('empleado_id', empleado_id)
+      .ilike('nombre', nombre)
+      .maybeSingle();
 
+    if (errorDup) {
+      console.error('Error al verificar duplicado:', errorDup.message);
+      return res.status(500).json({ success: false, error: 'Error al verificar nombre duplicado' });
+    }
+
+    if (existente) {
+      return res.status(409).json({ success: false, error: 'Ya existe un certificado con ese nombre para este empleado.' });
+    }
+
+    // Subir archivo
+    const fileName = `certificaciones/${Date.now()}_${archivo.originalname}`;
     const { error: uploadError } = await supabaseAdmin.storage
       .from('certificaciones')
       .upload(fileName, archivo.buffer, {
@@ -64,10 +78,10 @@ router.post('/certificado', upload.single('archivo'), async (req, res) => {
       });
     }
 
-    // 2. Obtener URL pública con mayor tiempo de expiración (7 días)
+    // Crear URL firmada
     const { data: signedUrlData, error: signedUrlError } = await supabaseAdmin.storage
       .from('certificaciones')
-      .createSignedUrl(fileName, 60 * 60 * 24 * 7); // 7 días de validez
+      .createSignedUrl(fileName, 60 * 60 * 24 * 7); // 7 días
 
     if (signedUrlError) {
       console.error('Error al generar URL:', signedUrlError);
@@ -77,7 +91,7 @@ router.post('/certificado', upload.single('archivo'), async (req, res) => {
       });
     }
 
-    // 3. Insertar metadatos en la tabla certificacion
+    // Insertar en la base de datos
     const { data, error: dbError } = await supabaseAdmin
       .from('certificacion')
       .insert([{
@@ -91,7 +105,7 @@ router.post('/certificado', upload.single('archivo'), async (req, res) => {
       .select();
 
     if (dbError) {
-      console.error('Error en base de datos:', dbError);
+      console.error('Error en base de datos:', dbError.message);
       return res.status(500).json({
         success: false,
         error: 'Error al guardar en base de datos: ' + dbError.message
@@ -145,7 +159,7 @@ router.get('/empleado/:empleado_id/certificados', async (req, res) => {
     return res.status(500).json({ 
       success: false, 
       error: 'Error inesperado al obtener certificados' 
-    });
+    }); 
   }
 });
 

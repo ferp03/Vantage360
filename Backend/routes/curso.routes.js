@@ -17,13 +17,30 @@ router.put('/empleado/:id/curso/:cursoId', upload.single('archivo'), async (req,
   }
 
   try {
+    const { data: duplicado, error: errorDuplicado } = await supabase
+      .from('curso')
+      .select('curso_id')
+      .eq('empleado_id', id)
+      .ilike('nombre', nombre)
+      .neq('curso_id', cursoId)
+      .maybeSingle();
+
+    if (errorDuplicado) {
+      console.error('Error al verificar duplicado al editar:', errorDuplicado.message);
+      return res.status(500).json({ success: false, error: 'Error al verificar nombre duplicado' });
+    }
+
+    if (duplicado) {
+      return res.status(409).json({ success: false, error: 'Ya existe otro curso con ese nombre para este empleado' });
+    }
+
     const { data: cursoExistente, error: selectError } = await supabase
       .from('curso')
       .select('archivo')
       .eq('curso_id', cursoId)
       .eq('empleado_id', id)
       .single();
-    
+
     if (selectError) {
       console.error('Error al obtener curso:', selectError.message);
       return res.status(404).json({ success: false, error: 'Curso no encontrado' });
@@ -35,9 +52,7 @@ router.put('/empleado/:id/curso/:cursoId', upload.single('archivo'), async (req,
 
     if (fecha_emision) updateData.fecha_emision = fecha_emision;
     if (fecha_vencimiento) updateData.fecha_vencimiento = fecha_vencimiento;
-    
     if (progreso !== undefined) updateData.progreso = Number(progreso);
-    
     if (obligatorio !== undefined) {
       updateData.obligatorio = obligatorio === 'true' || obligatorio === true;
     }
@@ -46,12 +61,12 @@ router.put('/empleado/:id/curso/:cursoId', upload.single('archivo'), async (req,
       if (cursoExistente.archivo) {
         const fileNameMatch = cursoExistente.archivo.match(/\/([^\/]+)(?:\?|$)/);
         const oldFileName = fileNameMatch ? fileNameMatch[1] : null;
-        
+
         if (oldFileName) {
           const { error: deleteError } = await supabase.storage
             .from('cursos')
             .remove([oldFileName]);
-          
+
           if (deleteError) {
             console.error('Error al eliminar archivo anterior:', deleteError.message);
           }
@@ -107,6 +122,7 @@ router.put('/empleado/:id/curso/:cursoId', upload.single('archivo'), async (req,
   }
 });
 
+
 router.post('/empleado/:id/curso', upload.single('archivo'), async (req, res) => {
   const { id } = req.params;
   const { nombre, fecha_emision, fecha_vencimiento, progreso, obligatorio } = req.body;
@@ -117,8 +133,24 @@ router.post('/empleado/:id/curso', upload.single('archivo'), async (req, res) =>
   }
 
   try {
+    const { data: cursoExistente, error: errorBusqueda } = await supabase
+      .from('curso')
+      .select('curso_id')
+      .eq('empleado_id', id)
+      .ilike('nombre', nombre)
+      .maybeSingle();
+
+    if (errorBusqueda) {
+      console.error('Error al verificar nombre duplicado:', errorBusqueda.message);
+      return res.status(500).json({ success: false, error: 'Error al verificar el nombre del curso' });
+    }
+
+    if (cursoExistente) {
+      return res.status(409).json({ success: false, error: 'Ya existe un curso con ese nombre para este empleado' });
+    }
+
     let archivoUrl = null;
-    
+
     if (archivo) {
       const fileName = `${Date.now()}_${archivo.originalname}`;
 
@@ -135,7 +167,7 @@ router.post('/empleado/:id/curso', upload.single('archivo'), async (req, res) =>
 
       const { data: signedUrlData } = await supabase.storage
         .from('cursos')
-        .createSignedUrl(fileName, 60 * 60 * 24 * 7); 
+        .createSignedUrl(fileName, 60 * 60 * 24 * 7);
 
       archivoUrl = signedUrlData.signedUrl;
     }

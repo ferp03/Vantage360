@@ -228,7 +228,11 @@ export class CursosComponent implements OnInit {
       },
       error: (err) => {
         this.guardandoCurso = false;
-        this.error = `Error al ${this.cursoIdAEditar ? 'actualizar' : 'guardar'} curso: ${err.error?.message || err.message || 'Desconocido'}`;
+        if (err.status === 409) {
+          this.formErrores.nombre = 'Ya existe un curso con ese nombre.';
+        } else {
+          this.error = `Error al ${this.cursoIdAEditar ? 'actualizar' : 'guardar'} curso: ${err.error?.error || err.message || 'Desconocido'}`;
+        }
       }
     });
   }
