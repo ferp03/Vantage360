@@ -1,6 +1,7 @@
 <div class="skills-container">
   <div class="skills-box">
     <h2>Registro de Habilidades</h2>
+
     <form #form="ngForm" (submit)="onSubmit(form); $event.preventDefault()">
       <!-- Campo Nombre -->
       <div class="form-group">
@@ -12,7 +13,7 @@
           Campo obligatorio
         </span>
       </div>
-      
+
       <!-- Campo Categoria -->
       <div class="form-group" id="categoryField">
         <label for="skillCategory">Categoría</label>
@@ -32,7 +33,7 @@
           Campo obligatorio
         </span>
       </div>
-    
+
       <!-- Campo Nivel -->
       <div class="form-group">
         <label for="skillLevel">Nivel</label>
@@ -47,22 +48,25 @@
           Campo obligatorio
         </span>
       </div>
-      <!-- Campo Descripcion -->
-       <div class="form-group">
-       <label for="skillDescription">Descripción</label>
+
+      <!-- Campo Descripción -->
+      <div class="form-group">
+        <label for="skillDescription">Descripción</label>
         <textarea id="skillDescription" name="skillDescription" 
-              placeholder="¿En qué lo has aplicado? Ej: Proyectos personal, Backend, ..."
-              required
+              placeholder="¿En qué lo has aplicado? Ej: Proyecto personal, Backend, ..." required
               #descriptionInput="ngModel" [(ngModel)]="skillDescription"></textarea>
         <span class="error-message" *ngIf="(descriptionInput.invalid && (descriptionInput.dirty || descriptionInput.touched)) || (form.submitted && descriptionInput.invalid)">
           Campo obligatorio
         </span>
       </div>
-        <button type="submit">Registrar Habilidad</button>
-      </form>
-      <div class="back-button-container">
-        <button class="back-button" (click)="volver()"> ← Volver</button>
-      </div>
+
+      <button type="submit">Registrar Habilidad</button>
+    </form>
+
+    <div class="back-button-container">
+      <button class="back-button" (click)="volver()"> ← Volver</button>
     </div>
-    <div #toast class="toast">Habilidad registrada</div>
+  </div>
+
+  <div #toast class="toast">Habilidad registrada</div>
 </div>
