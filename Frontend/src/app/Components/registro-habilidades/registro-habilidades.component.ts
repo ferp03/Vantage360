@@ -12,7 +12,6 @@ import { AuthService } from 'src/app/auth/auth.service';
 })
 export class RegistroHabilidadesComponent implements OnInit {
   @ViewChild('toast') toast!: ElementRef;
-  @ViewChild('skillsForm') skillsForm!: ElementRef;
 
   private empleadoId: string | null = null;
 
@@ -42,10 +41,12 @@ export class RegistroHabilidadesComponent implements OnInit {
     }
 
     if (!this.skillName || !this.skillCategory || !this.skillLevel) {
-      console.error('Faltan campos requeridos');
+      this.showToast('Todos los campos requeridos deben estar llenos.', true);
       return;
     }
+
     if (!this.empleadoId) return;
+
     this.apiService.agregarHabilidad(
       this.empleadoId,
       {
@@ -57,31 +58,43 @@ export class RegistroHabilidadesComponent implements OnInit {
     ).subscribe({
       next: (res) => {
         if (res.success) {
-          console.log('Habilidad creada y asociada al empleado', res.data);
           form.resetForm();
-          this.showToast();
+          this.showToast('Habilidad registrada');
         } else {
-          console.log('Error al agregar la habilidad:', res.error);
+          this.showToast(res.error || 'Habilidad ya existente.', true);
         }
       },
       error: (err) => {
-        console.error('Error en la petición:', err);
+        if (err.status === 409) {
+          this.showToast('Habilidad ya existente', true);
+        } else {
+          this.showToast('Ocurrió un error inesperado.', true);
+          console.error('Error en la petición:', err);
+        }
       }
     });
   }
-  resetForm(): void {
-    this.skillName = '';
-    this.skillCategory = '';
-    this.skillLevel = '';
-    this.skillDescription = '';
-  }
 
-  showToast(): void {
+  showToast(message: string, isError: boolean = false): void {
     const toast = this.toast.nativeElement;
+    toast.textContent = message;
+
+    // Limpiar clases previas
+    toast.classList.remove('success-toast', 'error-toast');
+
+    // Agregar clase correspondiente
+    if (isError) {
+      toast.classList.add('error-toast');
+    } else {
+      toast.classList.add('success-toast');
+    }
+
+    // Mostrar el toast
     toast.classList.add('show');
+
     setTimeout(() => {
       toast.classList.remove('show');
-    }, 1300);
+    }, 2000);
   }
 
   volver(): void {

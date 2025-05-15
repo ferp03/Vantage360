@@ -25,6 +25,7 @@ export class MenucurycertComponent {
   archivoInvalido: boolean = false;
   mostrarModalCertificado: boolean = false;
   formSubmitted: boolean = false;
+  nombreDuplicadoError: string = '';
 
   constructor(
     private router: Router,
@@ -39,6 +40,7 @@ export class MenucurycertComponent {
   abrirModalSubirCertificado(): void {
     this.mostrarModalCertificado = true;
     this.formSubmitted = false;
+    this.nombreDuplicadoError = '';
     this.certificado = {
       nombre: '',
       institucion: '',
@@ -52,21 +54,11 @@ export class MenucurycertComponent {
 
   cerrarModalSubirCertificado(): void {
     this.mostrarModalCertificado = false;
-    // document.body.classList.remove('modal-abierto');
-    // Limpiar el formulario
-    // this.nombreArchivo = '';
-    // this.certificado = {
-    //  nombre: '',
-    //  institucion: '',
-    //  fecha: '',
-    //  archivo: null
-    // };
   }
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      // Valida que sea un formato aceptado
       const tiposPermitidos = ['.pdf', '.jpg', '.png', 'application/pdf', 'image/jpeg', 'image/png'];
       const esFormatoValido = tiposPermitidos.some(tipo => 
         file.type.includes(tipo) || file.name.toLowerCase().endsWith(tipo)
@@ -90,40 +82,47 @@ export class MenucurycertComponent {
 
   subirCertificado(form: NgForm) {
     this.formSubmitted = true;
-    
+    this.nombreDuplicadoError = '';
+
     if (!this.certificado.archivo) {
       this.archivoInvalido = true;
     }
-    
+
     if (form.valid && !this.archivoInvalido && this.certificado.archivo) {
       this.guardandoCertificado = true;
-      
+
       const formData = new FormData();
       formData.append('nombre', this.certificado.nombre);
       formData.append('institucion', this.certificado.institucion);
       formData.append('fecha_emision', this.certificado.fecha);
       formData.append('fecha_vencimiento', this.certificado.fechaVencimiento);
       formData.append('archivo', this.certificado.archivo);
-      
+
       const empleadoId = this.authService.userId;
-      
+
       if (!empleadoId) {
         console.error('No se pudo obtener el ID del empleado');
         return;
       }
-  
+
       formData.append('empleado_id', empleadoId);
-      
+
       this.apiService.guardarCertificado(formData).subscribe({
         next: (response) => {
           this.guardandoCertificado = false;
           console.log('Certificado subido exitosamente', response);
           this.cerrarModalSubirCertificado();
-          // Puedes recargar la lista de certificados aquí si es necesario
+          // Aquí podrías recargar la lista de certificados si es necesario
         },
         error: (error) => {
-          console.error('Error al subir certificado', error);
           this.guardandoCertificado = false;
+
+          if (error.status === 409) {
+            this.nombreDuplicadoError = 'Ya existe un certificado con ese nombre.';
+          } else {
+            console.error('Error al subir certificado', error);
+            this.nombreDuplicadoError = 'Ocurrió un error inesperado al subir el certificado.';
+          }
         }
       });
     } else {

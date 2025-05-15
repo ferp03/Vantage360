@@ -66,6 +66,9 @@
           <span class="error-message" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched || formSubmitted)">
             Este campo es obligatorio
           </span>
+          <span class="error-message" *ngIf="nombreDuplicadoError">
+            {{ nombreDuplicadoError }}
+          </span>
         </div>
         
         <div class="form-group" [class.error]="institucion.invalid && (institucion.dirty || institucion.touched || formSubmitted)">

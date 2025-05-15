@@ -159,9 +159,27 @@
     opacity: 1;
   }
 
+  .toast.success-toast {
+  background-color: #00A87E;
+  }
+
+  .toast.error-toast {
+    background-color: #FF4F5E; 
+  }
+
   .error-message {
     color: red;
     font-size: 0.8rem;
     margin-top: 0.25rem;
     display: block;
   }
+
+  .error-alert {
+  background-color: #f44336;
+  color: white;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  text-align: center;
+}
