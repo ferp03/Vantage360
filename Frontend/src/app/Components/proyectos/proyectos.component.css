@@ -24,7 +24,7 @@
   margin: 0;
   padding: 0;
   overflow: auto;
-  background: linear-gradient(160deg, rgba(0, 0, 0, 0.8), rgba(34, 25, 40, 0.9));
+  background: linear-gradient(160deg, rgba(0, 0, 0, 0.8), rgba(98, 96, 98, 0.9));
   z-index: 1000;
   display: flex;
   justify-content: center;
