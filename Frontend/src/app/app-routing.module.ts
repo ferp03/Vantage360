@@ -24,7 +24,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'cursos_certificados', pathMatch: 'full' },
       { path: 'empleados', component: DisponibilidadComponent, canActivate: [UserGuard] },
-      { path: 'proyectos', component: ProyectosComponent, canActivate: [UserGuard] },
+      { path: 'crear-proyectos', component: ProyectosComponent, canActivate: [UserGuard] },
       { path: 'registro-habilidades', component: RegistroHabilidadesComponent, canActivate: [AuthGuard] },
       { path: 'miscursos', component: CursosComponent, canActivate: [AuthGuard] },
       { path: 'certificates', component: CertificacionesComponent, canActivate: [AuthGuard]},
