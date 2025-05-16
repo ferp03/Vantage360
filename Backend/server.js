@@ -11,6 +11,7 @@ const updateRoutes = require('./routes/update.routes');
 const availabilityRoutes = require('./routes/availability.routes'); 
 const certificateRoutes = require('./routes/certificate.routes');
 const cursosRoutes = require('./routes/curso.routes');
+const proyectosRoutes = require('./routes/proyecto.routes');
 
 
 const app = express();
@@ -30,6 +31,7 @@ app.use(updateRoutes);
 app.use(availabilityRoutes);
 app.use(certificateRoutes);
 app.use(cursosRoutes);
+app.use(proyectosRoutes);
 
 // Iniciar el servidor
 app.listen(port, () => {
