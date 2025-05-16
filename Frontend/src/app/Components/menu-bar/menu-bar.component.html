@@ -7,8 +7,9 @@
                 <img src="assets/logo_accenture.svg" class="logo">
                 <!-- Añadir enlace a disponibilidad, solo visible para administradores -->
                 <li *ngIf="esAdmin()"><a routerLink="/empleados" routerLinkActive="active">Empleados</a></li>
+
                 <li><a routerLink="/cursos_certificados" routerLinkActive="active">Cursos y Certificaciones</a></li>
-                <li><a routerLink="/registro-habilidades" routerLinkActive="active">Registrar Habilidades</a></li>
+                <!-- <li><a routerLink="/registro-habilidades" routerLinkActive="active">Registrar Habilidades</a></li> -->
             </ul>
         </nav>
     </div>

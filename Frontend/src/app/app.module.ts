@@ -18,6 +18,10 @@ import { DisponibilidadComponent } from './Components/disponibilidad/disponibili
 import { MenucurycertComponent } from './Components/menucurycert/menucurycert.component'; 
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ProyectosComponent } from './Components/proyectos/proyectos.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button'; 
 
 @NgModule({
   declarations: [
@@ -32,7 +36,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CertificacionesComponent,
     RegistroHabilidadesComponent,
     DisponibilidadComponent,
-    MenucurycertComponent
+    MenucurycertComponent,
+    ProyectosComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +46,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,  
-    MatIconModule      
+    MatIconModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
