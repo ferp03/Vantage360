@@ -5,7 +5,6 @@
   <div class="caja-info-superior">
     <div class="izquierda" [ngClass]="{ 'modo-edicion': editandoInfo }">
       <div class="izquierda-superior">
-        
         <p><strong><span class="material-icons">email</span> </strong> {{ info.correo }}</p>
         <p><strong><span class="material-icons">person</span> Usuario:</strong> {{ info.usuario }}</p>
         <p>
@@ -93,7 +92,29 @@
         <p><strong><span class="material-icons">calendar_today</span> Fecha de Inicio:</strong> {{ info.fecha_inicio }}</p>
       </div>
     </div>
-    <div class="derecha"></div>
+    <div class="derecha">
+      <h3>Cursos</h3>
+
+      <ul *ngIf="cursos.length > 0">
+        <li *ngFor="let curso of cursos">
+          <strong>
+            {{ curso.obligatorio ? '*' : '' }}{{ curso.nombre }} {{ curso.progreso }}%
+            
+          </strong><br>
+        </li>
+      </ul>
+
+      <!-- Mostrar mensaje si NO hay cursos -->
+      <ng-container *ngIf="cursos.length === 0">
+        <p *ngIf="esMiPerfil">
+          No hay cursos registrados. <br/> Te ayudamos a encontrar un curso →
+        </p>
+        <p *ngIf="!esMiPerfil">
+          Este usuario no tiene cursos registrados.
+        </p>
+      </ng-container>
+
+      </div>
   </div>
 </div>
   

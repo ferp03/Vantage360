@@ -32,9 +32,17 @@ interface ErroresExperiencia {
   fechaInvalida?: boolean;
 }
 
-interface Curso {
+interface Ceritifcado {
   nombre: string;
   plataforma: string;
+}
+
+interface Curso {
+  nombre: string;
+  fecha_emision: string;
+  fecha_vencimiento: string;
+  progreso: string;
+  obligatorio: boolean;
 }
 
 @Component({
@@ -71,7 +79,8 @@ export class EmpleadoDetallesComponent implements OnInit {
   };
 
   habilidades: string[] = [];
-  certificados: Curso[] = [];
+  certificados: Ceritifcado[] = [];
+  cursos: Curso[] = [];
   experiencias: ExperienciaLaboral[] = [];
   capabilities: Capability[] = [];
 
@@ -122,7 +131,7 @@ export class EmpleadoDetallesComponent implements OnInit {
         this.location.back();
       }
     });
-  
+    this.obtenerCurso(); 
     this.cargarInfoBasica();
     this.cargarHabilidades();
       
@@ -693,6 +702,21 @@ export class EmpleadoDetallesComponent implements OnInit {
   }
 
   
-
-
+  obtenerCurso(): void {
+    if (!this.empleadoId) return;
+    this.apiService.obtenerCursosEmpleado(this.empleadoId).subscribe({
+      next: (res) => {
+        if (res.success) {
+          console.log('Respuesta completa de cursos:', res);
+          this.cursos = res.data;
+        } else {
+          console.error('Error al cargar cursos:', res.error);
+        }
+      },
+      error: (err) => {
+        console.error('Error al obtener cursos:', err);
+      }
+    });
+  }
+  
 }
