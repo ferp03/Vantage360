@@ -139,7 +139,7 @@ export class ApiService {
   agregarHabilidad(empleadoId: string, datos: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/empleado/${empleadoId}/habilidad`, datos);
   } 
-  // Añadir este método a api.service.ts
+
   getCapabilities(): Observable<any> {
     return this.http.get(`${this.apiUrl}/capabilities`);
   } 
@@ -173,8 +173,14 @@ export class ApiService {
   return this.http.delete(`${this.apiUrl}/certificado/${certificacionId}`);
 }
 
-// Editar Curso
-editarCurso(empleadoId: string, cursoId: string, formData: FormData): Observable<any> {
-  return this.http.put(`${this.apiUrl}/empleado/${empleadoId}/curso/${cursoId}`, formData);
-}
+  // Editar Curso
+  editarCurso(empleadoId: string, cursoId: string, formData: FormData): Observable<any> {
+    return this.http.put(`${this.apiUrl}/empleado/${empleadoId}/curso/${cursoId}`, formData);
+  }
+
+  //Subir proyecto
+  subirProyecto(json: any): Observable<any> {
+    console.log(json);
+    return json; // mandar a llamar el endpoint
+  }
 }

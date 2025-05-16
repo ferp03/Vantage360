@@ -12,6 +12,7 @@ import { CertificacionesComponent } from './Components/certificaciones/certifica
 import { RegistroHabilidadesComponent } from './Components/registro-habilidades/registro-habilidades.component';
 import { DisponibilidadComponent } from './Components/disponibilidad/disponibilidad.component';
 import { MenucurycertComponent } from './Components/menucurycert/menucurycert.component';
+import { ProyectosComponent } from './Components/proyectos/proyectos.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -23,6 +24,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'cursos_certificados', pathMatch: 'full' },
       { path: 'empleados', component: DisponibilidadComponent, canActivate: [UserGuard] },
+      { path: 'proyectos', component: ProyectosComponent, canActivate: [UserGuard] },
       { path: 'registro-habilidades', component: RegistroHabilidadesComponent, canActivate: [AuthGuard] },
       { path: 'miscursos', component: CursosComponent, canActivate: [AuthGuard] },
       { path: 'certificates', component: CertificacionesComponent, canActivate: [AuthGuard]},
