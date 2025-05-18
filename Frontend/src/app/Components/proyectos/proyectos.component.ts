@@ -3,7 +3,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { ApiService } from 'src/app/services/api.service';
 
 interface Capability {
-  id: number;
+  id: number; 
   nombre: string;
   selected: boolean;
 }
@@ -19,9 +19,9 @@ interface CapabilitiesSeleccionado {
   templateUrl: './proyectos.component.html',
   styleUrls: ['./proyectos.component.css']
 })
-
 export class ProyectosComponent {
   paso = 1;
+  mostrarModal: boolean = true;
 
   proyecto = {
     nombre: '',
@@ -31,16 +31,19 @@ export class ProyectosComponent {
     capabilities: [] as CapabilitiesSeleccionado[]
   };
 
-  guardandoProyecto: boolean = false
+  guardandoProyecto: boolean = false;
   formSubmitted: boolean = false;
-  
   capabilities: Capability[] = [];
   capabilitySeleccionadaId: Capability | null = null;
 
-  constructor(private apiService: ApiService, private authService: AuthService){};
+  constructor(private apiService: ApiService, private authService: AuthService) {}
 
-  ngOnInit(){
+  ngOnInit() {
     this.cargarCapabilities();
+  }
+
+  cerrarModal() {
+    this.mostrarModal = false;
   }
 
   cargarCapabilities(): Promise<void> {
@@ -49,13 +52,11 @@ export class ProyectosComponent {
         next: (res: any) => {
           if (res.success) {
             this.capabilities = res.data;
-          } else {
-            console.error('Error al cargar capabilities:', res.error);
           }
-          resolve(); // Resolvemos la promesa sin importar si hubo éxito o error
+          resolve();
         },
-        error: (err: any) => {
-          console.error('Error al obtener capabilities:', err);
+        error: () => {
+          resolve();
         }
       });
     });
@@ -78,12 +79,10 @@ export class ProyectosComponent {
     this.proyecto.capabilities = this.proyecto.capabilities.filter(c => c.id !== id);
   }
 
-    /** Avanza o retrocede de paso */
   goTo(p: number) {
     this.paso = p;
   }
 
-  /** Marca/desmarca un Capability */
   toggleCapability(r: Capability) {
     r.selected = !r.selected;
     if (r.selected) {
@@ -93,45 +92,52 @@ export class ProyectosComponent {
     }
   }
 
-  /** Cambia la cantidad (mínimo 1) */
   changeCantidad(rs: CapabilitiesSeleccionado, delta: number) {
     rs.cantidad = Math.max(1, rs.cantidad + delta);
   }
 
-  /** Valida paso 1: todos los campos requeridos */
   get paso1Valido() {
     const p = this.proyecto;
     return !!p.nombre && !!p.descripcion && !!p.fecha && !!p.fechaFinalizacion;
   }
 
-  /** Envía el proyecto completo */
   onSubmit() {
     const id = this.authService.userId;
-    if (!id) {
-      console.error('User ID is null or undefined');
-      return;
-    }
+    if (!id) return;
+
     if (this.paso === 2) {
+      const puestosObj = this.proyecto.capabilities.reduce((acc, curr) => {
+        acc[curr.nombre] = { cantidad: curr.cantidad };
+        return acc;
+      }, {} as Record<string, { cantidad: number }>);
+
       const proyectoJson = {
         delivery_lead: id,
         nombre: this.proyecto.nombre,
-        descripcion: this.proyecto.descripcion,
-        fecha_inicio: this.proyecto.fecha,
-        fecha_fin: this.proyecto.fechaFinalizacion,
+        descripcion: this.proyecto.descripcion || null,
+        fecha_inicio: this.proyecto.fecha || null,        
+        fecha_fin: this.proyecto.fechaFinalizacion || null,
         progreso: 0,
         cargabilidad: null,
         capabilities: {
-          "status": "disponible",
-          "puestos": 
-          this.proyecto.capabilities.map(c => ({
-            id: c.id,
-            nombre: c.nombre,
-            cantidad: c.cantidad
-          }))
+          status: 'disponible',
+          puestos: puestosObj
         }
-      }
+      };
 
-      this.apiService.subirProyecto(proyectoJson);
+      this.guardandoProyecto = true;
+      this.apiService.subirProyecto(proyectoJson).subscribe({
+        next: res => {
+          this.guardandoProyecto = false;
+          if (res.success) {
+            this.cerrarModal();
+          }
+        },
+        error: err => {
+          this.guardandoProyecto = false;
+          alert(`Error HTTP: ${err.message || JSON.stringify(err)}`);
+        }
+      });
     }
   }
 }

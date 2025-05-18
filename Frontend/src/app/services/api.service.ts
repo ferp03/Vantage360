@@ -177,10 +177,9 @@ export class ApiService {
   editarCurso(empleadoId: string, cursoId: string, formData: FormData): Observable<any> {
     return this.http.put(`${this.apiUrl}/empleado/${empleadoId}/curso/${cursoId}`, formData);
   }
-
+ 
   //Subir proyecto
   subirProyecto(json: any): Observable<any> {
-    console.log(json);
-    return json; // mandar a llamar el endpoint
+    return this.http.post(`${this.apiUrl}/proyecto`, json);
   }
-}
+} 

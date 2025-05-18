@@ -1,7 +1,9 @@
-<div class="modal-overlay">
+<div class="modal-overlay" *ngIf="mostrarModal">
   <div class="box-container">
     <div class="box">
+
       <h2>Crea un proyecto</h2>
+
       <!-- Paso 1: Datos básicos -->
       <ng-container *ngIf="paso === 1">
         <h3 style="text-align: left;">Paso 1: Datos del proyecto</h3>
@@ -10,9 +12,7 @@
           <!-- Nombre -->
           <div class="form-group" [class.error]="f.submitted && !proyecto.nombre">
             <label for="nombre">Nombre del proyecto</label>
-            <input 
-              id="nombre" name="nombre"
-              [(ngModel)]="proyecto.nombre" required>
+            <input id="nombre" name="nombre" [(ngModel)]="proyecto.nombre" required />
             <span class="error-message" *ngIf="f.submitted && !proyecto.nombre">
               Este campo es obligatorio
             </span>
@@ -21,91 +21,77 @@
           <!-- Descripción -->
           <div class="form-group" [class.error]="f.submitted && !proyecto.descripcion">
             <label for="descripcion">Descripción</label>
-            <input 
-              id="descripcion" name="descripcion"
-              [(ngModel)]="proyecto.descripcion" required>
+            <input id="descripcion" name="descripcion" [(ngModel)]="proyecto.descripcion" required />
             <span class="error-message" *ngIf="f.submitted && !proyecto.descripcion">
               Este campo es obligatorio
             </span>
           </div>
 
-          <!-- Fecha emisión -->
+          <!-- Fecha inicio -->
           <div class="form-group" [class.error]="f.submitted && !proyecto.fecha">
-            <label for="fecha">Fecha de emisión</label>
-            <input 
-              id="fecha" name="fecha" type="date"
-              [(ngModel)]="proyecto.fecha" required>
+            <label for="fecha">Fecha Inicio</label>
+            <input id="fecha" name="fecha" type="date" [(ngModel)]="proyecto.fecha" required />
             <span class="error-message" *ngIf="f.submitted && !proyecto.fecha">
               Este campo es obligatorio
             </span>
           </div>
 
-          <!-- Fecha vencimiento -->
+          <!-- Fecha fin -->
           <div class="form-group" [class.error]="f.submitted && !proyecto.fechaFinalizacion">
-            <label for="fechaFinalizacion">Fecha de vencimiento</label>
-            <input 
-              id="fechaFinalizacion" name="fechaFinalizacion" type="date"
-              [(ngModel)]="proyecto.fechaFinalizacion" required>
+            <label for="fechaFinalizacion">Fecha Fin</label>
+            <input id="fechaFinalizacion" name="fechaFinalizacion" type="date" [(ngModel)]="proyecto.fechaFinalizacion" required />
             <span class="error-message" *ngIf="f.submitted && !proyecto.fechaFinalizacion">
               Este campo es obligatorio
             </span>
           </div>
 
           <div class="actions">
-            <button type="submit" [disabled]="!paso1Valido">
-              Siguiente ➔
-            </button>
+            <button type="button" (click)="cerrarModal()">Cancelar</button>
+            <button type="submit" [disabled]="!paso1Valido">Siguiente ➔</button>
           </div>
         </form>
       </ng-container>
 
+      <!-- Paso 2: Selección de Capabilities -->
+      <ng-container *ngIf="paso === 2">
+        <h3>Paso 2: Capabilities necesarias</h3>
 
-  <!-- Paso 2: Selección de Capabilities -->
-  <ng-container *ngIf="paso === 2">
-    <h3>Paso 2: Capabilities necesarias</h3>
-
-    <div class="form-group">
-      <!-- <label for="capabilitySelect">Selecciona un Capability:</label> -->
-      <!-- <select id="capabilitySelect" [(ngModel)]="capabilitySeleccionadaId" name="capabilitySelect">
-        <option [ngValue]="null" disabled selected>-- Selecciona uno --</option>
-        <option *ngFor="let cap of capabilitiesDisponibles()" [ngValue]="cap.id">
-          {{ cap.nombre }}
-        </option>
-      </select> -->
-      <mat-form-field appearance="fill">
-        <mat-label>Selecciona una capability</mat-label>
-        <mat-select [(value)]="capabilitySeleccionadaId" disableOptionCentering>
-          <mat-option *ngFor="let cap of capabilitiesDisponibles()" [value]="cap">
-            {{ cap.nombre }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <button type="button" (click)="agregarCapability()" [disabled]="!capabilitySeleccionadaId">
-        Agregar
-      </button>
-    </div>
-
-    <!-- Lista de capabilities agregadas -->
-    <div class="selected-capabilities" *ngIf="proyecto.capabilities.length">
-      <h3>{{ proyecto.capabilities.length }} capability(s) seleccionada(s)</h3>
-      <div *ngFor="let cs of proyecto.capabilities; let i = index" class="selected-capability">
-        <span class="badge">{{ cs.nombre }}</span>
-        <div class="vacantes-control">
-          <button type="button" (click)="changeCantidad(cs, -1)">–</button>
-          <span>{{ cs.cantidad }}</span>
-          <button type="button" (click)="changeCantidad(cs, +1)">+</button>
+        <div class="form-group">
+          <mat-form-field appearance="fill">
+            <mat-label>Selecciona una capability</mat-label>
+            <mat-select [(value)]="capabilitySeleccionadaId" disableOptionCentering>
+              <mat-option *ngFor="let cap of capabilitiesDisponibles()" [value]="cap">
+                {{ cap.nombre }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button type="button" (click)="agregarCapability()" [disabled]="!capabilitySeleccionadaId">
+            Agregar
+          </button>
         </div>
-        <button type="button" (click)="eliminarCapability(cs.id)">Cancelar</button>
-      </div>
-    </div>
 
-    <div class="actions">
-      <button type="button" (click)="goTo(1)">← Atrás</button>
-      <button type="button" (click)="onSubmit()" [disabled]="proyecto.capabilities.length === 0">
-        Guardar proyecto
-      </button>
-    </div>
-  </ng-container>
+        <!-- Lista de capabilities agregadas -->
+        <div class="selected-capabilities" *ngIf="proyecto.capabilities.length">
+          <h3>{{ proyecto.capabilities.length }} capability(s) seleccionada(s)</h3>
+          <div *ngFor="let cs of proyecto.capabilities; let i = index" class="selected-capability">
+            <span class="badge">{{ cs.nombre }}</span>
+            <div class="vacantes-control">
+              <button type="button" (click)="changeCantidad(cs, -1)">–</button>
+              <span>{{ cs.cantidad }}</span>
+              <button type="button" (click)="changeCantidad(cs, +1)">+</button>
+            </div>
+            <button type="button" (click)="eliminarCapability(cs.id)">Cancelar</button>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" (click)="goTo(1)">← Atrás</button>
+          <button type="button" (click)="onSubmit()" [disabled]="proyecto.capabilities.length === 0">
+            Guardar proyecto
+          </button>
+        </div>
+      </ng-container>
+
     </div>
   </div>
 </div>
