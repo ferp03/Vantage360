@@ -20,8 +20,9 @@ body {
 }
 
 .tabs-container {
-  width: calc(100% - 10%);
+  width: calc(100% - 40px);
   margin: 20px;
+  position: relative;
 }
 
 .tabs-header {
@@ -29,10 +30,13 @@ body {
   max-width: 580px;
   border-bottom: 1px solid #ddd;
   margin-bottom: 20px;
+  align-items: center; 
+
 }
 
 .tab-button {
-  padding: 12px 20px;
+  padding: 12px 20px 12px 0; 
+  margin-right: 20px;
   background: none;
   border: none;
   cursor: pointer;
@@ -306,4 +310,35 @@ body {
   .projects-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* botón de añadir proyecto */
+.add-project-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-bottom: 0;
+}
+
+.btn-add-project {
+  background-color: #4CAF50; 
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s;
+}
+
+.btn-add-project:hover {
+  background-color: #45a049; 
+}
+
+.btn-add-project .material-icons {
+  font-size: 18px;
 }

@@ -2,7 +2,13 @@
 <div class="participacion-container">
   <main class="participacion-content">
     <div class="tabs-container">
-      <!-- headers -->
+        <div class="add-project-container" *ngIf="showAddProjectButton()">
+            <button class="btn-add-project" (click)="openAddProjectModal()">
+            <span class="material-icons">add</span>
+                Añadir Proyecto
+            </button>
+        </div>
+      <!-- Proyectos headers -->
       <div class="tabs-header">
         <div class="tab-button" 
              [class.active]="activeTab === 'disponibles'" 

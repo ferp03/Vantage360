@@ -10,9 +10,11 @@
 
                 <li><a routerLink="/cursos_certificados" routerLinkActive="active">Cursos y Certificaciones</a></li>
                 <!-- <li><a routerLink="/registro-habilidades" routerLinkActive="active">Registrar Habilidades</a></li> -->
+                <li><a [routerLink]="['/participacion_p']" routerLinkActive="active">Proyectos</a></li>
             </ul>
         </nav>
     </div>
+    
     <div class="login-container" #menu>
         <div class="dropdown" [class.show]="menuAbierto">
             <button class="avatar-button" (click)="toggleMenu()">{{ username?.[0] || "A" }}</button>

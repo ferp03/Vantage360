@@ -19,6 +19,7 @@ import { MenucurycertComponent } from './Components/menucurycert/menucurycert.co
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProyectosComponent } from './Components/proyectos/proyectos.component';
+import { ParticipacionPComponent } from './Components/participacion-p/participacion-p.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button'; 
@@ -37,7 +38,8 @@ import { MatButtonModule } from '@angular/material/button';
     RegistroHabilidadesComponent,
     DisponibilidadComponent,
     MenucurycertComponent,
-    ProyectosComponent
+    ProyectosComponent,
+    ParticipacionPComponent
   ],
   imports: [
     BrowserModule,
