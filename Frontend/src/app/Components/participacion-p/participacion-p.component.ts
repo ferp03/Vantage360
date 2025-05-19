@@ -1,8 +1,7 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
-import { ApiService } from 'src/app/services/api.service';
-import { AuthService } from 'src/app/auth/auth.service'; 
-
+import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { AuthService } from 'src/app/auth/auth.service';
+import { ProyectosComponent } from '../proyectos/proyectos.component'; 
 
 @Component({
   selector: 'app-participacion-p',
@@ -12,31 +11,34 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class ParticipacionPComponent {
   activeTab: string = 'disponibles'; 
 
-  constructor(public authService: AuthService) {}
+  constructor(
+    public authService: AuthService,
+    private dialog: MatDialog
+  ) {}
 
   openTab(tabId: string) {
     this.activeTab = tabId;
   }
-
-  // proyecto = {
-  //   nombre: '',
-  //   descripcion: '',
-  //   fecha_inicio: '',
-  //   fecha_fin: '',
-  //   progreso: 0,
-  //   cargabilidad: 0,
-  //   delivery_lead: '',
-  //   capabilities: [] 
-  // }
 
   showAddProjectButton(): boolean {
     const allowedRoles = ['people lead', 'delivery lead'];
     return this.authService.roles.some(role => allowedRoles.includes(role));
   }
 
-  // Método para abrir el modal (implementa según tu necesidad)
-  openAddProjectModal() {
-    console.log('Abrir modal de añadir proyecto');
-    // Ejemplo: this.modalService.open(AddProjectComponent);
+  openAddProjectModal(): void {
+    const dialogRef = this.dialog.open(ProyectosComponent, {
+      width: '800px',
+      maxWidth: '90vw',
+      data: { 
+        action: 'create' // Puedes enviar datos adicionales si es necesario
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Proyecto creado:', result);
+        // Aquí puedes actualizar la lista de proyectos si es necesario
+      }
+    });
   }
 }
