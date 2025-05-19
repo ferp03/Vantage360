@@ -89,8 +89,8 @@ export class ApiService {
   }
   
   // Actualizar info básica
-  updateEmpleadoInfo(id: string, datos: { correo: string; usuario: string }): Observable<any> {
-    return this.http.put(`${this.apiUrl}/empleado/info/${id}`, datos);
+  updateEmpleadoInfo(id: string, datos: { usuario: string, estado_laboral: string }): Observable<any> {
+    return this.http.put(`${this.apiUrl}/empleado/info/${id}`, datos); // actualiza correo y usuario
   }
 
   // CREAR nueva experiencia
@@ -144,9 +144,9 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/capabilities`);
   } 
 
-  actualizarEmpleado(empleadoId: string, datosActualizados: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/empleado/cambiar-datos/${empleadoId}`, datosActualizados);
-  }
+  // actualizarEmpleado(empleadoId: string, datosActualizados: any): Observable<any> {
+  //   return this.http.put(`${this.apiUrl}/empleado/cambiar-datos/${empleadoId}`, datosActualizados); // solo cambia estado laboral
+  // }
 
   // Crear nuevo curso con archivo 
   crearCurso(empleadoId: string, formData: FormData): Observable<any> {

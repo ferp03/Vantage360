@@ -20,7 +20,10 @@ router.get('/empleado/info/:id', async (req, res) => {
     });
   }
 
-  const nombreCompleto = `${data.nombre} ${data.apellido_paterno} ${data.apellido_materno}`;
+  let nombreCompleto = `${data.nombre} ${data.apellido_paterno}`
+  if(data.apellido_materno != null){
+    nombreCompleto += ` ${data.apellido_materno}`;
+  }
   
   return res.status(200).json({
     success: true,
@@ -162,20 +165,32 @@ router.get('/empleado/:id/trayectoria', async (req, res) => {
 // Actualizar info básica 
 router.put('/empleado/info/:id', async (req, res) => {
   const { id } = req.params;
-  const { correo, usuario } = req.body;
+  const { usuario, estado_laboral } = req.body;
 
-  if (!correo || !usuario) {
+  if (!estado_laboral || !usuario) {
     return res.status(400).json({ success: false, error: 'Faltan campos requeridos' });
+  }
+
+  // verificar que el usuario no exista
+  const { data: existeUsuario } = await supabase
+  .from('empleado')
+  .select('usuario')
+  .eq('usuario', usuario)
+  .maybeSingle()
+
+  if(existeUsuario) {
+    console.log('usuario existente');
+    return res.status(400).json({success: false, error: 'El usuario ya existe, eliga otro.'});
   }
 
   const { error } = await supabase
     .from('empleado')
-    .update({ correo, usuario })
+    .update({ usuario, estado_laboral })
     .eq('empleado_id', id);
 
   if (error) {
     console.error('Error al actualizar empleado:', error.message);
-    return res.status(500).json({ success: false, error: 'Error al actualizar empleado' });
+    return res.status(400).json({ success: false, error: 'Error al actualizar empleado' });
   }
 
   res.status(200).json({ success: true, message: 'Información actualizada correctamente' });
