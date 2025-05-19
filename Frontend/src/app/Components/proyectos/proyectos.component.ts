@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef} from '@angular/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { ApiService } from 'src/app/services/api.service';
 
@@ -36,7 +36,7 @@ export class ProyectosComponent {
   capabilities: Capability[] = [];
   capabilitySeleccionadaId: Capability | null = null;
 
-  constructor(private apiService: ApiService, private authService: AuthService) {}
+  constructor(private apiService: ApiService, private authService: AuthService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.cargarCapabilities();
@@ -44,6 +44,7 @@ export class ProyectosComponent {
 
   cerrarModal() {
     this.mostrarModal = false;
+    this.cdr.detectChanges();
   }
 
   cargarCapabilities(): Promise<void> {
