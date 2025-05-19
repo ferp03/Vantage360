@@ -21,7 +21,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProyectosComponent } from './Components/proyectos/proyectos.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button'; 
+import { MatButtonModule } from '@angular/material/button';
+import { SignUpComponent } from './Components/sign-up/sign-up.component'; 
+import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -37,7 +40,8 @@ import { MatButtonModule } from '@angular/material/button';
     RegistroHabilidadesComponent,
     DisponibilidadComponent,
     MenucurycertComponent,
-    ProyectosComponent
+    ProyectosComponent,
+    SignUpComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +53,9 @@ import { MatButtonModule } from '@angular/material/button';
     MatIconModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatButtonModule
+    MatButtonModule,
+    MatInputModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent]
