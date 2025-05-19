@@ -1,30 +1,10 @@
 <div class="login-container">
-    <div class="box" [ngClass]="{'login-box': isLogin, 'signup-box': isSignUp}">
+    <div class="box signup-box">
         <div>
             <img src="assets/logo_accenture.svg" class="logo">
         </div>
-        <!-- Login -->
-        <div *ngIf="isLogin" class="login-form-container">
-            <form (submit)="login()" class="login-form">
-                <label>Correo:</label>
-                <input type="text" [(ngModel)]="email" name="email" required>
-                
-                <label>Contraseña:</label>
-                <input type="password" [(ngModel)]="password" name="password" required>
-                
-                <div class="button-container">
-                    <button type="submit">Inicar Sesion</button>
-                </div>
-                
-                <p *ngIf="mensaje" class="error">{{mensaje}}</p>
-            </form>
-            <!-- <p style="color: rgb(0, 0, 0); margin: 12px;" (click)="isSignUp=true; isLogin=false">No tienes cuenta? <span style=" cursor: pointer; text-decoration: underline;">Registrar</span></p>
-            <p style="color: rgb(0, 0, 0); margin: 12px;">o</p> -->
-            <p style="color: rgb(2, 2, 2); margin: 12px; cursor: pointer; text-decoration: underline;" (click)="forgot()">Olvide mi contraseña</p>
-        </div>
-        
-        <!-- Sign Up
-        <div *ngIf="isSignUp" class="signup-form-container">    
+
+        <div class="signup-form-container">    
             <form (submit)="signup()" class="signup-form">
                 <div class="form-columns">
                     <div class="column left-column">
@@ -42,8 +22,6 @@
                             <label>Apellido Materno:</label>
                             <input type="text" [(ngModel)]="matlastname" name="matlastname">
                         </div>
-
-                        
                     </div>
                     
                     <div class="column right-column">
@@ -70,9 +48,6 @@
                 
                 <p *ngIf="mensaje" class="error">{{mensaje}}</p>
             </form>
-            <p style="color: rgb(0, 0, 0); margin: 12px;" (click)="isSignUp=false; isLogin=true;">Ya tienes cuenta? <span style=" cursor: pointer; text-decoration: underline;">Iniciar Sesion</span></p>
-            <p style="color: rgb(0, 0, 0); margin: 12px;">or</p>
-            <p style="color: rgb(0, 0, 0); margin: 12px; cursor: pointer; text-decoration: underline;" (click)="forgot()">Olvide mi contraseña</p>
-        </div> -->
+        </div>
     </div>
 </div>

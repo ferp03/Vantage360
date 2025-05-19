@@ -21,7 +21,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProyectosComponent } from './Components/proyectos/proyectos.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button'; 
+import { MatButtonModule } from '@angular/material/button';
+import { SignUpComponent } from './Components/sign-up/sign-up.component'; 
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { MatButtonModule } from '@angular/material/button';
     RegistroHabilidadesComponent,
     DisponibilidadComponent,
     MenucurycertComponent,
-    ProyectosComponent
+    ProyectosComponent,
+    SignUpComponent
   ],
   imports: [
     BrowserModule,

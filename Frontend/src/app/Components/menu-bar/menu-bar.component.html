@@ -18,6 +18,7 @@
             <button class="avatar-button" (click)="toggleMenu()">{{ username?.[0] || "A" }}</button>
             <div class="dropdown-content" *ngIf="menuAbierto">
                 <a (click)="menuAbierto=false" routerLink="/empleado-detalles/{{empleadoId}}">Mi perfil</a>
+                <a *ngIf="esAdmin()" (click)="menuAbierto=false" routerLink="/crear-cuenta">Crear cuenta</a>
                 <hr>
                 <a (click)="logout()">Log out</a>
             </div>
