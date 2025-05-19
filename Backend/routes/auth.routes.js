@@ -71,15 +71,15 @@ router.post('/login', async (req, res) => {
     }
 
     // Validar que el email no exista en auth.users
-    const { data: existingEmail, error: emailCheckError } = await supabase
-      .from('auth.users')
-      .select('id')
-      .eq('email', email)
-      .maybeSingle();
-  
-    if (existingEmail) {
-      console.log('Ese correo ya está registrado.');
-      return res.status(400).json({success: false, error: 'Ese correo ya está registrado.' });
+    const { data: listData, error: listError } = await supabase.auth.admin.listUsers();
+    if (listError) {
+      return res.status(500).json({ success: false, error: listError.message });
+    }
+
+    const userExists = listData.users.find((u) => u.email === email);
+
+    if (userExists) {
+      return res.status(400).json({ success: false, error: 'El correo ya está en uso.' });
     }
   
     // Registro en Supabase Auth

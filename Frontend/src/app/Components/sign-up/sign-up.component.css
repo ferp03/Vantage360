@@ -90,3 +90,9 @@ button:hover {
     justify-content: center;
     margin-top: 10px;
 }
+
+.error {
+    color: #ff4d4d;
+    font-size: 14px;
+    font-weight: bold;
+}

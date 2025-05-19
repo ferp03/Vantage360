@@ -46,8 +46,6 @@ export class LoginComponent {
         }
       },
       error: (err) => {
-        // Este bloque se activa si el backend devuelve 401 u otro error de red
-        //traducir mensaje
         this.mensaje = err.error?.error || 'Ingresar correctamente el correo y contraseña';
         console.log(this.mensaje);
         if (err.error?.error === 'Invalid login credentials') {
