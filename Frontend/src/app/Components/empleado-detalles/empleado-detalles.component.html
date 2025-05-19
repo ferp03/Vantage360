@@ -49,13 +49,13 @@
 
 
         
-        <button
+        <!-- <button
         *ngIf="editandoInfo && esMiPerfil"
         class="boton-cambiar-pass"
         (click)="mostrarModalContrasena = true"
         >
         <span class="material-icons">lock</span> Cambiar contraseña
-      </button>
+      </button> -->
     </div>
     
     <div class="izquierda-habilidades">
@@ -84,6 +84,16 @@
     <div class="derecha"></div> 
   </div>
   <div class="botones"> 
+    <div>
+      <button
+      *ngIf="editandoInfo && esMiPerfil"
+      class="boton-cambiar-pass"
+      (click)="mostrarModalContrasena = true"
+      >
+      <span class="material-icons">lock</span> Cambiar contraseña
+    </button>
+  </div>
+  <div style="display: flex; flex-direction: row; gap: 10px;">
     <button
     class="boton-cancelar"
     *ngIf="editandoInfo && esMiPerfil"
@@ -93,13 +103,14 @@
     Cancelar
   </button>
   <button
-  class="boton-editar"
-  *ngIf="esMiPerfil"
-  (click)="editandoInfo ? guardarCambios() : editandoInfo=true"
-  >
-  <span class="material-icons">{{ editandoInfo ? 'save' : 'edit' }}</span>
-  {{ editandoInfo ? 'Guardar' : 'Editar' }}
+    class="boton-editar"
+    *ngIf="esMiPerfil"
+    (click)="editandoInfo ? guardarCambios() : editandoInfo=true"
+    >
+    <span class="material-icons">{{ editandoInfo ? 'save' : 'edit' }}</span>
+    {{ editandoInfo ? 'Guardar' : 'Editar' }}
   </button>
+  </div>
   </div>
 </div>
 
@@ -321,16 +332,3 @@
     </div>
   </div>
 </div>
-        <!-- <<div *ngIf="editandoIndice === i">
-         
-          <input [(ngModel)]="experiencia.titulo" placeholder="Título" />
-          <textarea [(ngModel)]="experiencia.descripcion" placeholder="Descripción"></textarea>
-          <input [(ngModel)]="experiencia.inicio" placeholder="Fecha de inicio" />
-          <input [(ngModel)]="experiencia.fin" placeholder="Fecha de fin" />
-        </div>
-      </div>
-    </div>
-  </div> -->
-  
-<!-- </div> -->
-
