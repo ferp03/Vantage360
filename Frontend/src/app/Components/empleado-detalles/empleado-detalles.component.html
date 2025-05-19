@@ -34,7 +34,19 @@
 
         <p><strong><span class="material-icons">person</span> People Lead:</strong> {{ info.lead_usuario }}</p>
         <p><strong><span class="material-icons">calendar_today</span> Desde:</strong> {{ info.desde }}</p>
-        <p><strong><span class="material-icons">pin_drop</span> Ciudad:</strong> {{ info.ubicacion }}</p>
+
+
+        <p *ngIf="!editandoInfo">
+          <strong><mat-icon>pin_drop</mat-icon> Ciudad:</strong> {{ nuevaCiudad.nombre || 'No asignada' }}
+        </p>
+
+        <mat-form-field appearance="outline" class="full-width" *ngIf="editandoInfo">
+          <mat-label><mat-icon>pin_drop</mat-icon> Ciudad</mat-label>
+          <mat-select [(ngModel)]="nuevaCiudad">
+            <mat-option *ngFor="let ciudad of ciudades" [value]="ciudad">{{ ciudad.nombre }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
 
         
         <button

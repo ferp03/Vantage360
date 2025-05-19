@@ -22,6 +22,11 @@ interface Capability {
   nombre: string;
 }
 
+interface Ciudades {
+  id: string;
+  nombre: string
+}
+
 interface ErroresExperiencia {
   titulo?: boolean;
   empresa?: boolean;
@@ -74,6 +79,7 @@ export class EmpleadoDetallesComponent implements OnInit {
   certificados: Curso[] = [];
   experiencias: ExperienciaLaboral[] = [];
   capabilities: Capability[] = [];
+  ciudades: Ciudades[] = [];
 
   experienciasOriginales: { [key: number]: ExperienciaLaboral } = {};
   private trayectoriaOriginal: ExperienciaLaboral[] = [];
@@ -97,6 +103,7 @@ export class EmpleadoDetallesComponent implements OnInit {
 
   nuevoEstado: string = '';
   nuevoUsuario: string = '';
+  nuevaCiudad: Ciudades = { id: '', nombre: '' };
 
   private empleadoId: string | null = null;
   esMiPerfil: boolean = false; 
@@ -131,6 +138,7 @@ export class EmpleadoDetallesComponent implements OnInit {
     this.cargarCapabilities().then(() => {
       this.cargarTrayectoria();
     });
+    this.cargarCiudades();
   }
 
   cargarCapabilities(): Promise<void> {
@@ -180,6 +188,7 @@ export class EmpleadoDetallesComponent implements OnInit {
           };
         this.nuevoEstado = this.info.estado_laboral;
         this.nuevoUsuario = this.info.usuario;
+        this.nuevaCiudad = {id: '', nombre: this.info.ubicacion};
 
         }
       },
@@ -209,6 +218,22 @@ export class EmpleadoDetallesComponent implements OnInit {
       },
       error: (err) => console.error('Error al obtener certificaciones:', err)
     });
+  }
+
+  cargarCiudades() {
+    if(!this.empleadoId) return;
+      this.apiService.getCiudades().subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.ciudades = res.data;
+          } else {
+            console.error('Error al cargar ciudades:', res.error);
+          }
+        },
+        error: (err: any) => {
+          console.error('Error al obtener ciudades:', err);
+        }
+      });
   }
 
   cargarTrayectoria() {
@@ -260,49 +285,6 @@ export class EmpleadoDetallesComponent implements OnInit {
     const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES', opciones);
     return fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
   }
-
-// toggleEditarInfo() {
-//   if (!this.esMiPerfil) return;
-
-//   // Si estamos entrando en modo edición, no validamos aún
-//   if (!this.editandoInfo) {
-//     this.editandoInfo = true;
-//     console.log('Entrando a modo edición');
-//     return;
-//   }
-
-//   // Validación solo al intentar guardar
-//   const correoTrim = this.info.correo.trim();
-//   const usuarioTrim = this.info.usuario?.trim() || '';
-
-//   this.erroresInfo.correo = !correoTrim;
-//   this.erroresInfo.usuario = !usuarioTrim;
-//   this.erroresInfo.formatoEmail = correoTrim ? !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoTrim) : false;
-
-//   console.log('Validando campos:', this.erroresInfo);
-
-//   if (this.erroresInfo.correo || this.erroresInfo.usuario || this.erroresInfo.formatoEmail) {
-//     console.warn('Errores encontrados. No se guarda.');
-//     return;
-//   }
-
-//   // Guardar cambios
-//   if (!this.empleadoId) return;
-
-  // this.apiService.updateEmpleadoInfo(this.empleadoId, {
-  //   correo: this.info.correo,
-  //   usuario: this.info.usuario
-  // }).subscribe({
-  //   next: () => {
-  //     console.log('Info básica actualizada');
-  //     this.editandoInfo = false;
-  //   },
-  //   error: (err) => {
-  //     console.error('Error al actualizar info básica:', err);
-  //   }
-  // });
-// }
-
 
   togglePuestoActual(index: number): void {
     const exp = this.experiencias[index];
@@ -681,10 +663,13 @@ export class EmpleadoDetallesComponent implements OnInit {
       return;
     }
 
+    console.log(this.nuevaCiudad);
+
     // Solo enviar los campos que cambiaron
     let datosActualizados: any = {};
     datosActualizados.usuario = this.info.usuario;
     datosActualizados.estado_laboral = this.info.estado_laboral;
+    datosActualizados.ciudad_id = 0;
 
     //Cambiar si hubo cambios
     if (usuarioTrim !== this.info.usuario) {
@@ -693,6 +678,10 @@ export class EmpleadoDetallesComponent implements OnInit {
     }
     if (this.nuevoEstado !== this.info.estado_laboral) {
       datosActualizados.estado_laboral = this.nuevoEstado;
+      cambios = true;
+    }
+    if(this.nuevaCiudad.nombre !== this.info.ubicacion){
+      datosActualizados.ciudad_id = this.nuevaCiudad.id;
       cambios = true;
     }
 

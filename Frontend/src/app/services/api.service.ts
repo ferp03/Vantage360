@@ -89,7 +89,7 @@ export class ApiService {
   }
   
   // Actualizar info básica
-  updateEmpleadoInfo(id: string, datos: { usuario: string, estado_laboral: string }): Observable<any> {
+  updateEmpleadoInfo(id: string, datos: { usuario: string, estado_laboral: string, ciudad_id: number }): Observable<any> {
     return this.http.put(`${this.apiUrl}/empleado/info/${id}`, datos); // actualiza correo y usuario
   }
 
@@ -143,6 +143,10 @@ export class ApiService {
   getCapabilities(): Observable<any> {
     return this.http.get(`${this.apiUrl}/capabilities`);
   } 
+
+  getCiudades(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/ciudades`);
+  }
 
   // actualizarEmpleado(empleadoId: string, datosActualizados: any): Observable<any> {
   //   return this.http.put(`${this.apiUrl}/empleado/cambiar-datos/${empleadoId}`, datosActualizados); // solo cambia estado laboral
