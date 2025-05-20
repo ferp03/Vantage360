@@ -19,12 +19,13 @@ router.get('/empleado/info/:id', async (req, res) => {
       error: 'No se pudo obtener la información del empleado',
     });
   }
-
-  let nombreCompleto = `${data.nombre} ${data.apellido_paterno}`
-  if(data.apellido_materno != null){
-    nombreCompleto += ` ${data.apellido_materno}`;
-  }
   
+  let nombreCompleto = `${data.nombre} ${data.apellido_paterno}`;
+
+  if(data.apellido_materno){
+    nombreCompleto = `${data.nombre} ${data.apellido_paterno} ${data.apellido_materno}`;
+  }
+
   return res.status(200).json({
     success: true,
     data: {
@@ -175,32 +176,27 @@ router.put('/empleado/info/:id', async (req, res) => {
 });
 
 // Validar contraseña actual
-router.get('/empleado/validar-contrasena/:id', async (req, res) => {
+router.post('/empleado/validar-contrasena/:id', async (req, res) => {
   const { id } = req.params;
-  const { actualContrasena } = req.query;
+  const { email, actualContrasena } = req.body;
 
-  if (!actualContrasena) {
-    return res.status(400).json({ success: false, error: 'Contraseña actual requerida' });
-  }
+  console.log(email);
+  console.log(actualContrasena);
+  
 
-  const { data, error } = await supabase
-    .from('empleado')
-    .select('contraseña')
-    .eq('empleado_id', id)
-    .single();
+  // Verificar contraseña con signIn
+  const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+    email,
+    password: actualContrasena
+  });
 
-  if (error || !data) {
-    return res.status(404).json({ success: false, error: 'Empleado no encontrado' });
-  }
-
-  if (data.contraseña !== actualContrasena) {
-    return res.status(401).json({ success: false, error: 'Contraseña incorrecta' });
+  if (loginError) {
+    return res.status(401).json({ success: false, message: 'Contraseña incorrecta' });
   }
 
   return res.status(200).json({ success: true, message: 'Contraseña válida' });
 });
 
-// Cambiar contraseña
 router.put('/empleado/cambiar-contrasena/:id', async (req, res) => {
   const { id } = req.params;
   const { nuevaContrasena } = req.body;
@@ -212,10 +208,9 @@ router.put('/empleado/cambiar-contrasena/:id', async (req, res) => {
     });
   }
 
-  const { error } = await supabase
-    .from('empleado')
-    .update({ contraseña: nuevaContrasena })
-    .eq('empleado_id', id);
+  const { data, error } = await supabase.auth.admin.updateUserById(id, {
+    password: nuevaContrasena
+  });
 
   if (error) {
     console.error('Error al cambiar contraseña:', error.message);
@@ -394,93 +389,63 @@ router.post('/empleado/:id/habilidad', async (req, res) => {
   const { id } = req.params;
   const { nombre, categoria, nivel, descripcion } = req.body;
 
-  if (!nombre || !categoria || !nivel) {
-    return res
-      .status(400)
-      .json({ success: false, error: 'Campos requeridos faltantes' });
-  }
-
-  const nombreNormalizado = nombre.trim();
-
   try {
-    const { data: habilidadExiste, error: errExiste } = await supabase
+    let { data: habilidadExiste, error: errorExiste } = await supabase
       .from('habilidad')
       .select('habilidad_id')
-      .ilike('nombre', nombreNormalizado)   
-      .limit(1)                            
-      .maybeSingle();                       
+      .eq('nombre', nombre)
+      .maybeSingle(); 
 
-    if (errExiste) {                        
-      console.error('Error buscando habilidad:', errExiste);
-      return res
-        .status(500)
-        .json({ success: false, error: 'Error buscando habilidad' });
-    }
-
-    let habilidadId = habilidadExiste?.habilidad_id ?? null;
+    let habilidadId = habilidadExiste ? habilidadExiste.habilidad_id : null;
 
     if (!habilidadId) {
-      const { data: nuevaHab, error: errInsert } = await supabase
+      const { data: nuevaHabilidad, error: errorInsert } = await supabase
         .from('habilidad')
-        .insert([
-          { nombre: nombreNormalizado, categoria, nivel, descripcion }
-        ])
-        .select()       
-        .single();    
+        .insert([{ nombre, categoria, nivel, descripcion }])
+        .select()
+        .single();
 
-      if (errInsert || !nuevaHab) {
-        console.error('Error creando habilidad:', errInsert);
-        return res
-          .status(500)
-          .json({ success: false, error: 'Error creando habilidad' });
+      if (errorInsert || !nuevaHabilidad) {
+        console.error('Error al crear habilidad:', errorInsert);
+        return res.status(500).json({ success: false, error: 'Error creando habilidad' });
       }
-
-      habilidadId = nuevaHab.habilidad_id;
+      habilidadId = nuevaHabilidad.habilidad_id;
     }
 
-    const { data: relExist, error: errRelExiste } = await supabase
+    const { data: relacionExistente, error: errorRelacionExistente } = await supabase
       .from('empleado_habilidad')
       .select('*')
       .eq('empleado_id', id)
       .eq('habilidad_id', habilidadId)
-      .maybeSingle();   
+      .maybeSingle();
 
-    if (errRelExiste) {
-      console.error('Error comprobando relación:', errRelExiste);
-      return res
-        .status(500)
-        .json({ success: false, error: 'Error comprobando relación' });
+    if (relacionExistente) {
+      return res.status(200).json({
+        success: true,
+        data: { habilidad_id: habilidadId, message: 'Habilidad ya asociada al empleado' }
+      });
     }
 
-    if (relExist) {
-      return res
-        .status(409)
-        .json({ success: false, error: 'Habilidad ya existente' });
-    }
-
-    const { error: errRelacion } = await supabase
+    const { error: errorRelacion } = await supabase
       .from('empleado_habilidad')
-      .insert([{ empleado_id: id, habilidad_id: habilidadId }]);
+      .insert([{
+        empleado_id: id,
+        habilidad_id: habilidadId
+      }]);
 
-    if (errRelacion) {
-      console.error('Error al asociar habilidad:', errRelacion);
-      return res
-        .status(500)
-        .json({ success: false, error: 'Error asociando habilidad al empleado' });
+    if (errorRelacion) {
+      console.error('Error al asociar habilidad:', errorRelacion);
+      return res.status(500).json({ success: false, error: 'Error asociando habilidad al empleado' });
     }
 
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
-      data: {
-        habilidad_id: habilidadId,
-        message: 'Habilidad agregada correctamente'
-      }
+      data: { habilidad_id: habilidadId, message: 'Habilidad agregada correctamente' }
     });
-  } catch (err) {
-    console.error('Error inesperado:', err);
+  } catch (error) {
+    console.error('Error inesperado:', error);
     return res.status(500).json({ success: false, error: 'Error en el servidor' });
   }
 });
-
 
 module.exports = router;
