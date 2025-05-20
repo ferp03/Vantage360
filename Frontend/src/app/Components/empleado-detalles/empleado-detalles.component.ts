@@ -158,18 +158,20 @@ export class EmpleadoDetallesComponent implements OnInit {
         this.location.back();
       }
     });
-    this.obtenerCurso(); 
+    
     this.cargarInfoBasica();
     this.cargarHabilidades();
       // Primero cargamos las capabilities, y después la trayectoria
     this.cargarCapabilities().then(() => {
-      this.cargarTrayectoria();  
-    Chart.register(PieController, ArcElement, Tooltip, Legend, Title);
-    Chart.register(BarElement, BarController, ArcElement, Tooltip, Legend, Title, CategoryScale, LinearScale);
-    this.renderizarGraficas();  
-    
+      this.cargarTrayectoria(); 
     });
     this.cargarCiudades();
+    Chart.register(PieController, ArcElement, Tooltip, Legend, Title);
+    Chart.register(BarElement, BarController, ArcElement, Tooltip, Legend, Title, CategoryScale, LinearScale);
+    this.obtenerCurso().then(() => {
+      this.activeChart = "pie2"
+      setTimeout(() => this.renderizarGraficas(), 50); // Aquí va la función que quieres ejecutar después
+    });
   }
   
   cargarCapabilities(): Promise<void> {
@@ -750,8 +752,13 @@ export class EmpleadoDetallesComponent implements OnInit {
   }
 
 
-  obtenerCurso(): void {
-    if (!this.empleadoId) return;
+  obtenerCurso(): Promise<void> {
+  return new Promise<void>((resolve) => {
+    if (!this.empleadoId) {
+      resolve();
+      return;
+    }
+
     this.apiService.obtenerCursosEmpleado(this.empleadoId).subscribe({
       next: (res) => {
         if (res.success) {
@@ -760,12 +767,17 @@ export class EmpleadoDetallesComponent implements OnInit {
         } else {
           console.error('Error al cargar cursos:', res.error);
         }
+        resolve(); // se resuelve sin importar si hay error lógico
       },
       error: (err) => {
         console.error('Error al obtener cursos:', err);
+        resolve(); // también se resuelve aunque haya error técnico
       }
     });
-  }
+    this.crearGraficaPie2(this.progresoPromedio, 100 - this.progresoPromedio);
+  });
+  
+}
 
   get progresoPromedio(): number {
   if (!this.cursos || this.cursos.length === 0) return 0;
