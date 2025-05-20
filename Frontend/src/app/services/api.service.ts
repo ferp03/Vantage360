@@ -148,6 +148,10 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/ciudades`);
   }
 
+  getLeads(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/leads`);
+  }
+
   // actualizarEmpleado(empleadoId: string, datosActualizados: any): Observable<any> {
   //   return this.http.put(`${this.apiUrl}/empleado/cambiar-datos/${empleadoId}`, datosActualizados); // solo cambia estado laboral
   // }

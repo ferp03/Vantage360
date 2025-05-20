@@ -56,4 +56,18 @@ router.get('/capabilities', async (req, res) => {
 });
 
 
+router.get('/leads', async (req, res) => {
+  try{
+    const { data, error } = await supabase.rpc('get_people_leads')
+    if(error){
+      return res.status(400).json({success: false, error: error});
+    }
+
+    return res.status(200).json({success: true, data: data});
+
+  } catch (err){
+    return res.status(500).json({success: false, error: 'Error del servidor: ', err});
+  }
+})
+
 module.exports = router;
