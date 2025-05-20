@@ -863,7 +863,7 @@ async crearGraficaPie2(progresoPromedio: number , percent: number): Promise<void
           legend: { display: false },
           title: {
             display: true,
-            text: '% de Progreso de Cursos',
+            text: 'Progreso de Cursos (%)',
             color: '#0000000',
             font: { size: 20 },
             
