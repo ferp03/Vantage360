@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
+import { ReporteService } from 'src/app/services/reporte.service';
 
 @Component({
   selector: 'app-disponibilidad',
@@ -39,7 +40,8 @@ export class DisponibilidadComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private reporteService: ReporteService,
   ) {}
 
   ngOnInit(): void {
@@ -200,6 +202,15 @@ export class DisponibilidadComponent implements OnInit {
     this.empleadoSeleccionado = null;
     this.nuevoEstado = '';
     this.nuevaCargabilidad = null;
+  }
+
+  generarReporteCargabilidad(): void {
+  if (this.empleadosFiltrados.length === 0) {
+    this.error = 'No hay empleados para generar el reporte';
+    return;
+  }
+  
+    this.reporteService.generarReporteCargabilidad(this.empleadosFiltrados);
   }
 
   // Paginación

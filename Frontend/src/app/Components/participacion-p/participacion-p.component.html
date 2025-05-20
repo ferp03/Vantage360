@@ -2,13 +2,13 @@
 <div class="participacion-container">
   <main class="participacion-content">
     <div class="tabs-container">
-    <div class="add-project-container" *ngIf="showAddProjectButton()">
-        <button class="btn-add-project" (click)="openAddProjectModal()">
+        <div class="add-project-container" *ngIf="showAddProjectButton()">
+            <button class="btn-add-project" (click)="openAddProjectModal()">
             <span class="material-icons">add</span>
-            Añadir Proyecto
-        </button>
-    </div>
-      <!-- headers -->
+                Añadir Proyecto
+            </button>
+        </div>
+      <!-- Proyectos headers -->
       <div class="tabs-header">
         <div class="tab-button" 
              [class.active]="activeTab === 'disponibles'" 
@@ -29,24 +29,213 @@
 
       <!-- pestañas -->
       <div class="tab-content">
-        <!-- Pestaña 1 -->
+        <!-- Pestaña 1: Proyectos disponibles -->
         <div class="tab-pane" [class.active]="activeTab === 'disponibles'">
-          <div class="skills-box">
-            <!-- contenido -->
+          <div class="projects-container">
+            <div class="projects-grid">
+              <!-- Tarjeta de proyecto 1 -->
+              <div class="project-card">
+                <div class="project-header">
+                  <h3>Desarrollo de App Móvil</h3>
+                  <div class="project-status">
+                    <span class="chip-activo">Activo</span>
+                  </div>
+                </div>
+                
+                <div class="project-dates">
+                  <div class="date-label">
+                    <div><strong>Inicio:</strong> 15/05/2025</div>
+                  </div>
+                  <div class="date-label">
+                    <div><strong>Fin estimado:</strong> 30/08/2025</div>
+                  </div>
+                </div>
+                
+                <div class="project-description">
+                  <div class="description-title">
+                    <span class="material-icons">info</span> Descripción:
+                  </div>
+                  <div>Desarrollo de aplicación móvil para gestión de tareas con integración de IA.</div>
+                </div>
+                
+                <div class="project-skills">
+                  <div class="skills-title">
+                    <span class="material-icons">construction</span> Habilidades requeridas:
+                  </div>
+                  <div class="skills-tags">
+                    <span class="skill-tag">React Native</span>
+                    <span class="skill-tag">Node.js</span>
+                    <span class="skill-tag">IA</span>
+                  </div>
+                </div>
+                
+                <div class="project-actions">
+                  <button class="btn-participate">
+                    <span class="material-icons">group_add</span>
+                    Participar
+                  </button>
+                  <button class="btn-details">
+                    <span class="material-icons">visibility</span>
+                    Detalles
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Tarjeta de proyecto 2 -->
+              <div class="project-card">
+                <div class="project-header">
+                  <h3>Migración a la Nube</h3>
+                  <div class="project-status">
+                    <span class="chip-pronto">Próximo</span>
+                  </div>
+                </div>
+                
+                <div class="project-dates">
+                  <div class="date-label">
+                    <div><strong>Inicio:</strong> 01/06/2025</div>
+                  </div>
+                </div>
+                
+                <div class="project-description">
+                  <div class="description-title">
+                    <span class="material-icons">info</span> Descripción:
+                  </div>
+                  <div>Migración de sistemas legacy a infraestructura cloud AWS.</div>
+                </div>
+                
+                <div class="project-skills">
+                  <div class="skills-title">
+                    <span class="material-icons">construction</span> Habilidades requeridas:
+                  </div>
+                  <div class="skills-tags">
+                    <span class="skill-tag">AWS</span>
+                    <span class="skill-tag">Docker</span>
+                    <span class="skill-tag">CI/CD</span>
+                  </div>
+                </div>
+                
+                <div class="project-actions">
+                  <button class="btn-participate">
+                    <span class="material-icons">group_add</span>
+                    Participar
+                  </button>
+                  <button class="btn-details">
+                    <span class="material-icons">visibility</span>
+                    Detalles
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         
-        <!-- Pestaña  -->
+        <!-- Pestaña 2: Proyectos actuales -->
         <div class="tab-pane" [class.active]="activeTab === 'actuales'">
-          <div class="skills-box">
-            <!-- contenido -->
+          <div class="projects-container">
+            <div class="projects-grid">
+              <!-- Tarjeta de proyecto 1 -->
+              <div class="project-card">
+                <div class="project-header">
+                  <h3>Plataforma de E-learning</h3>
+                  <div class="project-status">
+                    <span class="chip-activo">Activo</span>
+                  </div>
+                </div>
+                
+                <div class="project-dates">
+                  <div class="date-label">
+                    <div><strong>Inicio:</strong> 10/04/2025</div>
+                  </div>
+                  <div class="date-label">
+                    <div><strong>Fin estimado:</strong> 15/09/2025</div>
+                  </div>
+                </div>
+                
+                <div class="project-description">
+                  <div class="description-title">
+                    <span class="material-icons">info</span> Descripción:
+                  </div>
+                  <div>Desarrollo de plataforma educativa con cursos interactivos y seguimiento de progreso.</div>
+                </div>
+                
+                <div class="project-skills">
+                  <div class="skills-title">
+                    <span class="material-icons">construction</span> Habilidades requeridas:
+                  </div>
+                  <div class="skills-tags">
+                    <span class="skill-tag">React</span>
+                    <span class="skill-tag">MongoDB</span>
+                    <span class="skill-tag">GraphQL</span>
+                  </div>
+                </div>
+                
+                <div class="project-actions">
+                  <button class="btn-participate" disabled>
+                    <span class="material-icons">check_circle</span>
+                    En curso
+                  </button>
+                  <button class="btn-details">
+                    <span class="material-icons">visibility</span>
+                    Detalles
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         
-        <!-- Pestaña  -->
+        <!-- Pestaña 3: Proyectos pasados -->
         <div class="tab-pane" [class.active]="activeTab === 'pasados'">
-          <div class="skills-box">
-            <!-- contenido -->
+          <div class="projects-container">
+            <div class="projects-grid">
+              <!-- Tarjeta de proyecto 1 -->
+              <div class="project-card">
+                <div class="project-header">
+                  <h3>Rediseño de Sitio Web</h3>
+                  <div class="project-status">
+                    <span class="chip-finalizado">Finalizado</span>
+                  </div>
+                </div>
+                
+                <div class="project-dates">
+                  <div class="date-label">
+                    <div><strong>Inicio:</strong> 01/02/2025</div>
+                  </div>
+                  <div class="date-label">
+                    <div><strong>Fin:</strong> 30/03/2025</div>
+                  </div>
+                </div>
+                
+                <div class="project-description">
+                  <div class="description-title">
+                    <span class="material-icons">info</span> Descripción:
+                  </div>
+                  <div>Rediseño completo del sitio web corporativo con enfoque en experiencia de usuario.</div>
+                </div>
+                
+                <div class="project-skills">
+                  <div class="skills-title">
+                    <span class="material-icons">construction</span> Habilidades requeridas:
+                  </div>
+                  <div class="skills-tags">
+                    <span class="skill-tag">UI/UX</span>
+                    <span class="skill-tag">Vue.js</span>
+                    <span class="skill-tag">SCSS</span>
+                  </div>
+                </div>
+                
+                <div class="project-actions">
+                  <button class="btn-participate" disabled>
+                    <span class="material-icons">lock</span>
+                    Finalizado
+                  </button>
+                  <button class="btn-details">
+                    <span class="material-icons">visibility</span>
+                    Detalles
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

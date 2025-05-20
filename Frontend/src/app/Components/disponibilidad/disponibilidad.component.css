@@ -27,6 +27,26 @@
   color: hsl(var(--foreground));
 }
 
+/* Botón de reporte */
+.btn-reporte {
+  padding: 8px 15px;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: auto; /* Esto lo empuja a la derecha */
+  margin-right: 16.5px;
+  margin-top: auto;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  height: 45px; /* Misma altura que el buscador */
+  transition: all 0.2s ease;
+}
+
 /* Filtros avanzados */
 .filtros-avanzados {
   display: flex;
