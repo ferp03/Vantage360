@@ -89,8 +89,8 @@ export class ApiService {
   }
   
   // Actualizar info básica
-  updateEmpleadoInfo(id: string, datos: { correo: string; usuario: string }): Observable<any> {
-    return this.http.put(`${this.apiUrl}/empleado/info/${id}`, datos);
+  updateEmpleadoInfo(id: string, datos: { usuario: string, estado_laboral: string, ciudad_id: number }): Observable<any> {
+    return this.http.put(`${this.apiUrl}/empleado/info/${id}`, datos); // actualiza correo y usuario
   }
 
   // CREAR nueva experiencia
@@ -139,14 +139,18 @@ export class ApiService {
   agregarHabilidad(empleadoId: string, datos: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/empleado/${empleadoId}/habilidad`, datos);
   } 
-  // Añadir este método a api.service.ts
+
   getCapabilities(): Observable<any> {
     return this.http.get(`${this.apiUrl}/capabilities`);
   } 
 
-  actualizarEmpleado(empleadoId: string, datosActualizados: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/empleado/cambiar-datos/${empleadoId}`, datosActualizados);
+  getCiudades(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/ciudades`);
   }
+
+  // actualizarEmpleado(empleadoId: string, datosActualizados: any): Observable<any> {
+  //   return this.http.put(`${this.apiUrl}/empleado/cambiar-datos/${empleadoId}`, datosActualizados); // solo cambia estado laboral
+  // }
 
   // Crear nuevo curso con archivo 
   crearCurso(empleadoId: string, formData: FormData): Observable<any> {
@@ -173,8 +177,13 @@ export class ApiService {
   return this.http.delete(`${this.apiUrl}/certificado/${certificacionId}`);
 }
 
-// Editar Curso
-editarCurso(empleadoId: string, cursoId: string, formData: FormData): Observable<any> {
-  return this.http.put(`${this.apiUrl}/empleado/${empleadoId}/curso/${cursoId}`, formData);
-}
-}
+  // Editar Curso
+  editarCurso(empleadoId: string, cursoId: string, formData: FormData): Observable<any> {
+    return this.http.put(`${this.apiUrl}/empleado/${empleadoId}/curso/${cursoId}`, formData);
+  }
+ 
+  //Subir proyecto
+  subirProyecto(json: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/proyecto`, json);
+  }
+} 

@@ -39,13 +39,20 @@ export class LoginComponent {
             this.router.navigate(['/cursos_certificados']);
           }
         } else {
-          this.mensaje = response.error;
+          this.mensaje = response.error === 'Invalid login credentials' ? 
+            'Credenciales de inicio de sesión inválidas' : 
+            response.error;
           console.log(this.mensaje);
         }
       },
       error: (err) => {
-        // Este bloque se activa si el backend devuelve 401 u otro error de red
         this.mensaje = err.error?.error || 'Ingresar correctamente el correo y contraseña';
+        console.log(this.mensaje);
+        if (err.error?.error === 'Invalid login credentials') {
+          this.mensaje = 'Credenciales de inicio de sesión inválidas';
+        } else {
+          this.mensaje = err.error?.error || 'Ingresar correctamente el correo y contraseña';
+        }
         console.log(this.mensaje);
       }
     });

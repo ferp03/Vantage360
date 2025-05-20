@@ -6,27 +6,52 @@
     <div class="izquierda" [ngClass]="{ 'modo-edicion': editandoInfo }">
       <div class="izquierda-superior">
         <p><strong><span class="material-icons">email</span> </strong> {{ info.correo }}</p>
-        <p><strong><span class="material-icons">person</span> Usuario:</strong> {{ info.usuario }}</p>
-        <p>
-          <strong><span class="material-icons">notifications</span> Estado Laboral: </strong>
-          <span *ngIf="!editandoInfo">{{ nuevoEstado | titlecase }}</span>
-          <select *ngIf="editandoInfo" [(ngModel)]="nuevoEstado">
-            <option value="banca">Banca</option>
-            <option value="activo">Activo</option>
-            <option value="vacaciones">Vacaciones</option>
-          </select>
+
+        <mat-form-field appearance="outline" class="full-width" *ngIf="editandoInfo">
+          <mat-label><mat-icon>person</mat-icon> Usuario</mat-label>
+          <input matInput [(ngModel)]="nuevoUsuario" required />
+          <mat-error *ngIf="erroresInfo.usuario">Campo obligatorio</mat-error>
+        </mat-form-field>
+
+        <p *ngIf="!editandoInfo">
+          <strong><mat-icon>person</mat-icon> Usuario:</strong> {{ nuevoUsuario || 'No asignado' }}
         </p>
+
+
+        <p *ngIf="!editandoInfo">
+          <strong><mat-icon>notifications</mat-icon> Estado Laboral:</strong> {{ nuevoEstado | titlecase }}
+        </p>
+
+        <mat-form-field appearance="outline" class="full-width" *ngIf="editandoInfo">
+          <mat-label><mat-icon>notifications</mat-icon> Estado Laboral</mat-label>
+          <mat-select [(ngModel)]="nuevoEstado">
+            <mat-option value="banca">Banca</mat-option>
+            <mat-option value="activo">Activo</mat-option>
+            <mat-option value="vacaciones">Vacaciones</mat-option>
+          </mat-select>
+        </mat-form-field>
+
         <p><strong><span class="material-icons">person</span> People Lead:</strong> {{ info.lead_usuario }}</p>
         <p><strong><span class="material-icons">calendar_today</span> Desde:</strong> {{ info.desde }}</p>
-        <p><strong><span class="material-icons">pin_drop</span> Ciudad:</strong> {{ info.ubicacion }}</p>
         
-        <button
+        <p *ngIf="!editandoInfo">
+          <strong><mat-icon>pin_drop</mat-icon> Ciudad:</strong> {{ nuevaCiudad.nombre || 'No asignada' }}
+        </p>
+
+        <mat-form-field appearance="outline" class="full-width" *ngIf="editandoInfo">
+          <mat-label><mat-icon>pin_drop</mat-icon> Ciudad</mat-label>
+          <mat-select [(ngModel)]="nuevaCiudad">
+            <mat-option *ngFor="let ciudad of ciudades" [value]="ciudad">{{ ciudad.nombre }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <!-- <button
         *ngIf="editandoInfo && esMiPerfil"
         class="boton-cambiar-pass"
         (click)="mostrarModalContrasena = true"
         >
         <span class="material-icons">lock</span> Cambiar contraseña
-      </button>
+      </button> -->
     </div>
     
     <div class="izquierda-habilidades">
@@ -55,22 +80,33 @@
     <div class="derecha"></div> 
   </div>
   <div class="botones"> 
+    <div>
+      <button
+      *ngIf="editandoInfo && esMiPerfil"
+      class="boton-cambiar-pass"
+      (click)="mostrarModalContrasena = true"
+      >
+      <span class="material-icons">lock</span> Cambiar contraseña
+    </button>
+  </div>
+  <div style="display: flex; flex-direction: row; gap: 10px;">
     <button
     class="boton-cancelar"
     *ngIf="editandoInfo && esMiPerfil"
-    (click)="cancelarEdicion()"
+    (click)="cancelarEdicion(1)"
     >
     <span class="material-icons">cancel</span>
     Cancelar
   </button>
   <button
-  class="boton-editar"
-  *ngIf="esMiPerfil"
-  (click)="editandoInfo ? guardarCambios() : toggleEditarInfo()"
-  >
-  <span class="material-icons">{{ editandoInfo ? 'save' : 'edit' }}</span>
-  {{ editandoInfo ? 'Guardar' : 'Editar' }}
+    class="boton-editar"
+    *ngIf="esMiPerfil"
+    (click)="editandoInfo ? guardarCambios() : editandoInfo=true"
+    >
+    <span class="material-icons">{{ editandoInfo ? 'save' : 'edit' }}</span>
+    {{ editandoInfo ? 'Guardar' : 'Editar' }}
   </button>
+  </div>
   </div>
 </div>
 
@@ -280,8 +316,8 @@
       <div class="botones"> 
         <button
         class="boton-cancelar"
-        *ngIf="editandoInfo && esMiPerfil"
-        (click)="cancelarEdicion()"
+        *ngIf="editandoTrayectoria && esMiPerfil"
+        (click)="cancelarEdicion(2)"
         >
         <span class="material-icons">cancel</span>
         Cancelar
@@ -289,10 +325,10 @@
       <button
       class="boton-editar"
       *ngIf="esMiPerfil"
-      (click)="editandoInfo" ? guardarTrayectoria() 
+      (click)="editandoTrayectoria" ? guardarTrayectoria() 
       >
-      <span class="material-icons">{{ editandoInfo ? 'save' : 'edit' }}</span>
-      {{ editandoInfo ? 'Guardar' : 'Editar' }}
+      <span class="material-icons">{{ editandoTrayectoria ? 'save' : 'edit' }}</span>
+      {{ editandoTrayectoria ? 'Guardar' : 'Editar' }}
       </button>
       </div>
     </div>
@@ -337,16 +373,3 @@
     </div>
   </div>
 </div>
-        <!-- <<div *ngIf="editandoIndice === i">
-         
-          <input [(ngModel)]="experiencia.titulo" placeholder="Título" />
-          <textarea [(ngModel)]="experiencia.descripcion" placeholder="Descripción"></textarea>
-          <input [(ngModel)]="experiencia.inicio" placeholder="Fecha de inicio" />
-          <input [(ngModel)]="experiencia.fin" placeholder="Fecha de fin" />
-        </div>
-      </div>
-    </div>
-  </div> -->
-  
-<!-- </div> -->
-

@@ -7,8 +7,9 @@
                 <img src="assets/logo_accenture.svg" class="logo">
                 <!-- Añadir enlace a disponibilidad, solo visible para administradores -->
                 <li *ngIf="esAdmin()"><a routerLink="/empleados" routerLinkActive="active">Empleados</a></li>
+
                 <li><a routerLink="/cursos_certificados" routerLinkActive="active">Cursos y Certificaciones</a></li>
-                <li><a routerLink="/registro-habilidades" routerLinkActive="active">Registrar Habilidades</a></li>
+                <!-- <li><a routerLink="/registro-habilidades" routerLinkActive="active">Registrar Habilidades</a></li> -->
             </ul>
         </nav>
     </div>
@@ -17,6 +18,7 @@
             <button class="avatar-button" (click)="toggleMenu()">{{ username?.[0] || "A" }}</button>
             <div class="dropdown-content" *ngIf="menuAbierto">
                 <a (click)="menuAbierto=false" routerLink="/empleado-detalles/{{empleadoId}}">Mi perfil</a>
+                <a *ngIf="esAdmin()" (click)="menuAbierto=false" routerLink="/crear-cuenta">Crear cuenta</a>
                 <hr>
                 <a (click)="logout()">Log out</a>
             </div>

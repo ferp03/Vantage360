@@ -28,7 +28,10 @@
               "@angular/material/prebuilt-themes/deeppurple-amber.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "@supabase/realtime-js"
+            ]
           },
           "configurations": {
             "production": {

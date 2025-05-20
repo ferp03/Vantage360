@@ -20,7 +20,10 @@ router.get('/empleado/info/:id', async (req, res) => {
     });
   }
 
-  const nombreCompleto = `${data.nombre} ${data.apellido_paterno} ${data.apellido_materno}`;
+  let nombreCompleto = `${data.nombre} ${data.apellido_paterno}`
+  if(data.apellido_materno != null){
+    nombreCompleto += ` ${data.apellido_materno}`;
+  }
   
   return res.status(200).json({
     success: true,
@@ -98,34 +101,6 @@ router.get('/empleado/:id/certificaciones', async (req, res) => {
   });
 });
 
-// obtener capabilities
-router.get('/capabilities', async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from('capability')
-      .select('capability_id, nombre')
-      .order('nombre');
-
-    if (error) {
-      console.error('Error al obtener capabilities:', error.message);
-      return res.status(500).json({ success: false, error: 'No se pudieron obtener las capabilities' });
-    }
-
-    // Transformar los datos para que coincidan con lo que espera el frontend
-    const transformedData = data.map(item => ({
-      id: item.capability_id,  // Mapear capability_id a id
-      nombre: item.nombre
-    }));
-
-    return res.status(200).json({
-      success: true,
-      data: transformedData
-    });
-  } catch (err) {
-    console.error('Error inesperado:', err);
-    return res.status(500).json({ success: false, error: 'Error del servidor' });
-  }
-});
 // Obtener trayectoria laboral 
 router.get('/empleado/:id/trayectoria', async (req, res) => {
   const { id } = req.params;
@@ -162,20 +137,38 @@ router.get('/empleado/:id/trayectoria', async (req, res) => {
 // Actualizar info básica 
 router.put('/empleado/info/:id', async (req, res) => {
   const { id } = req.params;
-  const { correo, usuario } = req.body;
+  const { usuario, estado_laboral, ciudad_id } = req.body;
 
-  if (!correo || !usuario) {
+  if (!estado_laboral || !usuario || !ciudad_id) {
     return res.status(400).json({ success: false, error: 'Faltan campos requeridos' });
+  }
+
+  // verificar que el usuario no exista
+  const { data: existeUsuario } = await supabase
+    .from('empleado')
+    .select('usuario')
+    .eq('usuario', usuario)
+    .neq('empleado_id', id)
+    .maybeSingle();
+  
+  if(existeUsuario) {
+    console.log('usuario existente');
+    return res.status(400).json({success: false, error: 'El usuario ya existe, eliga otro.'});
+  }
+
+  let updateFields = { usuario, estado_laboral };
+  if (ciudad_id !== 0) {
+    updateFields.ciudad_id = ciudad_id;
   }
 
   const { error } = await supabase
     .from('empleado')
-    .update({ correo, usuario })
+    .update(updateFields)
     .eq('empleado_id', id);
 
   if (error) {
     console.error('Error al actualizar empleado:', error.message);
-    return res.status(500).json({ success: false, error: 'Error al actualizar empleado' });
+    return res.status(400).json({ success: false, error: 'Error al actualizar empleado' });
   }
 
   res.status(200).json({ success: true, message: 'Información actualizada correctamente' });
