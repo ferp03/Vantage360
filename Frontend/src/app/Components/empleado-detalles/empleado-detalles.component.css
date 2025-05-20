@@ -579,42 +579,42 @@
 }
 
 .chart-container {
-  width: 80%;
-  margin: 10px auto; /* Centrado horizontal y espacio vertical */
-  padding: 10px;
+  width: auto;
   background-color: #f7f7f7;
   border-radius: 10px;
+  min-height: 300px;
+  min-width: 550px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
 }
 
 #pieChart {
-  width: 300px !important;
+  width: auto !important;
   height: 300px !important;
   display: block;
-  margin-left: 10%
 }
 
 #pieChart2 {
-  width: 300px !important;
+  width: auto !important;
   height: 300px !important;
   display: block;
-  margin-left: 10%
 }
 
 #barChart {
-  width: 400px !important;
+  width: auto !important;
   height: 300px !important;
-  display: block;
-  margin-left: -7%
-  
+  display: block;  
 }
 
 .chart-chips {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
-  transform: translateX(-20px);
 }
 
 .chart-chip {

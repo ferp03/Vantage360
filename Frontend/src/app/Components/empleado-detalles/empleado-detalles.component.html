@@ -131,7 +131,7 @@
     </div>
     <div class="derecha">
       
-      <ul *ngIf="cursos.length > 0">
+      <div *ngIf="cursos.length > 0">
         <div class="chart-chips">
           <button 
             class="chart-chip" 
@@ -160,7 +160,7 @@
           <canvas id="pieChart2" [style.display]="activeChart === 'pie2' ? 'block' : 'none'"></canvas>
           <canvas id="barChart" [style.display]="activeChart === 'bar' ? 'block' : 'none'"></canvas>
         </div>
-      </ul>
+      </div>
       
       <!-- Mostrar mensaje si NO hay cursos -->
       <ng-container *ngIf="cursos.length === 0">
