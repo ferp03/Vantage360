@@ -5,7 +5,6 @@
   <div class="caja-info-superior">
     <div class="izquierda" [ngClass]="{ 'modo-edicion': editandoInfo }">
       <div class="izquierda-superior">
-        
         <p><strong><span class="material-icons">email</span> </strong> {{ info.correo }}</p>
 
         <mat-form-field appearance="outline" class="full-width" *ngIf="editandoInfo">
@@ -34,8 +33,7 @@
 
         <p><strong><span class="material-icons">person</span> People Lead:</strong> {{ info.lead_usuario }}</p>
         <p><strong><span class="material-icons">calendar_today</span> Desde:</strong> {{ info.desde }}</p>
-
-
+        
         <p *ngIf="!editandoInfo">
           <strong><mat-icon>pin_drop</mat-icon> Ciudad:</strong> {{ nuevaCiudad.nombre || 'No asignada' }}
         </p>
@@ -46,8 +44,6 @@
             <mat-option *ngFor="let ciudad of ciudades" [value]="ciudad">{{ ciudad.nombre }}</mat-option>
           </mat-select>
         </mat-form-field>
-
-
         
         <!-- <button
         *ngIf="editandoInfo && esMiPerfil"
@@ -129,9 +125,54 @@
         <p><strong><span class="material-icons">assignment</span> Proyecto Actual:</strong> {{ info.titulo_proyecto }}</p>
         <p><strong><span class="material-icons">person</span> Puesto:</strong> {{ info.capability_proyecto }}</p>
         <p><strong><span class="material-icons">calendar_today</span> Fecha de Inicio:</strong> {{ info.fecha_inicio }}</p>
+        <p><strong><span class="material-icons">book</span> Cantidad de Cursos:</strong> {{ cursos.length }}</p>
+
       </div>
     </div>
-    <div class="derecha"></div>
+    <div class="derecha">
+      
+      <ul *ngIf="cursos.length > 0">
+        <div class="chart-chips">
+          <button 
+            class="chart-chip" 
+            [ngClass]="{'active': activeChart === 'pie1'}" 
+            (click)="changeActiveChart('pie1')">
+            <span class="material-icons">pie_chart</span>
+            Cursos por Tipo
+          </button>
+          <button 
+            class="chart-chip" 
+            [ngClass]="{'active': activeChart === 'pie2'}" 
+            (click)="changeActiveChart('pie2')">
+            <span class="material-icons">donut_large</span>
+            Progreso Promedio
+          </button>
+          <button 
+            class="chart-chip" 
+            [ngClass]="{'active': activeChart === 'bar'}" 
+            (click)="changeActiveChart('bar')">
+            <span class="material-icons">bar_chart</span>
+            Progreso por Curso
+          </button>
+        </div>
+        <div class="chart-container">
+          <canvas id="pieChart" [style.display]="activeChart === 'pie1' ? 'block' : 'none'"></canvas>
+          <canvas id="pieChart2" [style.display]="activeChart === 'pie2' ? 'block' : 'none'"></canvas>
+          <canvas id="barChart" [style.display]="activeChart === 'bar' ? 'block' : 'none'"></canvas>
+        </div>
+      </ul>
+      
+      <!-- Mostrar mensaje si NO hay cursos -->
+      <ng-container *ngIf="cursos.length === 0">
+        <p *ngIf="esMiPerfil">
+          No hay cursos registrados. <br/> Te ayudamos a encontrar un curso →
+        </p>
+        <p *ngIf="!esMiPerfil">
+          Este usuario no tiene cursos registrados.
+        </p>
+      </ng-container>
+
+      </div>
   </div>
 </div>
   

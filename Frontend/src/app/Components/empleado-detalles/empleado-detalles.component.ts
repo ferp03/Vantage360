@@ -3,6 +3,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Location } from '@angular/common';
+import {
+  Chart,
+  PieController,
+  BarElement,
+  BarController,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale, 
+  Title
+} from 'chart.js';
+
 
 interface ExperienciaLaboral {
   historial_id?: number;
@@ -37,9 +50,17 @@ interface ErroresExperiencia {
   fechaInvalida?: boolean;
 }
 
-interface Curso {
+interface Ceritifcado {
   nombre: string;
   plataforma: string;
+}
+
+interface Curso {
+  nombre: string;
+  fecha_emision: string;
+  fecha_vencimiento: string;
+  progreso: string;
+  obligatorio: boolean;
 }
 
 @Component({
@@ -69,14 +90,21 @@ export class EmpleadoDetallesComponent implements OnInit {
     capability_proyecto: ' '
   };
 
+  pieChart: Chart | null = null;
+  pieChart2: Chart | null = null;
+  barChart: Chart | null = null;
+
   erroresInfo = {
     correo: false,
     usuario: false,
     formatoEmail: false,
   };
 
+
+  activeChart = "pie2";  
   habilidades: string[] = [];
-  certificados: Curso[] = [];
+  certificados: Ceritifcado[] = [];
+  cursos: Curso[] = [];
   experiencias: ExperienciaLaboral[] = [];
   capabilities: Capability[] = [];
   ciudades: Ciudades[] = [];
@@ -130,17 +158,20 @@ export class EmpleadoDetallesComponent implements OnInit {
         this.location.back();
       }
     });
-  
+    this.obtenerCurso(); 
     this.cargarInfoBasica();
     this.cargarHabilidades();
-      
       // Primero cargamos las capabilities, y después la trayectoria
     this.cargarCapabilities().then(() => {
-      this.cargarTrayectoria();
+      this.cargarTrayectoria();  
+    Chart.register(PieController, ArcElement, Tooltip, Legend, Title);
+    Chart.register(BarElement, BarController, ArcElement, Tooltip, Legend, Title, CategoryScale, LinearScale);
+    this.renderizarGraficas();  
+    
     });
     this.cargarCiudades();
   }
-
+  
   cargarCapabilities(): Promise<void> {
     return new Promise<void>((resolve) => {
       this.apiService.getCapabilities().subscribe({
@@ -534,7 +565,6 @@ export class EmpleadoDetallesComponent implements OnInit {
 
   }
     
-
   agregarExperiencia() {
     if (!this.esMiPerfil) return;
     
@@ -719,12 +749,193 @@ export class EmpleadoDetallesComponent implements OnInit {
     });
   }
 
+
+  obtenerCurso(): void {
+    if (!this.empleadoId) return;
+    this.apiService.obtenerCursosEmpleado(this.empleadoId).subscribe({
+      next: (res) => {
+        if (res.success) {
+          console.log('Respuesta completa de cursos:', res);
+          this.cursos = res.data;
+        } else {
+          console.error('Error al cargar cursos:', res.error);
+        }
+      },
+      error: (err) => {
+        console.error('Error al obtener cursos:', err);
+      }
+    });
+  }
+
+  get progresoPromedio(): number {
+  if (!this.cursos || this.cursos.length === 0) return 0;
+
+  const total = this.cursos.reduce((sum, curso) => sum + Number(curso.progreso), 0);
+  return total / this.cursos.length;
+  }
+
+  get cantidadCursosObligatorios(): number {
+    return this.cursos.filter(curso => curso.obligatorio).length;
+  }
+
+  get cantidadCursosNoObligatorios(): number {
+    return this.cursos.filter(curso => !curso.obligatorio).length;
+  }
+
+  obtenerNombresCursos(): string[] {
+  return this.cursos.map(curso => curso.nombre);
+  }
+
+  obtenerProgresoCursos(): number[] {
+    return this.cursos.map(curso => Number(curso.progreso));
+  }
+
+
+  async crearGraficaPie(cantidadObligatorios: number, cantidadNoObligatorios: number): Promise<void> {
+  const canvas = document.getElementById('pieChart') as HTMLCanvasElement;
+  if (!canvas) {
+    console.error('No se encontró el canvas con id pieChart');
+    return;
+  }
+
+  if (this.pieChart) {
+    this.pieChart.data.datasets[0].data = [cantidadObligatorios, cantidadNoObligatorios];
+    this.pieChart.update();
+  } else {
+    this.pieChart = new Chart(canvas, {
+      type: 'pie',
+      data: {
+        labels: ['Obligatorios', 'No Obligatorios'],
+        datasets: [{
+          data: [cantidadObligatorios, cantidadNoObligatorios],
+          backgroundColor: ['#9668e6', '#818181']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Cursos Obligatorios y No Obligatorios',
+            color: '#0000000',
+            font: { size: 20 }
+          }
+        }
+      }
+    });
+  }
+}
+
+async crearGraficaPie2(progresoPromedio: number , percent: number): Promise<void> {
+  const canvas = document.getElementById('pieChart2') as HTMLCanvasElement;
+  if (!canvas) {
+    console.error('No se encontró el canvas con id pieChart2');
+    return;
+  }
+
+  if (this.pieChart2) {
+    this.pieChart2.data.datasets[0].data = [progresoPromedio, percent];
+    this.pieChart2.update();
+  } else {
+    this.pieChart2 = new Chart(canvas, {
+      type: 'pie',
+      data: {
+        labels: ['Completado', 'No Completado'],
+        datasets: [{
+          data: [progresoPromedio, percent],
+          backgroundColor: ['#9668e6', '#818181']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Progreso Promedio de Cursos',
+            color: '#0000000',
+            font: { size: 20 }
+          }
+        }
+      }
+    });
+  }
+}
+
+  async crearGraficaBarra(obtenerProgresoCursos: Array<number>): Promise<void> {
+  const canvas = document.getElementById('barChart') as HTMLCanvasElement;
+  if (!canvas) {
+    console.error('No se encontró el canvas con id barChart');
+    return;
+  }
+
+  const etiquetas = this.obtenerNombresCursos();
+
+  if (this.barChart) {
+    this.barChart.data.labels = etiquetas;
+    this.barChart.data.datasets[0].data = obtenerProgresoCursos;
+    this.barChart.update();
+  } else {
+    this.barChart = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: etiquetas,
+        datasets: [{
+          label: 'Cursos',
+          data: obtenerProgresoCursos,
+          backgroundColor: ['#9668e6', '#818181']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'Progreso de Cursos (%)',
+            color: '#0000000',
+            font: { size: 20 },
+            
+          }
+        }
+      }
+    });
+  }
+}
+
+  async renderizarGraficas() {
+  // Clear any existing charts first
+  const canvases = ["pieChart", "pieChart2", "barChart"]
+  canvases.forEach((id) => {
+    const canvas = document.getElementById(id) as HTMLCanvasElement
+    if (canvas) {
+      const context = canvas.getContext("2d")
+      if (context) context.clearRect(0, 0, canvas.width, canvas.height)
+    }
+  })
+
+  // Render only the active chart
+  if (this.activeChart === "pie1") {
+    await this.crearGraficaPie(this.cantidadCursosObligatorios, this.cantidadCursosNoObligatorios)
+  } else if (this.activeChart === "pie2") {
+    await this.crearGraficaPie2(this.progresoPromedio, 100 - this.progresoPromedio)
+  } else if (this.activeChart === "bar") {
+    await this.crearGraficaBarra(this.obtenerProgresoCursos())
+  }
+  }
+
+  // Add this method to switch between charts
+changeActiveChart(chartType: string) {
+  this.activeChart = chartType
+  this.renderizarGraficas()
+}
+
   cancelarEdicion(tipo: number): void {
     if(tipo == 1){ // edicion de informaciuon personal
       // Restablecer los valores originales
       this.nuevoEstado = this.info.estado_laboral;
       this.editandoInfo = false; // Salir del modo edición
     }
+
 
     // edicion de trayectoria
     if(tipo == 2){

@@ -577,3 +577,73 @@
   font-size: 1.25em;
   margin-right: .35em;
 }
+
+.chart-container {
+  width: 80%;
+  margin: 10px auto; /* Centrado horizontal y espacio vertical */
+  padding: 10px;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+}
+
+#pieChart {
+  width: 300px !important;
+  height: 300px !important;
+  display: block;
+  margin-left: 10%
+}
+
+#pieChart2 {
+  width: 300px !important;
+  height: 300px !important;
+  display: block;
+  margin-left: 10%
+}
+
+#barChart {
+  width: 400px !important;
+  height: 300px !important;
+  display: block;
+  margin-left: -7%
+  
+}
+
+.chart-chips {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  transform: translateX(-20px);
+}
+
+.chart-chip {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  color: #333;
+}
+
+.chart-chip:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.chart-chip.active {
+  background-color: #9668e6;
+  color: white;
+  border-color: #9668e6;
+  box-shadow: 0 2px 8px rgba(150, 104, 230, 0.4);
+}
+
+.chart-chip .material-icons {
+  font-size: 18px;
+
+}
