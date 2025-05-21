@@ -190,4 +190,9 @@ export class ApiService {
   subirProyecto(json: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/proyecto`, json);
   }
+
+  // Obtener API Key de Gemini
+  getGeminiApiKey(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/gemini-api-key`);
+}
 } 

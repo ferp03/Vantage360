@@ -25,6 +25,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { SignUpComponent } from './Components/sign-up/sign-up.component'; 
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
+import { RecomendacionesComponent } from './Components/recomendaciones/recomendaciones.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { MatCardModule } from '@angular/material/card';
     DisponibilidadComponent,
     MenucurycertComponent,
     ProyectosComponent,
-    SignUpComponent
+    SignUpComponent,
+    RecomendacionesComponent
   ],
   imports: [
     BrowserModule,

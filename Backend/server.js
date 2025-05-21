@@ -13,6 +13,7 @@ const certificateRoutes = require('./routes/certificate.routes');
 const cursosRoutes = require('./routes/curso.routes');
 const proyectosRoutes = require('./routes/proyecto.routes');
 const infoRoutes = require('./routes/info.routes');
+const geminiRoutes = require('./routes/ia.routers'); 
 
 const app = express();
 const port = 3000;
@@ -33,6 +34,7 @@ app.use(certificateRoutes);
 app.use(cursosRoutes);
 app.use(proyectosRoutes);
 app.use(infoRoutes);
+app.use(geminiRoutes);
 
 // Iniciar el servidor
 app.listen(port, () => {

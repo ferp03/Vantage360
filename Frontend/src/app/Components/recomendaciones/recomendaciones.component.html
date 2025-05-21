@@ -1,0 +1,39 @@
+<div class="recomendaciones-container">
+  <h1>Recomendaciones Personalizadas</h1>
+
+  <button class="btn-generar" (click)="generarRecomendaciones()" [disabled]="cargando">
+    {{ cargando ? 'Generando...' : 'Obtener recomendaciones' }}
+  </button>
+
+  <div class="estado-inicial fade-slide" *ngIf="estado === 'inicio'">
+    <div class="figura-inicial"></div>
+    <p class="mensaje-inicial">Haz clic en el botón para generar recomendaciones personalizadas.</p>
+  </div>
+
+  <div class="loader-container fade-slide" *ngIf="estado === 'cargando'">
+    <div class="loader-figura"></div>
+    <p class="loader-texto">Generando recomendaciones...</p>
+  </div>
+
+  <div *ngIf="error" class="error fade-slide">{{ error }}</div>
+
+  <div class="fade-slide" *ngIf="estado === 'listo' && recomendacionesCursos.length">
+    <h3 class="categoria-titulo">Cursos</h3>
+    <div class="tarjetas">
+      <div class="tarjeta" *ngFor="let item of recomendacionesCursos">
+        <h4>{{ item.titulo }}</h4>
+        <p>{{ item.descripcion }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="fade-slide" *ngIf="estado === 'listo' && recomendacionesCertificados.length">
+    <h3 class="categoria-titulo certificaciones-titulo">Certificaciones</h3>
+    <div class="tarjetas">
+      <div class="tarjeta" *ngFor="let item of recomendacionesCertificados">
+        <h4>{{ item.titulo }}</h4>
+        <p>{{ item.descripcion }}</p>
+      </div>
+    </div>
+  </div>
+</div>
