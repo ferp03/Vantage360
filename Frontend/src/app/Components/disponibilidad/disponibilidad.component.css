@@ -216,12 +216,13 @@
 
 /* Botones de acción */
 .btn-accion {
-  padding: 6px 12px;
+  padding: 3px 6px;
   background-color: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-right: 10px;
 }
 
 .btn-accion:hover {
@@ -363,6 +364,26 @@
   justify-content: center;
   gap: 20px;
   padding-bottom: 20px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  border: 1px solid rgba(138, 86, 232, 0.3);
+  border-radius: 4px;
+  resize: none;
+  background-color: var(--accenture-gray-100);
+  color: var(--foreground);
+  font-family: inherit;
+  font-size: 0.95rem;
+  margin-top: 5px;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 2px hsla(var(--primary), 0.3);
 }
 
 /* Formulario de búsqueda */

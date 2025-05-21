@@ -37,6 +37,10 @@ export class DisponibilidadComponent implements OnInit {
   nuevoEstado: string = '';
   nuevaCargabilidad: number | null = null;
 
+  mostrarModalComentarios: boolean = false;
+  comentarioTexto: string = '';
+
+
   constructor(
     private apiService: ApiService,
     private router: Router
@@ -201,6 +205,45 @@ export class DisponibilidadComponent implements OnInit {
     this.nuevoEstado = '';
     this.nuevaCargabilidad = null;
   }
+
+  seleccionarComentarios(empleado: any): void {
+    this.empleadoSeleccionado = empleado;
+    this.comentarioTexto = '';
+    this.mostrarModalComentarios = true;
+  }
+
+  actualizarComentarios(): void {
+    if (!this.empleadoSeleccionado || !this.comentarioTexto.trim()) return;
+
+    const datos = {
+      comentario: this.comentarioTexto.trim()
+    };
+
+    this.apiService.actualizarComentarios(this.empleadoSeleccionado.empleado_id, datos)
+      .subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.mostrarModalComentarios = false;
+            this.empleadoSeleccionado = null;
+            this.comentarioTexto = '';
+          } else {
+            this.error = 'Error al guardar el comentario';
+          }
+        },
+        error: (err) => {
+          console.error('Error al guardar comentario:', err);
+          this.error = err.error?.error || 'Error al conectar con el servidor';
+        }
+      });
+  }
+
+  cancelarComentarios(): void {
+    this.mostrarModalComentarios = false;
+    this.empleadoSeleccionado = null;
+    this.comentarioTexto = '';
+  }
+
+
 
   // Paginación
   get paginatedEmpleados(): any[] {

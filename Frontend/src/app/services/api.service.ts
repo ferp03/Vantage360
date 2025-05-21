@@ -68,6 +68,11 @@ export class ApiService {
     return this.http.put(`${this.apiUrl}/empleados/${empleadoId}/disponibilidad`, datos);
   }
 
+  // Actualizar disponibilidad manualmente
+  actualizarComentarios(empleadoId: string, datos: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/empleados/${empleadoId}/comentarios`, datos);
+  }
+
   // Info básica del empleado
   getEmpleadoInfo(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/empleado/info/${id}`);

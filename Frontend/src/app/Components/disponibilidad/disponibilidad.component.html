@@ -180,7 +180,8 @@
 
             <td>
               <!-- Botón para abrir el modal de edición -->
-              <button class="btn-accion" (click)="seleccionarEmpleado(empleado)">Editar</button>
+               <button class="btn-accion" (click)="seleccionarComentarios(empleado)"><mat-icon>chat</mat-icon></button>
+              <button class="btn-accion" (click)="seleccionarEmpleado(empleado)"><mat-icon>edit</mat-icon></button>
             </td>
           </tr>
         </tbody>
@@ -228,4 +229,37 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal de comentarios -->
+<div class="modal-overlay" *ngIf="empleadoSeleccionado && mostrarModalComentarios">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Agregar comentario</h3>
+      <button class="btn-cerrar" (click)="cancelarComentarios()">×</button>
+    </div>
+    <div class="modal-content">
+      <div class="empleado-detalle">
+        <p class="nombre">{{ empleadoSeleccionado?.nombre }} {{ empleadoSeleccionado?.apellido_paterno }}</p>
+        <p class="usuario">&#64;{{ empleadoSeleccionado?.usuario }}</p>
+        <p class="correo">{{ empleadoSeleccionado?.email }}</p>
+      </div>
+      <div>
+        <p>Comentarios:</p>
+      </div>
+      <div class="form-group">
+        <label for="comentario">Agregar Comentario:</label>
+        <textarea id="comentario" rows="5" [(ngModel)]="comentarioTexto" placeholder="Escribe un comentario..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cancelarComentarios()">
+        <mat-icon>cancel</mat-icon> Cancelar
+      </button>
+      <button class="btn-guardar" (click)="actualizarComentarios()">
+        <mat-icon>send</mat-icon> Enviar comentario
+      </button>
+    </div>
+  </div>
+</div>
+
 </div>
