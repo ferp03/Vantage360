@@ -213,7 +213,7 @@
         </div>
 
         <div *ngIf="editandoIndice === i" class="modo-edicion experiencia-form">
-          <div class="campo-grupo">
+          <!-- <div class="campo-grupo">
             <label>
               <span class="material-icons">device_hub</span> Capability:
             </label>
@@ -226,7 +226,33 @@
             </select>
             <span class="error" *ngIf="errores[i].titulo">Campo requerido</span>
             <span class="error" *ngIf="capabilities.length === 0">No se pudieron cargar las opciones. Intenta de nuevo.</span>
-          </div>
+          </div> -->
+          <mat-form-field appearance="outline" class="campo-grupo">
+            <mat-label>
+              <mat-icon>device_hub</mat-icon> Capability
+            </mat-label>
+
+            <mat-select
+              [(ngModel)]="experiencia.capability_id"
+              name="capability_{{ i }}"
+              (selectionChange)="experiencia.titulo = obtenerNombreCapability($event.value)"
+              [disabled]="!capabilities.length"
+              [class.error-input]="errores[i].titulo"
+              required
+            >
+              <mat-option [value]="undefined" disabled>
+                {{ capabilities.length ? 'Selecciona una opción' : 'Cargando opciones...' }}
+              </mat-option>
+
+              <mat-option *ngFor="let cap of capabilities" [value]="cap.id">
+                {{ cap.nombre }}
+              </mat-option>
+            </mat-select>
+
+            <!-- <mat-hint *ngIf="capabilities.length === 0" class="error">No se pudieron cargar las opciones. Intenta de nuevo.</mat-hint>
+            <mat-error *ngIf="errores[i].titulo">Campo requerido</mat-error> -->
+          </mat-form-field>
+
 
           <div class="campo-grupo">
             <label>Proyecto:</label>
