@@ -50,14 +50,15 @@ router.get('/empleados/disponibilidad', async (req, res) => {
 
       // Obtener habilidades
       const { data: habilidadesData, error: habilidadesError } = await supabase
-        .from('empleado_habilidad')
+        .from('_empleado_habilidad')
         .select(`
-          habilidad:habilidad (
+          habilidad:_habilidad (
             habilidad_id,
             nombre,
-            categoria,
-            nivel
-          )
+            categoria
+          ),
+          nivel,
+          descripcion
         `)
         .eq('empleado_id', empleado.empleado_id);
 

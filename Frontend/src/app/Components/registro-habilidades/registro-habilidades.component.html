@@ -3,8 +3,29 @@
     <h2>Registro de Habilidades</h2>
 
     <form #form="ngForm" (submit)="onSubmit(form); $event.preventDefault()">
-      <!-- Campo Nombre -->
+      <!-- Selección de Habilidad Existente o Nueva -->
       <div class="form-group">
+        <label for="skillSelect">Selecciona una habilidad</label>
+        <mat-form-field appearance="fill" style="width: 100%;">
+          <mat-select id="skillSelect" name="skillSelect"
+                      [(ngModel)]="selectedHabilidad"
+                      (selectionChange)="onHabilidadSeleccionada()"
+                      required
+                      #habilidadInput="ngModel">
+            <mat-option [value]="null" disabled>Selecciona una habilidad...</mat-option>
+            <mat-option *ngFor="let habilidad of habilidades" [value]="habilidad">
+              {{ habilidad.nombre }} ({{ habilidad.categoria }})
+            </mat-option>
+            <mat-option [value]="'nueva'">Otra habilidad...</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <span class="error-message" *ngIf="(habilidadInput.invalid && (habilidadInput.dirty || habilidadInput.touched)) || (form.submitted && habilidadInput.invalid)">
+          Campo obligatorio
+        </span>
+      </div>
+
+      <!-- Campo Nombre (solo si se elige nueva) -->
+      <div class="form-group" *ngIf="selectedHabilidad === 'nueva'">
         <label for="skillName">Nombre</label>
         <input type="text" id="skillName" name="skillName" 
                placeholder="Ej: JavaScript, Python..." required
@@ -14,21 +35,12 @@
         </span>
       </div>
 
-      <!-- Campo Categoria -->
-      <div class="form-group" id="categoryField">
+      <!-- Campo Categoría (solo si se elige nueva) -->
+      <div class="form-group" id="categoryField" *ngIf="selectedHabilidad === 'nueva'">
         <label for="skillCategory">Categoría</label>
-        <select id="skillCategory" name="skillCategory" required
-                #categoryInput="ngModel" [(ngModel)]="skillCategory">
-          <option value="" disabled selected>Selecciona una categoría</option>
-          <option value="Lenguaje de programación">Lenguaje de programación</option>
-          <option value="Base de datos">Base de datos</option>
-          <option value="FrontEnd">FrontEnd</option>
-          <option value="BackEnd">BackEnd</option>
-          <option value="DevOps">DevOps</option>
-          <option value="Testing">Testing</option>
-          <option value="Diseño">Diseño</option>
-          <option value="Otra">Otra</option>
-        </select>
+        <input type="text" id="skillCategory" name="skillCategory" 
+               placeholder="Ej: Backend, Frontend..." required
+               #categoryInput="ngModel" [(ngModel)]="skillCategory">
         <span class="error-message" *ngIf="(categoryInput.invalid && (categoryInput.dirty || categoryInput.touched)) || (form.submitted && categoryInput.invalid)">
           Campo obligatorio
         </span>
@@ -53,8 +65,8 @@
       <div class="form-group">
         <label for="skillDescription">Descripción</label>
         <textarea id="skillDescription" name="skillDescription" 
-              placeholder="¿En qué lo has aplicado? Ej: Proyecto personal, Backend, ..." required
-              #descriptionInput="ngModel" [(ngModel)]="skillDescription"></textarea>
+                  placeholder="¿En qué lo has aplicado? Ej: Proyecto personal, Backend, ..." required
+                  #descriptionInput="ngModel" [(ngModel)]="skillDescription"></textarea>
         <span class="error-message" *ngIf="(descriptionInput.invalid && (descriptionInput.dirty || descriptionInput.touched)) || (form.submitted && descriptionInput.invalid)">
           Campo obligatorio
         </span>
