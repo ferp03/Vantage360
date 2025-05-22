@@ -5,6 +5,12 @@ import { NgForm } from '@angular/forms';
 import { Location } from '@angular/common';
 import { AuthService } from 'src/app/auth/auth.service';
 
+interface Habilidad {
+  habilidad_id: number,
+  nombre: string,
+  categoria: string
+}
+
 @Component({
   selector: 'app-registro-habilidades',
   templateUrl: './registro-habilidades.component.html',
@@ -20,6 +26,10 @@ export class RegistroHabilidadesComponent implements OnInit {
   skillLevel: string = '';
   skillDescription: string = '';
 
+  habilidades: Habilidad[] = [];
+  selectedHabilidad: Habilidad | 'nueva' | null = null;
+
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,  
@@ -30,6 +40,36 @@ export class RegistroHabilidadesComponent implements OnInit {
 
   ngOnInit(): void {
     this.empleadoId = this.authService.userId;
+    this.getHabilidades();
+  }
+
+  getHabilidades() {
+    this.apiService.getHabilidades().subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.habilidades = res.data;
+        } else {
+          console.error('Error al cargar leads:', res.error);
+        }
+      },
+      error: (err: any) => {
+        console.error('Error al obtener leads:', err);
+      }
+    });
+  };
+
+
+  onHabilidadSeleccionada(): void {
+    if (typeof this.selectedHabilidad === 'object' && this.selectedHabilidad !== null) {
+      this.skillName = this.selectedHabilidad.nombre;
+      this.skillCategory = this.selectedHabilidad.categoria;
+    } else if (this.selectedHabilidad === 'nueva') {
+      this.skillName = '';
+      this.skillCategory = '';
+    } else {
+      this.skillName = '';
+      this.skillCategory = '';
+    }
   }
 
   onSubmit(form: NgForm): void {

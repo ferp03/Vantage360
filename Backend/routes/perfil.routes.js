@@ -57,9 +57,9 @@ router.get('/empleado/:id/habilidades', async (req, res) => {
   const { id } = req.params;
 
   const { data, error } = await supabase
-    .from('empleado_habilidad')
+    .from('_empleado_habilidad')
     .select(`
-      habilidad (
+      habilidad:_habilidad (
         nombre
       )
     `)
@@ -384,24 +384,26 @@ router.delete('/empleado/experiencia/:historial_id', async (req, res) => {
   }
 });
 
-// Crear nueva habilidad y asociarla a un empleado
+// Crear nueva habilidad y asociarla a un empleado con nivel y descripción
 router.post('/empleado/:id/habilidad', async (req, res) => {
   const { id } = req.params;
   const { nombre, categoria, nivel, descripcion } = req.body;
 
   try {
+    // Buscar si la habilidad ya existe
     let { data: habilidadExiste, error: errorExiste } = await supabase
-      .from('habilidad')
+      .from('_habilidad')
       .select('habilidad_id')
       .eq('nombre', nombre)
-      .maybeSingle(); 
+      .maybeSingle();
 
     let habilidadId = habilidadExiste ? habilidadExiste.habilidad_id : null;
 
+    // Si no existe, la creamos
     if (!habilidadId) {
       const { data: nuevaHabilidad, error: errorInsert } = await supabase
-        .from('habilidad')
-        .insert([{ nombre, categoria, nivel, descripcion }])
+        .from('_habilidad')
+        .insert([{ nombre, categoria }])
         .select()
         .single();
 
@@ -412,8 +414,9 @@ router.post('/empleado/:id/habilidad', async (req, res) => {
       habilidadId = nuevaHabilidad.habilidad_id;
     }
 
+    // Verificar si ya existe la relación entre ese empleado y esa habilidad
     const { data: relacionExistente, error: errorRelacionExistente } = await supabase
-      .from('empleado_habilidad')
+      .from('_empleado_habilidad')
       .select('*')
       .eq('empleado_id', id)
       .eq('habilidad_id', habilidadId)
@@ -426,11 +429,14 @@ router.post('/empleado/:id/habilidad', async (req, res) => {
       });
     }
 
+    // Crear la relación con nivel y descripción
     const { error: errorRelacion } = await supabase
-      .from('empleado_habilidad')
+      .from('_empleado_habilidad')
       .insert([{
         empleado_id: id,
-        habilidad_id: habilidadId
+        habilidad_id: habilidadId,
+        nivel,
+        descripcion
       }]);
 
     if (errorRelacion) {
