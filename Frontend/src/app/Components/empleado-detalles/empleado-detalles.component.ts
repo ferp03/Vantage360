@@ -802,6 +802,9 @@ export class EmpleadoDetallesComponent implements OnInit {
     return this.cursos.map(curso => Number(curso.progreso));
   }
 
+  obtenerFechasCursos(): string[] {
+    return this.cursos.map(curso => curso.fecha_emision);
+  }
 
   async crearGraficaPie(cantidadObligatorios: number, cantidadNoObligatorios: number): Promise<void> {
   const canvas = document.getElementById('pieChart') as HTMLCanvasElement;
@@ -873,18 +876,34 @@ async crearGraficaPie2(progresoPromedio: number , percent: number): Promise<void
   }
 }
 
-  async crearGraficaBarra(obtenerProgresoCursos: Array<number>): Promise<void> {
+  async crearGraficaBarra(obtenerProgresoCursos: Array<number>, fechasCursos: Array<string>): Promise<void> {
   const canvas = document.getElementById('barChart') as HTMLCanvasElement;
   if (!canvas) {
     console.error('No se encontró el canvas con id barChart');
     return;
   }
 
-  const etiquetas = this.obtenerNombresCursos();
+  const etiquetasCompletas = this.obtenerNombresCursos();
+
+  // Filtrar por los últimos 6 meses
+  const hoy = new Date();
+  const seisMesesAtras = new Date(hoy.getFullYear(), hoy.getMonth() - 6, hoy.getDate());
+
+  const cursosFiltrados = fechasCursos
+    .map((fechaStr, i) => ({
+      indice: i,
+      fecha: new Date(fechaStr)
+    }))
+    .filter(curso => curso.fecha >= seisMesesAtras)
+    .slice(0, 5); // máximo 5 cursos
+
+  // Extraer los datos filtrados
+  const etiquetas = cursosFiltrados.map(c => etiquetasCompletas[c.indice]);
+  const datos = cursosFiltrados.map(c => obtenerProgresoCursos[c.indice]);
 
   if (this.barChart) {
     this.barChart.data.labels = etiquetas;
-    this.barChart.data.datasets[0].data = obtenerProgresoCursos;
+    this.barChart.data.datasets[0].data = datos;
     this.barChart.update();
   } else {
     this.barChart = new Chart(canvas, {
@@ -893,7 +912,7 @@ async crearGraficaPie2(progresoPromedio: number , percent: number): Promise<void
         labels: etiquetas,
         datasets: [{
           label: 'Cursos',
-          data: obtenerProgresoCursos,
+          data: datos,
           backgroundColor: ['#9668e6', '#818181']
         }]
       },
@@ -904,15 +923,16 @@ async crearGraficaPie2(progresoPromedio: number , percent: number): Promise<void
           title: {
             display: true,
             text: 'Progreso de Cursos (%)',
-            color: '#0000000',
-            font: { size: 20 },
-            
+            color: '#000000',
+            font: { size: 20 }
           }
         }
       }
     });
   }
 }
+
+
 
   async renderizarGraficas() {
   // Clear any existing charts first
@@ -931,7 +951,7 @@ async crearGraficaPie2(progresoPromedio: number , percent: number): Promise<void
   } else if (this.activeChart === "pie2") {
     await this.crearGraficaPie2(this.progresoPromedio, 100 - this.progresoPromedio)
   } else if (this.activeChart === "bar") {
-    await this.crearGraficaBarra(this.obtenerProgresoCursos())
+    await this.crearGraficaBarra(this.obtenerProgresoCursos(), this.obtenerFechasCursos())
   }
   }
 
