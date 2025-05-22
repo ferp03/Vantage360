@@ -366,7 +366,7 @@ body {
   color: rgb(30, 24, 35);
   font-size: 0.7rem;
   font-weight: 500;
-  left: 100%;
+  left: 50%;
   top: 50%;
   right: 10000px;
   transform: translate(-50%, -50%);
