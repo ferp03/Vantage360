@@ -41,16 +41,7 @@ export class ParticipacionPComponent implements OnInit {
     this.cargarProyectosActuales();
   }
 
-  openTab(tabId: string) {
-    this.activeTab = tabId;
-    // Carga bajo demanda al cambiar de pestaña
-    if (tabId === 'disponibles' && this.disponiblesCount === 0) {
-      this.cargarProyectosDisponibles();
-    }
-    if (tabId === 'actuales' && this.actualesCount === 0) {
-      this.cargarProyectosActuales();
-    }
-  }
+  
 
   showAddProjectButton(): boolean {
     const allowedRoles = ['people lead', 'delivery lead'];
@@ -99,25 +90,70 @@ export class ParticipacionPComponent implements OnInit {
     return Object.keys(capabilities).filter(key => capabilities[key]);
   }
   
-  cargarProyectosActuales(): void {
-    if (!this.authService.userId) {
-      console.error('User ID is not available');
-      this.proyectosActuales = [];
-      this.actualesCount = 0;
-      return;
-    }
+  // Agrega este método para filtrar proyectos por fecha
+private filtrarProyectosPorFecha(proyectos: Proyecto[]): {
+  actuales: Proyecto[];
+  pasados: Proyecto[];
+} {
+  const hoy = new Date();
+  const actuales: Proyecto[] = [];
+  const pasados: Proyecto[] = [];
 
-    this.apiService.getProyectosActuales(this.authService.userId)
-      .subscribe({
-        next: (response: any) => {
-          this.proyectosActuales = response.proyectos || response || [];
-          this.actualesCount = this.proyectosActuales.length;
-        },
-        error: (error) => {
-          console.error('Error al cargar proyectos actuales:', error);
-          this.proyectosActuales = [];
-          this.actualesCount = 0;
-        }
-      });
+  proyectos.forEach(proyecto => {
+    const fechaFin = new Date(proyecto.fecha_fin);
+    if (fechaFin >= hoy) {
+      actuales.push(proyecto);
+    } else {
+      pasados.push(proyecto);
+    }
+  });
+
+  return { actuales, pasados };
+}
+
+// Modifica el método cargarProyectosActuales
+cargarProyectosActuales(): void {
+  if (!this.authService.userId) {
+    console.error('User ID is not available');
+    this.proyectosActuales = [];
+    this.proyectosPasados = [];
+    this.actualesCount = 0;
+    this.pasadosCount = 0;
+    return;
   }
+
+  this.apiService.getProyectosActuales(this.authService.userId)
+    .subscribe({
+      next: (response: any) => {
+        const proyectos = response.proyectos || response || [];
+        const { actuales, pasados } = this.filtrarProyectosPorFecha(proyectos);
+        
+        this.proyectosActuales = actuales;
+        this.proyectosPasados = pasados;
+        this.actualesCount = this.proyectosActuales.length;
+        this.pasadosCount = this.proyectosPasados.length;
+      },
+      error: (error) => {
+        console.error('Error al cargar proyectos actuales:', error);
+        this.proyectosActuales = [];
+        this.proyectosPasados = [];
+        this.actualesCount = 0;
+        this.pasadosCount = 0;
+      }
+    });
+}
+
+openTab(tabId: string) {
+  this.activeTab = tabId;
+  if (tabId === 'disponibles' && this.disponiblesCount === 0) {
+    this.cargarProyectosDisponibles();
+  }
+  if (tabId === 'actuales' && this.actualesCount === 0) {
+    this.cargarProyectosActuales();
+  }
+  if (tabId === 'pasados' && this.pasadosCount === 0) {
+    // a
+  }
+}
+
 }
