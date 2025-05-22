@@ -49,19 +49,38 @@ export class ParticipacionPComponent implements OnInit {
   }
 
   openAddProjectModal(): void {
-    const dialogRef = this.dialog.open(ProyectosComponent, {
-      width: '800px',
-      maxWidth: '90vw',
-      data: { action: 'create' }
-    });
+  const dialogRef = this.dialog.open(ProyectosComponent, {
+    width: '800px',
+    maxWidth: '90vw',
+    data: { action: 'create' },
+    panelClass: 'no-backdrop-dialog', 
+    disableClose: false, 
+    hasBackdrop: true,   
+    backdropClass: 'clean-backdrop'
+  });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.cargarProyectosDisponibles();
-        this.cargarProyectosActuales();
-      }
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      this.cargarProyectosDisponibles();
+      this.cargarProyectosActuales();
+    }
+    
+    document.querySelectorAll('.cdk-overlay-backdrop, .modal-overlay').forEach(el => {
+      el.remove();
     });
-  }
+    
+    document.body.style.overflow = '';
+    document.body.classList.remove('cdk-global-scrollblock');
+    
+    const componentInstance = dialogRef.componentInstance as ProyectosComponent;
+    if (componentInstance) {
+      componentInstance.mostrarModal = false;
+      if (componentInstance['cdr']) {
+        componentInstance['cdr'].detectChanges();
+      }
+    }
+  });
+}
 
   cargarProyectosDisponibles(): void {
     if (!this.authService.userId) {

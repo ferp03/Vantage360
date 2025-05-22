@@ -178,6 +178,7 @@ body.modal-abierto {
   background: linear-gradient(160deg, rgba(0, 0, 0, 0.8), rgba(34, 25, 40, 0.9));
   z-index: 1000;
   display: flex;
+  padding-top: 17vh;
   justify-content: center;
   align-items: center;
   scrollbar-width: none; /* For Firefox */
