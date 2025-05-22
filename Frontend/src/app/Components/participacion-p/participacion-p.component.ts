@@ -1,23 +1,55 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from 'src/app/auth/auth.service';
-import { ProyectosComponent } from '../proyectos/proyectos.component'; 
+import { ProyectosComponent } from '../proyectos/proyectos.component';
+import { ApiService } from 'src/app/services/api.service';
+
+interface Proyecto {
+  proyecto_id: number;
+  nombre: string;
+  descripcion: string;
+  fecha_inicio: string;
+  fecha_fin: string;
+  progreso: number;
+  capabilities: any;
+}
 
 @Component({
   selector: 'app-participacion-p',
   templateUrl: './participacion-p.component.html',
   styleUrls: ['./participacion-p.component.css']
 })
-export class ParticipacionPComponent {
-  activeTab: string = 'disponibles'; 
+export class ParticipacionPComponent implements OnInit {
+  activeTab: string = 'disponibles';
+  
+  proyectosDisponibles: Proyecto[] = [];
+  proyectosActuales: Proyecto[] = [];
+  proyectosPasados: Proyecto[] = [];
+  
+  disponiblesCount: number = 0;
+  actualesCount: number = 0;
+  pasadosCount: number = 0;
 
   constructor(
     public authService: AuthService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private apiService: ApiService
   ) {}
+
+  ngOnInit(): void {
+    this.cargarProyectosDisponibles();
+    this.cargarProyectosActuales();
+  }
 
   openTab(tabId: string) {
     this.activeTab = tabId;
+    // Carga bajo demanda al cambiar de pestaña
+    if (tabId === 'disponibles' && this.disponiblesCount === 0) {
+      this.cargarProyectosDisponibles();
+    }
+    if (tabId === 'actuales' && this.actualesCount === 0) {
+      this.cargarProyectosActuales();
+    }
   }
 
   showAddProjectButton(): boolean {
@@ -29,16 +61,63 @@ export class ParticipacionPComponent {
     const dialogRef = this.dialog.open(ProyectosComponent, {
       width: '800px',
       maxWidth: '90vw',
-      data: { 
-        action: 'create' // Puedes enviar datos adicionales si es necesario
-      }
+      data: { action: 'create' }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Proyecto creado:', result);
-        // Aquí puedes actualizar la lista de proyectos si es necesario
+        this.cargarProyectosDisponibles();
+        this.cargarProyectosActuales();
       }
     });
+  }
+
+  cargarProyectosDisponibles(): void {
+    if (!this.authService.userId) {
+      console.error('User ID is not available');
+      this.proyectosDisponibles = [];
+      this.disponiblesCount = 0;
+      return;
+    }
+
+    this.apiService.getProyectosDisponibles(this.authService.userId)
+      .subscribe({
+        next: (response: any) => {
+          this.proyectosDisponibles = response.proyectos || response || [];
+          this.disponiblesCount = this.proyectosDisponibles.length;
+        },
+        error: (error) => {
+          console.error('Error al cargar proyectos disponibles:', error);
+          this.proyectosDisponibles = [];
+          this.disponiblesCount = 0;
+        }
+      });
+  }
+
+  getSkills(capabilities: any): string[] {
+    if (!capabilities) return [];
+    return Object.keys(capabilities).filter(key => capabilities[key]);
+  }
+  
+  cargarProyectosActuales(): void {
+    if (!this.authService.userId) {
+      console.error('User ID is not available');
+      this.proyectosActuales = [];
+      this.actualesCount = 0;
+      return;
+    }
+
+    this.apiService.getProyectosActuales(this.authService.userId)
+      .subscribe({
+        next: (response: any) => {
+          this.proyectosActuales = response.proyectos || response || [];
+          this.actualesCount = this.proyectosActuales.length;
+        },
+        error: (error) => {
+          console.error('Error al cargar proyectos actuales:', error);
+          this.proyectosActuales = [];
+          this.actualesCount = 0;
+        }
+      });
   }
 }

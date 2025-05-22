@@ -182,4 +182,14 @@ export class ApiService {
   subirProyecto(json: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/proyecto`, json);
   }
+
+  // Obtener proyectos disponibles
+  getProyectosDisponibles(userId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/proyecto/disponibles/${userId}`);
+  }
+
+  // Obtener proyectos disponibles
+  getProyectosActuales(userId: string): Observable<any> {
+  return this.http.get(`${this.apiUrl}/proyecto/actuales/${userId}`);
+  }
 } 
