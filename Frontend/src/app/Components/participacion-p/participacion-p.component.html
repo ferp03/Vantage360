@@ -75,7 +75,7 @@
               </div>
                 <div class="project-progress">
                   <div class="progress-bar" [style.width]="proyecto.progreso + '%'">
-                    <span class="progress-text">{{proyecto.progreso}}%</span>
+                    <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
                   </div>
                 </div>
                 <div class="project-actions">
@@ -126,7 +126,7 @@
                 
                 <div class="project-progress">
                   <div class="progress-bar" [style.width]="proyecto.progreso + '%'">
-                    <span class="progress-text">{{proyecto.progreso}}%</span>
+                    <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
                   </div>
                 </div>
                 <div class="project-skills" *ngIf="proyecto.capabilities">
