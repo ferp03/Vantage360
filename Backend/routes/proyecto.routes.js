@@ -102,7 +102,7 @@ router.post('/proyecto', async (req, res) => {
   }
 });
 
-// Usando el procedimiento almacenado que ya tienes
+// proyectos disponibles
 router.get('/proyecto/disponibles/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
@@ -131,20 +131,11 @@ router.get('/proyecto/disponibles/:userId', async (req, res) => {
   }
 });
 
-// Ruta para obtener proyectos actuales del usuario
+//  proyectos actuales 
 router.get('/proyecto/actuales/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
-    
-    // Validar que el userId tenga formato UUID
-    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(userId)) {
-      return res.status(400).json({
-        success: false,
-        error: 'El ID de usuario no tiene un formato válido'
-      });
-    }
 
-    // Llamar al procedimiento almacenado
     const { data, error } = await supabase
       .rpc('get_proyectos_actuales', { _id: userId });
 
@@ -156,7 +147,6 @@ router.get('/proyecto/actuales/:userId', async (req, res) => {
       });
     }
 
-    // Verificar si hay datos y formatear la respuesta
     if (!data || data.length === 0) {
       return res.status(200).json({
         success: true,
@@ -164,7 +154,6 @@ router.get('/proyecto/actuales/:userId', async (req, res) => {
         proyectos: []
       });
     }
-
     return res.status(200).json({
       success: true,
       proyectos: data
