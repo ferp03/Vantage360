@@ -74,8 +74,9 @@
                 </div>
               </div>
                 <div class="project-progress">
-                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
-                  <!-- <span>{{proyecto.progreso}}%</span> -->
+                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'">
+                    <span class="progress-text">{{proyecto.progreso}}%</span>
+                  </div>
                 </div>
                 <div class="project-actions">
                   <button class="btn-participate">
@@ -124,8 +125,9 @@
                 </div>
                 
                 <div class="project-progress">
-                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
-                  <span>{{proyecto.progreso}}%</span>
+                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'">
+                    <span class="progress-text">{{proyecto.progreso}}%</span>
+                  </div>
                 </div>
                 <div class="project-skills" *ngIf="proyecto.capabilities">
                   <div class="skills-title">
