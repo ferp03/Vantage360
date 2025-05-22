@@ -407,3 +407,12 @@ body {
     padding: 15px;
   }
 }
+
+.description-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #9668e6;
+  margin-bottom: 6px;
+  font-weight: 500;
+}

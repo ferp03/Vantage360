@@ -75,7 +75,7 @@
               </div>
                 <div class="project-progress">
                   <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
-                  <span>{{proyecto.progreso}}%</span>
+                  <!-- <span>{{proyecto.progreso}}%</span> -->
                 </div>
                 <div class="project-actions">
                   <button class="btn-participate">
@@ -84,7 +84,7 @@
                   </button>
                   <button class="btn-details">
                     <span class="material-icons">visibility</span>
-                    Detalles
+                    Integrantes
                   </button>
                 </div>
               </div>
@@ -126,6 +126,27 @@
                 <div class="project-progress">
                   <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
                   <span>{{proyecto.progreso}}%</span>
+                </div>
+                <div class="project-skills" *ngIf="proyecto.capabilities">
+                  <div class="skills-title">
+                    <span class="material-icons">construction</span> Habilidades requeridas:
+                  </div>
+                <div class="skills-tags">
+                  <span class="skill-tag" *ngFor="let skill of getSkills(proyecto.capabilities)">
+                    {{skill}}
+                  </span>
+                </div>
+              </div>
+
+                <div class="project-actions">
+                  <button class="btn-participate">
+                    <span class="material-icons">group_add</span>
+                    <!-- Participar -->
+                  </button>
+                  <button class="btn-details">
+                    <span class="material-icons">visibility</span>
+                    Integrantes
+                  </button>
                 </div>
               </div>
             </div>
