@@ -16,7 +16,6 @@ export class MenuBarComponent {
 
   @ViewChild('menu') menuElement!: ElementRef;
 
-
   ngOnInit() {
     this.auth.authStatus().subscribe(status => {
       this.isLogged = status;

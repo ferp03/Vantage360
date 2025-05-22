@@ -33,6 +33,7 @@
   -ms-overflow-style: none; /* For Internet Explorer and Edge */
 }
 
+
 .box-container {
   width: 100%;
   display: flex;

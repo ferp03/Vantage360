@@ -195,4 +195,14 @@ export class ApiService {
   getGeminiApiKey(): Observable<any> {
   return this.http.get(`${this.apiUrl}/gemini-api-key`);
 }
+
+  // Obtener proyectos disponibles
+  getProyectosDisponibles(userId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/proyecto/disponibles/${userId}`);
+  }
+
+  // Obtener proyectos disponibles
+  getProyectosActuales(userId: string): Observable<any> {
+  return this.http.get(`${this.apiUrl}/proyecto/actuales/${userId}`);
+  }
 } 

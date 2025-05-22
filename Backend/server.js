@@ -12,6 +12,7 @@ const availabilityRoutes = require('./routes/availability.routes');
 const certificateRoutes = require('./routes/certificate.routes');
 const cursosRoutes = require('./routes/curso.routes');
 const proyectosRoutes = require('./routes/proyecto.routes');
+// const participacionRoutes = require('./routes/participacion.routes');
 const infoRoutes = require('./routes/info.routes');
 const geminiRoutes = require('./routes/ia.routers'); 
 
@@ -33,6 +34,7 @@ app.use(availabilityRoutes);
 app.use(certificateRoutes);
 app.use(cursosRoutes);
 app.use(proyectosRoutes);
+// app.use(participacionRoutes);
 app.use(infoRoutes);
 app.use(geminiRoutes);
 

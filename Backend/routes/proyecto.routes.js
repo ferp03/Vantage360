@@ -102,4 +102,70 @@ router.post('/proyecto', async (req, res) => {
   }
 });
 
+// proyectos disponibles
+router.get('/proyecto/disponibles/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    const { data, error } = await supabase
+      .rpc('get_projectos_disponibles', { _id: userId });
+
+    if (error) {
+      return res.status(500).json({
+        success: false,
+        error: 'Error al obtener proyectos disponibles',
+        details: error
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      proyectos: data
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: 'Error del servidor al obtener proyectos disponibles',
+      details: err.toString()
+    });
+  }
+});
+
+//  proyectos actuales 
+router.get('/proyecto/actuales/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const { data, error } = await supabase
+      .rpc('get_proyectos_actuales', { _id: userId });
+
+    if (error) {
+      return res.status(500).json({
+        success: false,
+        error: 'Error al obtener proyectos actuales',
+        details: error
+      });
+    }
+
+    if (!data || data.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: 'El usuario no tiene proyectos actuales',
+        proyectos: []
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      proyectos: data
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: 'Error del servidor al obtener proyectos actuales',
+      details: err.toString()
+    });
+  }
+});
+
 module.exports = router;

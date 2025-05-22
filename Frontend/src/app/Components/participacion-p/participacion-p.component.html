@@ -1,0 +1,199 @@
+<body>
+<div class="participacion-container">
+  <main class="participacion-content">
+    <div class="tabs-container">
+      <div class="add-project-container" *ngIf="showAddProjectButton()">
+        <button class="btn-add-project" (click)="openAddProjectModal()">
+          <span class="material-icons">add</span>
+          Añadir Proyecto
+        </button>
+      </div>
+      
+      <!-- headers -->
+      <div class="tabs-header">
+        <div class="tab-button" 
+             [class.active]="activeTab === 'disponibles'" 
+             (click)="openTab('disponibles')">
+          <span class="tab-title">Proyectos disponibles:</span>
+          <span class="badge">{{disponiblesCount}}</span>
+        </div>
+        <div class="tab-button" 
+             [class.active]="activeTab === 'actuales'" 
+             (click)="openTab('actuales')">
+          <span class="tab-title">Proyectos actuales:</span>
+          <span class="badge">{{actualesCount}}</span>
+        </div>
+        <div class="tab-button" 
+             [class.active]="activeTab === 'pasados'" 
+             (click)="openTab('pasados')">
+          <span class="tab-title">Proyectos pasados:</span>
+          <span class="badge">{{pasadosCount}}</span>
+        </div>
+      </div>
+
+      <!-- pestañas -->
+      <div class="tab-content">
+        <!-- Pestaña Disponibles -->
+        <div class="tab-pane" [class.active]="activeTab === 'disponibles'">
+          <div class="projects-container">
+            <div *ngIf="proyectosDisponibles.length === 0" class="empty-message">
+              No hay proyectos disponibles en este momento
+            </div>
+            <div class="projects-grid">
+              <div class="project-card" *ngFor="let proyecto of proyectosDisponibles">
+                <div class="project-header">
+                  <h3>{{proyecto.nombre}}</h3>
+                  <div class="project-status">
+                    <span class="chip-activo">Disponible</span>
+                  </div>
+                </div>
+                
+                <div class="project-dates">
+                  <div class="date-label">
+                    <strong>Inicio:</strong> {{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}
+                  </div>
+                  <div class="date-label">
+                    <strong>Fin:</strong> {{proyecto.fecha_fin | date:'dd/MM/yyyy'}}
+                  </div>
+                </div>
+                
+                <div class="project-description">
+                  <div class="description-title">
+                    <span class="material-icons">info</span> Descripción:
+                  </div>
+                  <div>{{proyecto.descripcion || 'Sin descripción'}}</div>
+                </div>
+                <div class="project-skills" *ngIf="proyecto.capabilities">
+                  <div class="skills-title">
+                    <span class="material-icons">construction</span> Habilidades requeridas:
+                  </div>
+                <div class="skills-tags">
+                  <span class="skill-tag" *ngFor="let skill of getSkills(proyecto.capabilities)">
+                    {{skill}}
+                  </span>
+                </div>
+              </div>
+                <div class="project-progress">
+                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
+                  <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
+                </div>
+                <div class="project-actions">
+                  <button class="btn-participate">
+                    <span class="material-icons">group_add</span>
+                    Participar
+                  </button>
+                  <button class="btn-details">
+                    <span class="material-icons">visibility</span>
+                    Integrantes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Pestaña Actuales -->
+        <div class="tab-pane" [class.active]="activeTab === 'actuales'">
+          <div class="projects-container">
+            <div *ngIf="proyectosActuales.length === 0" class="empty-message">
+              No tienes proyectos actuales
+            </div>
+            <div class="projects-grid">
+              <div class="project-card" *ngFor="let proyecto of proyectosActuales">
+                <div class="project-header">
+                  <h3>{{proyecto.nombre}}</h3>
+                  <div class="project-status">
+                    <span class="chip-activo">Activo</span>
+                  </div>
+                </div>
+                
+                <div class="project-dates">
+                  <div class="date-label">
+                    <strong>Inicio:</strong> {{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}
+                  </div>
+                  <div class="date-label">
+                    <strong>Fin:</strong> {{proyecto.fecha_fin | date:'dd/MM/yyyy'}}
+                  </div>
+                </div>
+                
+                <div class="project-description">
+                  <div class="description-title">
+                    <span class="material-icons">info</span> Descripción:
+                  </div>
+                  <div>{{proyecto.descripcion || 'Sin descripción'}}</div>
+                </div>
+                
+                <div class="project-progress">
+                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
+                  <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
+                </div>
+                <div class="project-skills" *ngIf="proyecto.capabilities">
+                  <div class="skills-title">
+                    <span class="material-icons">construction</span> Habilidades requeridas:
+                  </div>
+                <div class="skills-tags">
+                  <span class="skill-tag" *ngFor="let skill of getSkills(proyecto.capabilities)">
+                    {{skill}}
+                  </span>
+                </div>
+              </div>
+
+                <div class="project-actions">
+                  <button class="btn-participate">
+                    <span class="material-icons">group_add</span>
+                    <!-- Participar -->
+                  </button>
+                  <button class="btn-details">
+                    <span class="material-icons">visibility</span>
+                    Integrantes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Pestaña Pasados -->
+        <div class="tab-pane" [class.active]="activeTab === 'pasados'">
+          <div class="projects-container">
+            <div *ngIf="proyectosPasados.length === 0" class="empty-message">
+              No tienes proyectos pasados
+            </div>
+            <div class="projects-grid">
+              <div class="project-card" *ngFor="let proyecto of proyectosPasados">
+                <div class="project-header">
+                  <h3>{{proyecto.nombre}}</h3>
+                  <div class="project-status">
+                    <span class="chip-finalizado">Finalizado</span>
+                  </div>
+                </div>
+                
+                <div class="project-dates">
+                  <div class="date-label">
+                    <strong>Inicio:</strong> {{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}
+                  </div>
+                  <div class="date-label">
+                    <strong>Fin:</strong> {{proyecto.fecha_fin | date:'dd/MM/yyyy'}}
+                  </div>
+                </div>
+                
+                <div class="project-description">
+                  <div class="description-title">
+                    <span class="material-icons">info</span> Descripción:
+                  </div>
+                  <div>{{proyecto.descripcion || 'Sin descripción'}}</div>
+                </div>
+                
+                <div class="project-progress">
+                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
+                  <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
