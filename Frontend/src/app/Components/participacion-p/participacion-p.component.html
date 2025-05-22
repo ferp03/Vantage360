@@ -74,9 +74,8 @@
                 </div>
               </div>
                 <div class="project-progress">
-                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'">
-                    <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
-                  </div>
+                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
+                  <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
                 </div>
                 <div class="project-actions">
                   <button class="btn-participate">
@@ -125,9 +124,8 @@
                 </div>
                 
                 <div class="project-progress">
-                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'">
-                    <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
-                  </div>
+                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
+                  <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
                 </div>
                 <div class="project-skills" *ngIf="proyecto.capabilities">
                   <div class="skills-title">
@@ -186,9 +184,9 @@
                   <div>{{proyecto.descripcion || 'Sin descripción'}}</div>
                 </div>
                 
-                <div class="project-progress completed">
-                  <div class="progress-bar" [style.width]="'100%'"></div>
-                  <span>100%</span>
+                <div class="project-progress">
+                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
+                  <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
                 </div>
               </div>
             </div>
