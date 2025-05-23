@@ -959,9 +959,14 @@ changeActiveChart(chartType: string) {
     }
 
 
-    // edicion de trayectoria
-    if(tipo == 2){
-      this.editandoTrayectoria = false;
+    if (tipo == 2) { // edición de trayectoria
+    if (this.editandoIndice !== null) {
+      this.cancelarEdicionExperiencia(this.editandoIndice);
+    }
+    this.experiencias = this.experiencias.filter(exp => !exp.esNueva);
+    
+    this.editandoTrayectoria = false;
+    this.editandoIndice = null;
     }
   }
 }
