@@ -39,7 +39,7 @@ export class SignUpComponent {
   }
 
   signup(): void {
-  this.email = this.removeSpaces(this.email); // Eliminar espacios del correo
+  this.email = this.removeSpaces(this.email); 
   if (!this.name || !this.patlastname || !this.password || !this.email) {
     this.mensaje = 'Debes llenar los campos obligatorios.';
     return;
@@ -57,8 +57,7 @@ export class SignUpComponent {
       if(response.success){
         this.mensaje = 'Se mandó un correo para verificar la cuenta'
       }else{
-        // Traducir mensajes de error comunes relacionados con el correo
-        if (response.error.includes('Invalid email') || response.error.includes('invalid email')) {
+        if (response.error.includes('Invalid email') || response.error.includes('invalid email') || response.error.includes('Unable to validate email address: invalid format')) {
           this.mensaje = 'Correo electrónico inválido';
         } else if (response.error.includes('Email already exists') || response.error.includes('already registered')) {
           this.mensaje = 'Este correo electrónico ya está registrado';
@@ -68,8 +67,7 @@ export class SignUpComponent {
         console.log(this.mensaje);
       }
     }, error: (err) => {
-      // Traducir mensajes de error comunes en las respuestas de error
-      if (err.error?.error?.includes('Invalid email') || err.error?.error?.includes('invalid email')) {
+      if (err.error?.error?.includes('Invalid email') || err.error?.error?.includes('invalid email') || err.error?.error?.includes('Unable to validate email address: invalid format')) {
         this.mensaje = 'Correo electrónico inválido';
       } else if (err.error?.error?.includes('Email already exists') || err.error?.error?.includes('already registered')) {
         this.mensaje = 'Este correo electrónico ya está registrado';
