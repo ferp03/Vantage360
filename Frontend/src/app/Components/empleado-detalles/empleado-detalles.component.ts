@@ -944,7 +944,9 @@ changeActiveChart(chartType: string) {
   cancelarEdicion(tipo: number): void {
     if(tipo == 1){ // edicion de informaciuon personal
       // Restablecer los valores originales
+      this.nuevoUsuario = this.info.usuario;
       this.nuevoEstado = this.info.estado_laboral;
+      this.nuevaCiudad = { id: '', nombre: this.info.ubicacion };
       this.editandoInfo = false; // Salir del modo edición
     }
 
