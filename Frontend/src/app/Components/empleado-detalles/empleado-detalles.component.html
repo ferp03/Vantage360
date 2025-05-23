@@ -366,7 +366,10 @@
   <div class="modal" *ngIf="mostrarModalContrasena">
     <div class="modal-contenido">
       <h3><span class="material-icons">lock</span> Cambiar contraseña</h3>
-
+      <div class="mensaje-exito" *ngIf="mostrarMensajeExito">
+        <span class="material-icons">check_circle</span>
+          ¡Contraseña cambiada con éxito!
+      </div>
       <label><span class="material-icons">vpn_key</span> Contraseña actual:</label>
       <input type="password" [(ngModel)]="contrasenaActual" />
       <span class="error" *ngIf="erroresPass.actual">Campo requerido</span>

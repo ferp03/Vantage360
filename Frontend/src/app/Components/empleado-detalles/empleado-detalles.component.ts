@@ -144,6 +144,7 @@ export class EmpleadoDetallesComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private location: Location
   ) {}
+  mostrarMensajeExito: boolean = false;
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -644,7 +645,14 @@ export class EmpleadoDetallesComponent implements OnInit {
 
         this.apiService.cambiarContrasena(this.empleadoId!, nuevaTrim).subscribe({
           next: () => {
-            this.cerrarModalContrasena();
+            // Mostrar mensaje de éxito
+            this.mostrarMensajeExito = true;
+            
+            // Cerrar después de 2 segundos
+            setTimeout(() => {
+              this.cerrarModalContrasena();
+              this.mostrarMensajeExito = false;
+            }, 2000);
           },
           error: (err) => {
             console.error('Error al cambiar la contraseña:', err);
