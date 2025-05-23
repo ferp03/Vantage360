@@ -68,7 +68,13 @@
       </div>
       
       <div class="etiquetas-habilidad">
-        <span *ngFor="let habilidad of habilidades">{{ habilidad }}</span>
+        <div *ngFor="let habilidad of habilidades" class="habilidad-container">
+          <span class="habilidad-etiqueta">{{ habilidad.nombre }}</span>
+          <div class="habilidad-tooltip">
+            <div><strong>Nivel:</strong> {{ habilidad.nivel }}</div>
+            <div><strong>Descripción:</strong> {{ habilidad.descripcion }}</div>
+          </div>
+        </div>
       </div>
       <h4><span class="material-icons">school</span> Certificados</h4>
       <ul>
