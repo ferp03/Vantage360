@@ -8,7 +8,7 @@ interface PeopleLead {
   rol: string;
   nombre_completo: string;
 };
-
+ 
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
@@ -39,30 +39,47 @@ export class SignUpComponent {
   }
 
   signup(): void {
-    this.email = this.removeSpaces(this.email); // Eliminar espacios del correo
-    if (!this.name || !this.patlastname || !this.password || !this.email) {
-      this.mensaje = 'Debes llenar los campos obligatorios.';
-      return;
-    }else if(this.password !== this.password2){
-      this.mensaje = 'Las contraseñas no coinciden';
-      return;
-    }
+  this.email = this.removeSpaces(this.email); // Eliminar espacios del correo
+  if (!this.name || !this.patlastname || !this.password || !this.email) {
+    this.mensaje = 'Debes llenar los campos obligatorios.';
+    return;
+  } else if (this.password.length < 8) {
+    this.mensaje = 'La contraseña debe tener al menos 8 caracteres.';
+    return;
+  } else if(this.password !== this.password2){
+    this.mensaje = 'Las contraseñas no coinciden';
+    return;
+  }
 
-    this.api.signup(this.name, this.patlastname, this.matlastname, this.email, this.password).subscribe({
-      next: (response: any) => {
-        console.log(response)
-        if(response.success){
-          this.mensaje = 'Se mandó un correo para verificar la cuenta'
-        }else{
+  this.api.signup(this.name, this.patlastname, this.matlastname, this.email, this.password).subscribe({
+    next: (response: any) => {
+      console.log(response)
+      if(response.success){
+        this.mensaje = 'Se mandó un correo para verificar la cuenta'
+      }else{
+        // Traducir mensajes de error comunes relacionados con el correo
+        if (response.error.includes('Invalid email') || response.error.includes('invalid email')) {
+          this.mensaje = 'Correo electrónico inválido';
+        } else if (response.error.includes('Email already exists') || response.error.includes('already registered')) {
+          this.mensaje = 'Este correo electrónico ya está registrado';
+        } else {
           this.mensaje = response.error;
-          console.log(this.mensaje);
         }
-      }, error: (err) => {
-        this.mensaje = err.error?.error || 'Hubo un error al intentar al crear la cuenta';
         console.log(this.mensaje);
       }
-    });
-  }
+    }, error: (err) => {
+      // Traducir mensajes de error comunes en las respuestas de error
+      if (err.error?.error?.includes('Invalid email') || err.error?.error?.includes('invalid email')) {
+        this.mensaje = 'Correo electrónico inválido';
+      } else if (err.error?.error?.includes('Email already exists') || err.error?.error?.includes('already registered')) {
+        this.mensaje = 'Este correo electrónico ya está registrado';
+      } else {
+        this.mensaje = err.error?.error || 'Hubo un error al intentar crear la cuenta';
+      }
+      console.log(this.mensaje);
+    }
+  });
+}
 
   getLeads() {
     this.api.getLeads().subscribe({
