@@ -1,22 +1,18 @@
-body {
-  overflow-x: hidden;
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
 .participacion-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 92vh;
+  width: 100vw;
   background: var(--accenture-gray-50);
-  padding: 0;
+  padding: 3.6rem;
+  padding-top: 0;
   box-sizing: border-box;
-  margin-top: 45px;
-  width: 100%;
-  max-width: 100vw; 
-  overflow-x: hidden; 
+  overflow-y: scroll;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
 }
 
 .tabs-container {
@@ -249,8 +245,9 @@ body {
 .skills-title {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  color: #4c51bf;
+  color: #3c065f;
   margin-bottom: 8px;
   font-weight: 500;
   font-size: 0.9rem;
@@ -269,6 +266,16 @@ body {
   border-radius: 16px;
   font-size: 0.8rem;
   font-weight: 500;
+}
+
+.toggle-title {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-title.active {
+  font-weight: bold;
+  color: #4c51bf;
 }
 
 /* Acciones */
