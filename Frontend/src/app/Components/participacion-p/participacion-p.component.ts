@@ -4,6 +4,19 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { ProyectosComponent } from '../proyectos/proyectos.component';
 import { ApiService } from 'src/app/services/api.service';
 
+interface Capabilities {
+  status: string;
+  puestos: {
+    [nombrePuesto: string]: number;
+  };
+}
+
+interface Habilidad {
+  nombre: string;
+  habilidad_id: number;
+  nivel_esperado: string;
+}
+
 interface Proyecto {
   proyecto_id: number;
   nombre: string;
@@ -11,7 +24,9 @@ interface Proyecto {
   fecha_inicio: string;
   fecha_fin: string;
   progreso: number;
-  capabilities: any;
+  capabilities: Capabilities;
+  habilidades: Habilidad[];
+  selectedVista: string;
 }
 
 @Component({
@@ -22,6 +37,9 @@ interface Proyecto {
 export class ParticipacionPComponent implements OnInit {
   activeTab: string = 'disponibles';
   
+  selectedVista: 'puestos' | 'habilidades' = 'puestos';
+
+
   proyectosDisponibles: Proyecto[] = [];
   proyectosActuales: Proyecto[] = [];
   proyectosPasados: Proyecto[] = [];
@@ -41,7 +59,9 @@ export class ParticipacionPComponent implements OnInit {
     this.cargarProyectosActuales();
   }
 
-  
+  setVistaProyecto(proyecto: Proyecto, vista: 'puestos' | 'habilidades') {
+    (proyecto as any).selectedVista = vista;
+  }
 
   showAddProjectButton(): boolean {
     const allowedRoles = ['people lead', 'delivery lead'];
@@ -93,7 +113,9 @@ export class ParticipacionPComponent implements OnInit {
     this.apiService.getProyectosDisponibles(this.authService.userId)
       .subscribe({
         next: (response: any) => {
+          console.log(response);
           this.proyectosDisponibles = response.proyectos || response || [];
+          this.proyectosDisponibles.forEach(p => (p as any).selectedVista = 'puestos');
           this.disponiblesCount = this.proyectosDisponibles.length;
         },
         error: (error) => {
@@ -104,9 +126,11 @@ export class ParticipacionPComponent implements OnInit {
       });
   }
 
-  getSkills(capabilities: any): string[] {
-    if (!capabilities) return [];
-    return Object.keys(capabilities).filter(key => capabilities[key]);
+  getPuestos(capabilities: Capabilities): string[] {
+    if (!capabilities || !capabilities.puestos) return [];
+    return Object.entries(capabilities.puestos).map(
+      ([nombre, cantidad]) => `${nombre} (${cantidad})`
+    );
   }
   
   // Agrega este método para filtrar proyectos por fecha

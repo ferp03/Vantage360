@@ -1,4 +1,4 @@
-<body>
+<!-- <body> -->
 <div class="participacion-container">
   <main class="participacion-content">
     <div class="tabs-container">
@@ -63,16 +63,39 @@
                   </div>
                   <div>{{proyecto.descripcion || 'Sin descripción'}}</div>
                 </div>
+
                 <div class="project-skills" *ngIf="proyecto.capabilities">
                   <div class="skills-title">
-                    <span class="material-icons">construction</span> Habilidades requeridas:
+                    <span 
+                      class="toggle-title" 
+                      [class.active]="proyecto.selectedVista === 'puestos'" 
+                      (click)="setVistaProyecto(proyecto, 'puestos')"
+                      style="cursor:pointer"
+                    >
+                      <span class="material-icons">construction</span> Puestos
+                    </span>
+                    <span> | </span>
+                    <span 
+                      class="toggle-title" 
+                      [class.active]="proyecto.selectedVista === 'habilidades'" 
+                      (click)="setVistaProyecto(proyecto, 'habilidades')"
+                      style="cursor:pointer"
+                    >
+                      <span class="material-icons">psychology</span> Habilidades
+                    </span>
                   </div>
-                <div class="skills-tags">
-                  <span class="skill-tag" *ngFor="let skill of getSkills(proyecto.capabilities)">
-                    {{skill}}
-                  </span>
+                  <div class="skills-tags" *ngIf="proyecto.selectedVista === 'puestos'">
+                    <span class="skill-tag" *ngFor="let puesto of getPuestos(proyecto.capabilities)">
+                      {{puesto}}
+                    </span>
+                  </div>
+                  <div class="skills-tags" *ngIf="proyecto.selectedVista === 'habilidades'">
+                    <span class="skill-tag" *ngFor="let habilidad of proyecto.habilidades">
+                      {{habilidad.nombre}} ({{habilidad.nivel_esperado}})
+                    </span>
+                  </div>
                 </div>
-              </div>
+
                 <div class="project-progress">
                   <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
                   <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
@@ -129,11 +152,11 @@
                 </div>
                 <div class="project-skills" *ngIf="proyecto.capabilities">
                   <div class="skills-title">
-                    <span class="material-icons">construction</span> Habilidades requeridas:
+                    <span class="material-icons">construction</span> Puestos disponibles:
                   </div>
                 <div class="skills-tags">
-                  <span class="skill-tag" *ngFor="let skill of getSkills(proyecto.capabilities)">
-                    {{skill}}
+                  <span class="skill-tag" *ngFor="let puesto of getPuestos(proyecto.capabilities)">
+                    {{puesto}}
                   </span>
                 </div>
               </div>
@@ -196,4 +219,4 @@
     </div>
   </main>
 </div>
-</body>
+<!-- </body> -->
