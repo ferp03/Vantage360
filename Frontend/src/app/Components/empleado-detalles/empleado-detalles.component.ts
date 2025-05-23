@@ -148,7 +148,6 @@ export class EmpleadoDetallesComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private location: Location
   ) {}
-  mostrarMensajeExito: boolean = false;
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
