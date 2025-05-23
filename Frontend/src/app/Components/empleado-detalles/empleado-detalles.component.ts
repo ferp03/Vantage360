@@ -63,6 +63,13 @@ interface Curso {
   obligatorio: boolean;
 }
 
+interface Habilidad {
+  id?: number;
+  nombre: string;
+  nivel: string;
+  descripcion: string;
+}
+
 @Component({
   selector: 'app-empleado-detalles',
   templateUrl: './empleado-detalles.component.html',
@@ -106,7 +113,7 @@ export class EmpleadoDetallesComponent implements OnInit {
   mensajeExito: string = '';
   mostrarMensajeExito: boolean = false;
   activeChart = "pie2";  
-  habilidades: string[] = [];
+  habilidades: Habilidad[] = [];
   certificados: Ceritifcado[] = [];
   cursos: Curso[] = [];
   experiencias: ExperienciaLaboral[] = [];
@@ -235,13 +242,27 @@ export class EmpleadoDetallesComponent implements OnInit {
 
   cargarHabilidades() {
     if (!this.empleadoId) return;
+    
     this.apiService.getEmpleadoHabilidades(this.empleadoId).subscribe({
       next: (res) => {
         if (res.success) {
-          this.habilidades = res.data;
+          console.log('Datos de habilidades recibidos:', res.data); // Para depuración
+          
+          // Asegurar que todos los campos existan
+          this.habilidades = res.data.map((hab: any) => ({
+            id: hab.id || null,
+            nombre: hab.nombre || 'Habilidad sin nombre',
+            nivel: hab.nivel || hab.nivel_habilidad || 'Nivel no especificado',
+            descripcion: hab.descripcion || 'Sin descripción disponible',
+          }));
+          
+          console.log('Habilidades procesadas:', this.habilidades); // Verificar el resultado
         }
       },
-      error: (err) => console.error('Error al obtener habilidades:', err)
+      error: (err) => {
+        console.error('Error al obtener habilidades:', err);
+        // Opcional: mostrar mensaje al usuario
+      }
     });
   }
 

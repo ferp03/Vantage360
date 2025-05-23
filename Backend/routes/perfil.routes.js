@@ -56,26 +56,46 @@ router.get('/empleado/info/:id', async (req, res) => {
 router.get('/empleado/:id/habilidades', async (req, res) => {
   const { id } = req.params;
 
-  const { data, error } = await supabase
-    .from('_empleado_habilidad')
-    .select(`
-      habilidad:_habilidad (
-        nombre
-      )
-    `)
-    .eq('empleado_id', id);
+  try {
+    const { data, error } = await supabase
+      .from('_empleado_habilidad')
+      .select(`
+        habilidad:_habilidad (
+          nombre,
+          categoria
+        ),
+        nivel,
+        descripcion
+      `)
+      .eq('empleado_id', id);
 
-  if (error) {
-    console.error('Error al obtener habilidades del empleado:', error.message);
-    return res.status(500).json({ success: false, error: 'No se pudieron obtener las habilidades' });
+    if (error) {
+      console.error('Error al obtener habilidades del empleado:', error.message);
+      return res.status(500).json({ 
+        success: false, 
+        error: 'No se pudieron obtener las habilidades' 
+      });
+    }
+
+    // Mapear los datos a un formato más conveniente
+    const habilidades = data.map(entry => ({
+      nombre: entry.habilidad.nombre,
+      categoria: entry.habilidad.categoria,
+      nivel: entry.nivel || 'Nivel no especificado',
+      descripcion: entry.descripcion || 'Sin descripción'
+    }));
+
+    return res.status(200).json({
+      success: true,
+      data: habilidades
+    });
+  } catch (err) {
+    console.error('Error inesperado:', err);
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Error del servidor' 
+    });
   }
-
-  const habilidades = data.map(entry => entry.habilidad.nombre);
-
-  return res.status(200).json({
-    success: true,
-    data: habilidades
-  });
 });
 
 // Certificaciones

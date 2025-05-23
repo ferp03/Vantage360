@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../envs/environment';
 import { Observable, of, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -75,7 +75,28 @@ export class ApiService {
 
   // Habilidades
   getEmpleadoHabilidades(id: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/empleado/${id}/habilidades`);
+    return this.http.get(`${this.apiUrl}/empleado/${id}/habilidades`).pipe(
+      map((res: any) => {
+        if (res.success) {
+          // Normalizar los datos para que siempre sean objetos completos
+          res.data = res.data.map((hab: any) => {
+            if (typeof hab === 'string') {
+              return {
+                nombre: hab,
+                nivel: 'Nivel no especificado',
+                descripcion: 'Descripción no disponible'
+              };
+            }
+            return hab; // Si ya es objeto, dejarlo como está
+          });
+        }
+        return res;
+      }),
+      catchError(error => {
+        console.error('Error al obtener habilidades:', error);
+        return throwError(error);
+      })
+    );
   }
 
   // Certificaciones
