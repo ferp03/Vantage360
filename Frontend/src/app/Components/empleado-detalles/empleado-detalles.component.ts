@@ -100,7 +100,11 @@ export class EmpleadoDetallesComponent implements OnInit {
     formatoEmail: false,
   };
 
-
+  mensajeCambioContrasena = '';
+  mostrarMensajeCambioContrasena = false;
+  mensajeDesvanecido: boolean = false;
+  mensajeExito: string = '';
+  mostrarMensajeExito: boolean = false;
   activeChart = "pie2";  
   habilidades: string[] = [];
   certificados: Ceritifcado[] = [];
@@ -633,18 +637,30 @@ export class EmpleadoDetallesComponent implements OnInit {
       return;
     }
 
+    if (actualTrim === nuevaTrim) {
+    this.erroresPass.nueva = true;
+    this.erroresPass.mensajeError = 'La nueva contraseña no puede ser igual a la actual.';
+    return;
+  }
+
     if (!this.empleadoId) return;
 
     this.apiService.validarContrasena(this.empleadoId, actualTrim, this.info.correo).subscribe({
       next: (res) => {
         if (!res.success) {
           this.erroresPass.actual = true;
-          this.erroresPass.mensajeError = res.error;
+          this.erroresPass.nueva = false;
+          this.erroresPass.confirmar = false;
+          this.erroresPass.mensajeError = res.error || 'La contraseña actual es incorrecta';
           return;
         }
 
+        this.erroresPass.actual = false;
+        this.erroresPass.mensajeError = '';
+
         this.apiService.cambiarContrasena(this.empleadoId!, nuevaTrim).subscribe({
           next: () => {
+
             // Mostrar mensaje de éxito
             this.mostrarMensajeExito = true;
             
@@ -653,6 +669,21 @@ export class EmpleadoDetallesComponent implements OnInit {
               this.cerrarModalContrasena();
               this.mostrarMensajeExito = false;
             }, 2000);
+
+           /*
+            this.cerrarModalContrasena();
+            this.mostrarMensajeCambioContrasena = true;
+            this.mensajeCambioContrasena = 'Contraseña actualizada exitosamente';
+
+            setTimeout(() => {
+              this.mensajeDesvanecido = true;
+            }, 1000); 
+
+            setTimeout(() => {
+              this.mostrarMensajeCambioContrasena = false;
+              this.mensajeDesvanecido = false;
+            }, 3000);
+            */
           },
           error: (err) => {
             console.error('Error al cambiar la contraseña:', err);
@@ -742,6 +773,16 @@ export class EmpleadoDetallesComponent implements OnInit {
             this.nuevoEstado = datosActualizados.estado_laboral;
           }
           this.editandoInfo = false;
+          this.mensajeExito='Información actualizada correctamente';
+          this.mostrarMensajeExito=true;
+
+          setTimeout(() => {
+            this.mensajeDesvanecido = true;
+          }, 1000); 
+          setTimeout(() => {
+            this.mostrarMensajeExito = false;
+            this.mensajeDesvanecido = false;
+          }, 3000); 
         } else {
           // Mostrar mensaje de error del backend
           alert(res.error || 'Error al actualizar la información');

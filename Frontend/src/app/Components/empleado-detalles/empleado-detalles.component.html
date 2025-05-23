@@ -1,6 +1,16 @@
 <div class="contenedor-detalle">
   <h1><span class="material-icons">account_circle</span> {{ info.nombre }}</h1>
+  <div *ngIf="mostrarMensajeCambioContrasena" class="alert alert-success mt-3"
+     [style.animation]="mensajeDesvanecido ? 'fadeOut 0.3s ease-in-out forwards' : 'fadeIn 0.3s ease-in-out'">
+  <span class="material-icons" style="margin-right: 8px;">check_circle</span>
+  {{ mensajeCambioContrasena }}
+</div>
   <div class="caja-info" [ngClass]="{ 'editando': editandoInfo }">
+  <div *ngIf="mostrarMensajeExito" class="alert alert-success mt-3" 
+    [style.animation]="mensajeDesvanecido ? 'fadeOut 0.3s ease-in-out forwards' : 'fadeIn 0.3s ease-in-out'">
+  <span class="material-icons" style="margin-right: 8px;">check_circle</span>
+  {{ mensajeExito }}
+</div>
   <h2><span class="material-icons">info</span>Informacion Personal</h2>
   <div class="caja-info-superior">
     <div class="izquierda" [ngClass]="{ 'modo-edicion': editandoInfo }">
@@ -97,6 +107,7 @@
     <span class="material-icons">cancel</span>
     Cancelar
   </button>
+
   <button
     class="boton-editar"
     *ngIf="esMiPerfil"
@@ -378,18 +389,21 @@
         <span class="material-icons">lock_open</span> Nueva contraseña:
       </label>
       <input type="password" [(ngModel)]="nuevaContrasena" />
-      <span class="error" *ngIf="erroresPass.nueva"
-        >La contraseña debe tener al menos 8 caracteres</span
-      >
+      <span class="error" *ngIf="erroresPass.nueva">
+        {{erroresPass.mensajeError || 'La contraseña debe tener al menos 8 caracteres'}}
+      </span>
 
       <label>
         <span class="material-icons">lock_outline</span> Confirmar nueva contraseña:
       </label>
       <input type="password" [(ngModel)]="confirmarContrasena" />
-      <span class="error" *ngIf="erroresPass.confirmar"
-        >Las contraseñas no coinciden</span
-      >
-      <p *ngIf="erroresPass.mensajeError">{{erroresPass.mensajeError}}</p>
+      <span class="error" *ngIf="erroresPass.confirmar">Las contraseñas no coinciden</span>
+      
+
+      <div class="error-mensaje" *ngIf="erroresPass.mensajeError">
+        <span class="material-icons">error</span> {{erroresPass.mensajeError}}
+      </div>
+
       <div class="acciones-modal">
         <button (click)="confirmarCambioContrasena()">
           <span class="material-icons">check</span> Confirmar

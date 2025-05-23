@@ -170,8 +170,8 @@ cargarProyectosActuales(): void {
         const proyectos = response.proyectos || response || [];
         const { actuales, pasados } = this.filtrarProyectosPorFecha(proyectos);
         
-        this.proyectosActuales = actuales;
-        this.proyectosPasados = pasados;
+        this.proyectosActuales = actuales.map(p => ({ ...p, selectedVista: 'puestos' }));
+        this.proyectosPasados = pasados.map(p => ({ ...p, selectedVista: 'puestos' }));
         this.actualesCount = this.proyectosActuales.length;
         this.pasadosCount = this.proyectosPasados.length;
       },
