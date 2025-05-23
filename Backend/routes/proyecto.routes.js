@@ -54,7 +54,8 @@ router.post('/proyecto', async (req, res) => {
       fecha_fin,
       progreso = 0,
       cargabilidad = null,
-      capabilities
+      capabilities,
+      habilidades
     } = req.body;
 
     if (!nombre || !delivery_lead) {
@@ -72,8 +73,10 @@ router.post('/proyecto', async (req, res) => {
       fecha_fin:    fecha_fin    || null,
       progreso,
       cargabilidad,
-      capabilities                
+      capabilities
     };
+
+    console.log(projectData);
 
     const { data, error } = await supabase
       .from('proyecto')
@@ -81,10 +84,52 @@ router.post('/proyecto', async (req, res) => {
       .select();
 
     if (error) {
+      console.log('Error al insertar proyecto', error)
       return res.status(400).json({
         success: false,
         error: error.message || 'Error desconocido',
         details: error
+      });    
+    }
+
+    console.log('Proyecto creado');
+
+    const proyecto_id = data[0].proyecto_id;
+
+    const relacion_empleado = {
+      empleado_id: delivery_lead,
+      proyecto_id: proyecto_id
+    };
+
+    const { error2 } = await supabase
+      .from('empleado_proyecto')
+      .insert(relacion_empleado);
+
+    if(error2) {
+      console.log(error2);
+      return res.status(400).json({success: false, error: error2.message});
+    }
+    console.log('Empleado relacionado');
+
+    const habilidadesPayload = habilidades.map(h => ({
+      proyecto_id,
+      habilidad_id: h.habilidad_id,
+      nivel_esperado: h.nivel
+    }));
+
+
+    console.log(habilidadesPayload);
+
+    const { error: errorHabs } = await supabase
+      .from('proyecto_habilidad')
+      .insert(habilidadesPayload);
+
+    if (errorHabs) {
+      console.log(errorHabs)
+      return res.status(400).json({
+        success: false,
+        error: errorHabs.message || 'Error insertando habilidades',
+        details: errorHabs
       });
     }
 
