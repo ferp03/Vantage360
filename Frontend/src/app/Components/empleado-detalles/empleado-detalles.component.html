@@ -26,8 +26,7 @@
         <p *ngIf="!editandoInfo">
           <strong><mat-icon>person</mat-icon> Usuario:</strong> {{ nuevoUsuario || 'No asignado' }}
         </p>
-
-
+        <br/>
         <p *ngIf="!editandoInfo">
           <strong><mat-icon>notifications</mat-icon> Estado Laboral:</strong> {{ nuevoEstado | titlecase }}
         </p>
@@ -43,7 +42,6 @@
 
         <p><strong><span class="material-icons">person</span> People Lead:</strong> {{ info.lead_usuario }}</p>
         <p><strong><span class="material-icons">calendar_today</span> Desde:</strong> {{ info.desde }}</p>
-        
         <p *ngIf="!editandoInfo">
           <strong><mat-icon>pin_drop</mat-icon> Ciudad:</strong> {{ nuevaCiudad.nombre || 'No asignada' }}
         </p>
@@ -89,6 +87,7 @@
     </div>
     <div class="derecha"></div> 
   </div>
+  <br/>
   <div class="botones"> 
     <div>
       <button
@@ -378,7 +377,10 @@
   <div class="modal" *ngIf="mostrarModalContrasena">
     <div class="modal-contenido">
       <h3><span class="material-icons">lock</span> Cambiar contraseña</h3>
-
+      <div class="mensaje-exito" *ngIf="mostrarMensajeExito">
+        <span class="material-icons">check_circle</span>
+          ¡Contraseña cambiada con éxito!
+      </div>
       <label><span class="material-icons">vpn_key</span> Contraseña actual:</label>
       <input type="password" [(ngModel)]="contrasenaActual" />
       <span class="error" *ngIf="erroresPass.actual">Campo requerido</span>

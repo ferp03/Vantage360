@@ -133,7 +133,6 @@ export class ParticipacionPComponent implements OnInit {
     );
   }
   
-  // Agrega este método para filtrar proyectos por fecha
 private filtrarProyectosPorFecha(proyectos: Proyecto[]): {
   actuales: Proyecto[];
   pasados: Proyecto[];
@@ -154,7 +153,7 @@ private filtrarProyectosPorFecha(proyectos: Proyecto[]): {
   return { actuales, pasados };
 }
 
-// Modifica el método cargarProyectosActuales
+// CargarProyectosActuales
 cargarProyectosActuales(): void {
   if (!this.authService.userId) {
     console.error('User ID is not available');

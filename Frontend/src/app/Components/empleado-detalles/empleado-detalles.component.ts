@@ -148,6 +148,7 @@ export class EmpleadoDetallesComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private location: Location
   ) {}
+  mostrarMensajeExito: boolean = false;
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -659,6 +660,17 @@ export class EmpleadoDetallesComponent implements OnInit {
 
         this.apiService.cambiarContrasena(this.empleadoId!, nuevaTrim).subscribe({
           next: () => {
+
+            // Mostrar mensaje de éxito
+            this.mostrarMensajeExito = true;
+            
+            // Cerrar después de 2 segundos
+            setTimeout(() => {
+              this.cerrarModalContrasena();
+              this.mostrarMensajeExito = false;
+            }, 2000);
+
+           /*
             this.cerrarModalContrasena();
             this.mostrarMensajeCambioContrasena = true;
             this.mensajeCambioContrasena = 'Contraseña actualizada exitosamente';
@@ -671,6 +683,7 @@ export class EmpleadoDetallesComponent implements OnInit {
               this.mostrarMensajeCambioContrasena = false;
               this.mensajeDesvanecido = false;
             }, 3000);
+            */
           },
           error: (err) => {
             console.error('Error al cambiar la contraseña:', err);
@@ -980,14 +993,21 @@ changeActiveChart(chartType: string) {
   cancelarEdicion(tipo: number): void {
     if(tipo == 1){ // edicion de informaciuon personal
       // Restablecer los valores originales
+      this.nuevoUsuario = this.info.usuario;
       this.nuevoEstado = this.info.estado_laboral;
+      this.nuevaCiudad = { id: '', nombre: this.info.ubicacion };
       this.editandoInfo = false; // Salir del modo edición
     }
 
 
-    // edicion de trayectoria
-    if(tipo == 2){
-      this.editandoTrayectoria = false;
+    if (tipo == 2) { // edición de trayectoria
+    if (this.editandoIndice !== null) {
+      this.cancelarEdicionExperiencia(this.editandoIndice);
+    }
+    this.experiencias = this.experiencias.filter(exp => !exp.esNueva);
+    
+    this.editandoTrayectoria = false;
+    this.editandoIndice = null;
     }
   }
 }
