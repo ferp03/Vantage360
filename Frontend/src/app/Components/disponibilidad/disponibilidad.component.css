@@ -230,6 +230,30 @@
   color: hsl(var(--primary));
 }
 
+.boton-comentario{
+  background: none;          /* Elimina el fondo */
+  border: none;              /* Elimina el borde */
+  padding: 0;                /* Elimina el padding por defecto */
+  margin: 0;                 /* Elimina el margen por defecto */
+  cursor: pointer;           /* Mantiene el cursor de pointer */
+  outline: none;
+}
+
+button:hover {
+  opacity: 0.8;              /* Efecto de hover sutil */
+}
+
+button:active {
+  transform: scale(0.90);    /* Efecto de click sutil */
+}
+
+/* Estilos específicos para el icono si es necesario */
+button mat-icon.icono-persona {
+  color: #333;               /* Color del icono */
+  transition: all 0.2s ease; /* Transición suave para efectos */
+}
+
+
 /* Paginación */
 .pagination {
   display: flex;
@@ -266,7 +290,7 @@
   color: hsl(var(--accenture-black));
 }
 
-/* Modal de edición */
+/* Estilos para el modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -281,14 +305,16 @@
 }
 
 .modal {
-  width: 400px;
   background-color: hsl(var(--card));
   color: hsl(var(--foreground));
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
 }
 
+/* Encabezado común para modales */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -310,20 +336,14 @@
   cursor: pointer;
 }
 
+/* Contenido del modal */
 .modal-content {
   padding: 20px;
-  color: black;
+  color: var(--foreground);
+  overflow-y: auto;
 }
 
-.form-group select, .form-group input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid rgba(138, 86, 232, 0.3);
-  border-radius: 4px;
-  background-color: var(--accenture-gray-100);;
-  color: black;
-}
-
+/* Botones */
 .btn-guardar, .btn-cancelar {
   padding: 0.6rem 1.2rem;
   border: none;
@@ -354,25 +374,24 @@
 }
 
 .btn-cancelar:hover {
-  background-color: var(--accenture-gray-600);;
+  background-color: var(--accenture-gray-600);
   transform: translateY(-2px);
 }
 
-.modal-footer{
+.modal-footer {
   display: flex;
-  align-items: center;
   justify-content: center;
   gap: 20px;
-  padding-bottom: 20px;
+  padding: 15px 20px;
+  border-top: 1px solid hsl(var(--ring));
 }
 
-textarea {
+/* Inputs y textarea */
+.form-group select, .form-group input, textarea {
   width: 100%;
-  min-height: 100px;
-  padding: 10px;
+  padding: 8px;
   border: 1px solid rgba(138, 86, 232, 0.3);
   border-radius: 4px;
-  resize: none;
   background-color: var(--accenture-gray-100);
   color: var(--foreground);
   font-family: inherit;
@@ -380,11 +399,58 @@ textarea {
   margin-top: 5px;
 }
 
-textarea:focus {
+textarea {
+  min-height: 100px;
+  resize: none;
+}
+
+textarea:focus,
+.form-group select:focus,
+.form-group input:focus {
   outline: none;
   border-color: hsl(var(--primary));
   box-shadow: 0 0 0 2px hsla(var(--primary), 0.3);
 }
+
+/* Estilo del modal de edición */
+.edit-modal.modal {
+  width: 400px;
+  max-height: 90vh;
+}
+
+/* Estilo del modal de comentarios */
+.comment-modal.modal {
+  width: 800px;
+  max-height: 90vh;
+  flex-direction: column;
+}
+
+.comentario-item {
+  border: 1px solid #ccc;  /* Borde gris claro */
+  padding: 10px;           /* Espaciado interno */
+  margin-bottom: 10px;     /* Espacio entre elementos */
+  border-radius: 5px;      /* Bordes redondeados */
+  background-color: var(--accenture-gray-100); /* Color de fondo suave */
+  width: 30%;
+}
+
+.fecha-comentario {
+  font-size: 0.8rem;       /* Tamaño de fuente más pequeño */
+  color: var(--accenture-gray-400);            /* Color de texto gris */
+  font-style: italic;     /* Texto en cursiva */
+  margin-top: 5px;        /* Espacio superior */
+  display: inline-block;  /* Permite aplicar márgenes */
+}
+
+.icono-persona, .icono-proyecto {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+  vertical-align: middle;
+  margin-right: 5px;
+  color: var(--primary); /* O el color que prefieras */
+}
+
 
 /* Formulario de búsqueda */
 .form {

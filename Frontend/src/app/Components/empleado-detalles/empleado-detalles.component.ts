@@ -16,6 +16,11 @@ import {
   Title
 } from 'chart.js';
 
+interface SubtitlePluginOptions {
+  text: string;
+  color?: string;
+  font?: string;
+}
 
 interface ExperienciaLaboral {
   historial_id?: number;
@@ -128,6 +133,8 @@ export class EmpleadoDetallesComponent implements OnInit {
     confirmar: false,
     mensajeError: ""
   };
+
+  
 
   nuevoEstado: string = '';
   nuevoUsuario: string = '';
@@ -900,35 +907,60 @@ async crearGraficaPie2(progresoPromedio: number , percent: number): Promise<void
   // Extraer los datos filtrados
   const etiquetas = cursosFiltrados.map(c => etiquetasCompletas[c.indice]);
   const datos = cursosFiltrados.map(c => obtenerProgresoCursos[c.indice]);
+  // Define the plugin
+  const subtitlePlugin = {
+  id: 'subtitle',  // Note: This is the key identifier
+  afterDraw(chart: Chart, args: any, options: any) {
+    if (!options?.text) return;
 
-  if (this.barChart) {
-    this.barChart.data.labels = etiquetas;
-    this.barChart.data.datasets[0].data = datos;
-    this.barChart.update();
-  } else {
-    this.barChart = new Chart(canvas, {
-      type: 'bar',
-      data: {
-        labels: etiquetas,
-        datasets: [{
-          label: 'Cursos',
-          data: datos,
-          backgroundColor: ['#9668e6', '#818181']
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false },
-          title: {
-            display: true,
-            text: 'Progreso de Cursos (%)',
-            color: '#000000',
-            font: { size: 20 }
-          }
+    const { ctx, chartArea: { top, left, right } } = chart;
+    ctx.save();
+    ctx.font = options.font || '14px Arial';
+    ctx.fillStyle = options.color || 'gray';
+    ctx.textAlign = 'center';
+    ctx.fillText(options.text, (left + right) / 2.2, top - 3);
+    ctx.restore();
+  }
+};
+
+// Register the plugin
+Chart.register(subtitlePlugin);
+
+if (this.barChart) {
+  this.barChart.data.labels = etiquetas;
+  this.barChart.data.datasets[0].data = datos;
+  this.barChart.update();
+} else {
+  this.barChart = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: etiquetas,
+      datasets: [{
+        label: 'Cursos',
+        data: datos,
+        backgroundColor: ['#9668e6', '#818181']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'Progreso de Cursos (%)',
+          color: '#000000',
+          font: { size: 20 }
+        },
+        subtitle: {
+          text: '(Últimos 6 meses)',
+          // You can also add font and color here if needed
+          // font: '12px Arial',
+          // color: '#666'
         }
       }
-    });
+    }
+  });
+
   }
 }
 

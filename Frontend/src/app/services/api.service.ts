@@ -195,4 +195,13 @@ export class ApiService {
   subirProyecto(json: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/proyecto`, json);
   }
+
+  obtenerComentarioEmpleado(empleadoId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/empleado/${empleadoId}/comentarios`);
+  }
+
+  agregarComentario(empleadoId: string, datos: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/empleado/${empleadoId}/comentarios`, datos);
+  }
+
 } 

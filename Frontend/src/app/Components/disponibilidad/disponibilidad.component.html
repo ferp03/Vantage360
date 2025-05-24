@@ -180,7 +180,7 @@
 
             <td>
               <!-- Botón para abrir el modal de edición -->
-               <button class="btn-accion" (click)="seleccionarComentarios(empleado)"><mat-icon>chat</mat-icon></button>
+              <button class="btn-accion" (click)="seleccionarComentarios(empleado)"><mat-icon>chat</mat-icon></button>
               <button class="btn-accion" (click)="seleccionarEmpleado(empleado)"><mat-icon>edit</mat-icon></button>
             </td>
           </tr>
@@ -196,8 +196,8 @@
     </div>
 
     <!-- Modal de edición -->
-    <div class="modal-overlay" *ngIf="empleadoSeleccionado">
-      <div class="modal">
+    <div class="modal-overlay edit-modal" *ngIf="empleadoSeleccionado">
+      <div class="modal edit-modal">
         <div class="modal-header">
           <h3>Actualizar disponibilidad</h3>
           <button class="btn-cerrar" (click)="cancelarActualizacion()">×</button>
@@ -231,10 +231,10 @@
     </div>
 
     <!-- Modal de comentarios -->
-<div class="modal-overlay" *ngIf="empleadoSeleccionado && mostrarModalComentarios">
-  <div class="modal">
+<div class="modal-overlay comment-modal" *ngIf="empleadoSeleccionado && mostrarModalComentarios">
+  <div class="modal comment-modal">
     <div class="modal-header">
-      <h3>Agregar comentario</h3>
+      <h3>Comentarios</h3>
       <button class="btn-cerrar" (click)="cancelarComentarios()">×</button>
     </div>
     <div class="modal-content">
@@ -244,22 +244,18 @@
         <p class="correo">{{ empleadoSeleccionado?.email }}</p>
       </div>
       <div>
-        <p>Comentarios:</p>
+       <div>
+        <p>Comentarios <button class="boton-comentario"><mat-icon class="icono-persona">add_circle</mat-icon></button></p>
+        <ul>
+          <li *ngFor="let comentario of comentariosPasados" class="comentario-item">
+            <mat-icon class="icono-persona">person</mat-icon>{{ comentario.autor_nombre }} <br>
+            <mat-icon class="icono-proyecto">assignment</mat-icon>{{ comentario.proyecto_nombre }} <br>
+            {{ comentario.descripcion }} <br>
+            <span class="fecha-comentario">{{ comentario.fecha_generacion | date:'shortDate' }}</span>
+          </li>
+        </ul>
       </div>
-      <div class="form-group">
-        <label for="comentario">Agregar Comentario:</label>
-        <textarea id="comentario" rows="5" [(ngModel)]="comentarioTexto" placeholder="Escribe un comentario..."></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancelar" (click)="cancelarComentarios()">
-        <mat-icon>cancel</mat-icon> Cancelar
-      </button>
-      <button class="btn-guardar" (click)="actualizarComentarios()">
-        <mat-icon>send</mat-icon> Enviar comentario
-      </button>
     </div>
   </div>
 </div>
-
 </div>
