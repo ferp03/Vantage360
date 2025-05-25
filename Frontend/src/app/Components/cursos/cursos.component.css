@@ -270,12 +270,17 @@
   overflow: auto;
   background: linear-gradient(160deg, rgba(0, 0, 0, 0.8), rgba(34, 25, 40, 0.9));
   z-index: 1000;
-  padding-top: 30vh;
+  padding-top: 40vh;
   display: flex;
   justify-content: center;
   align-items: center;
   scrollbar-width: none; /* Para Firefox */
   -ms-overflow-style: none; /* Para Internet Explorer y Edge */
+}
+
+.modal-confirmacion-wrapper {
+  align-items: center !important;
+  padding-top: 0 !important;
 }
 
 .skills-container {
@@ -840,4 +845,20 @@
     padding: 8px 12px;
     font-size: 0.85rem;
   }
+}
+
+.etiqueta-archivo.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.boton-examinar.disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.requisito-progreso {
+  color: #e67e22;
+  font-style: italic;
+  margin-left: 5px;
 }

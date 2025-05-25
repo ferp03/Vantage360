@@ -124,10 +124,17 @@ export class CursosComponent implements OnInit {
   }
 
   onArchivoSeleccionado(event: any) {
-    const archivo = event.target.files[0];
-    if (archivo) this.archivoSeleccionado = archivo;
+  if (this.nuevoCurso.progreso !== 100) {
+    this.formErrores.archivo = 'Solo puedes subir un certificado cuando el progreso es 100%.';
+    return;
   }
-
+  
+  const file = event.target.files[0];
+  if (file) {
+    this.archivoSeleccionado = file;
+    this.formErrores.archivo = '';
+  }
+}
   confirmarEliminarCurso(cursoId: string) {
     this.cursoIdAEliminar = cursoId;
     this.mostrarModalConfirmacion = true;
@@ -184,6 +191,13 @@ export class CursosComponent implements OnInit {
       this.formErrores.nombre = 'El nombre es obligatorio.';
       valido = false;
     }
+
+    if (this.archivoSeleccionado && this.nuevoCurso.progreso !== 100) {
+    this.formErrores.archivo = 'Solo puedes subir un certificado cuando el progreso es 100%.';
+    valido = false;
+  }
+
+    if (!valido) return;
 
     if (
       this.nuevoCurso.fecha_emision &&
