@@ -170,7 +170,9 @@ export class EmpleadoDetallesComponent implements OnInit {
       }
     });
     
-    this.cargarInfoBasica();
+    this.cargarCiudades().then(() => {
+      this.cargarInfoBasica();
+    });
     this.cargarHabilidades();
       // Primero cargamos las capabilities, y después la trayectoria
     this.cargarCapabilities().then(() => {
@@ -232,7 +234,8 @@ export class EmpleadoDetallesComponent implements OnInit {
           };
         this.nuevoEstado = this.info.estado_laboral;
         this.nuevoUsuario = this.info.usuario;
-        this.nuevaCiudad = {id: '', nombre: this.info.ubicacion};
+        const ciudadEncontrada = this.ciudades.find(c => c.nombre === this.info.ubicacion);
+        this.nuevaCiudad = ciudadEncontrada || { id: '', nombre: this.info.ubicacion };
 
         }
       },
@@ -278,21 +281,25 @@ export class EmpleadoDetallesComponent implements OnInit {
     });
   }
 
-  cargarCiudades() {
-    if(!this.empleadoId) return;
-      this.apiService.getCiudades().subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.ciudades = res.data;
-          } else {
-            console.error('Error al cargar ciudades:', res.error);
-          }
-        },
-        error: (err: any) => {
-          console.error('Error al obtener ciudades:', err);
+  cargarCiudades(): Promise<void> {
+  return new Promise<void>((resolve) => {
+    this.apiService.getCiudades().subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.ciudades = res.data;
+        } else {
+          console.error('Error al cargar ciudades:', res.error);
         }
-      });
-  }
+        resolve();
+      },
+      error: (err: any) => {
+        console.error('Error al obtener ciudades:', err);
+        resolve();
+      }
+    });
+  });
+}
+
 
   cargarTrayectoria() {
     if (!this.empleadoId) return;
@@ -1015,7 +1022,8 @@ changeActiveChart(chartType: string) {
       // Restablecer los valores originales
       this.nuevoUsuario = this.info.usuario;
       this.nuevoEstado = this.info.estado_laboral;
-      this.nuevaCiudad = { id: '', nombre: this.info.ubicacion };
+      const ciudadEncontrada = this.ciudades.find(c => c.nombre === this.info.ubicacion);
+      this.nuevaCiudad = ciudadEncontrada || { id: '', nombre: this.info.ubicacion };
       this.editandoInfo = false; // Salir del modo edición
     }
 
