@@ -38,10 +38,25 @@ export class RegistroHabilidadesComponent implements OnInit {
     private authService: AuthService
   ) {}
 
+  userSkills: any[] = [];
+
   ngOnInit(): void {
-    this.empleadoId = this.authService.userId;
-    this.getHabilidades();
+  this.empleadoId = this.authService.userId;
+  this.getHabilidades();
+  
+  if (this.empleadoId) {
+    this.apiService.getEmpleadoHabilidades(this.empleadoId).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.userSkills = res.data;
+        }
+      },
+      error: (err) => {
+        console.error('Error al obtener habilidades del usuario:', err);
+      }
+    });
   }
+}
 
   getHabilidades() {
     this.apiService.getHabilidades().subscribe({
@@ -73,63 +88,76 @@ export class RegistroHabilidadesComponent implements OnInit {
   }
 
   onSubmit(form: NgForm): void {
-    if (form.invalid) {
-      Object.keys(form.controls).forEach(key => {
-        form.controls[key].markAsTouched();
-      });
-      return;
-    }
-
-    if (!this.skillName || !this.skillCategory || !this.skillLevel) {
-      this.showToast('Todos los campos requeridos deben estar llenos.', true);
-      return;
-    }
-
-    if (!this.empleadoId) return;
-
-    this.apiService.agregarHabilidad(
-      this.empleadoId,
-      {
-        nombre: this.skillName,
-        categoria: this.skillCategory,
-        nivel: this.skillLevel,
-        descripcion: this.skillDescription
-      }
-    ).subscribe({
-      next: (res) => {
-        if (res.success) {
-          form.resetForm();
-          this.showToast('Habilidad registrada');
-        } else {
-          this.showToast(res.error || 'Habilidad ya existente.', true);
-        }
-      },
-      error: (err) => {
-        if (err.status === 409) {
-          this.showToast('Habilidad ya existente', true);
-        } else {
-          this.showToast('Ocurrió un error inesperado.', true);
-          console.error('Error en la petición:', err);
-        }
-      }
+  if (form.invalid) {
+    Object.keys(form.controls).forEach(key => {
+      form.controls[key].markAsTouched();
     });
+    return;
   }
+
+  if (!this.skillName || !this.skillCategory || !this.skillLevel) {
+    this.showToast('Todos los campos requeridos deben estar llenos.', true);
+    return;
+  }
+
+  if (!this.empleadoId) return;
+  
+  const skillExists = this.userSkills.some(skill => 
+    skill.nombre && skill.nombre.toLowerCase() === this.skillName.toLowerCase()
+  );
+  
+  if (skillExists) {
+    this.showToast('Ya tienes registrada esta habilidad en tu perfil.', true);
+    return;
+  }
+
+  this.apiService.agregarHabilidad(
+    this.empleadoId,
+    {
+      nombre: this.skillName,
+      categoria: this.skillCategory,
+      nivel: this.skillLevel,
+      descripcion: this.skillDescription
+    }
+  ).subscribe({
+    next: (res) => {
+      if (res.success) {
+        this.userSkills.push({
+          nombre: this.skillName,
+          categoria: this.skillCategory,
+          nivel: this.skillLevel
+        });
+        form.resetForm();
+        this.showToast('Habilidad registrada con éxito');
+      } else {
+        this.showToast(res.error || 'Error al registrar la habilidad.', true);
+      }
+    },
+    error: (err) => {
+      if (err.status === 409) {
+        this.showToast('Ya tienes registrada esta habilidad en tu perfil.', true);
+      } else if (err.error && err.error.message) {
+        this.showToast(err.error.message, true);
+      } else {
+        this.showToast('Ocurrió un error al registrar la habilidad.', true);
+        console.error('Error en la petición:', err);
+      }
+    }
+  });
+}
 
   showToast(message: string, isError: boolean = false): void {
     const toast = this.toast.nativeElement;
     toast.textContent = message;
 
-    // Limpiar clases previas
     toast.classList.remove('success-toast', 'error-toast');
 
-    // Agregar clase correspondiente
     if (isError) {
       toast.classList.add('error-toast');
     } else {
       toast.classList.add('success-toast');
     }
 
-    // Mostrar el toast
     toast.classList.add('show');
 
     setTimeout(() => {
