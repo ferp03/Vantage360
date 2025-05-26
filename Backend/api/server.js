@@ -17,12 +17,26 @@ const infoRoutes = require('../routes/info.routes');
 const geminiRoutes = require('../routes/ia.routers'); 
 
 const app = express();
-const port = 3000;
+
+const allowedOrigins = [
+  'http://localhost:4200',
+  'https://vantage360-frontend.vercel.app'
+];
 
 app.use(cors({
-  origin: 'http://localhost:4200'
+  origin: function (origin, callback) {
+    // Permitir peticiones sin origen (como Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('No permitido por CORS'));
+    }
+  }
 }));
-app.use(bodyParser.json());
+
+// app.use(bodyParser.json());
+app.use(express.json());
 
 // Modulos
 app.use('/api', authRoutes);
