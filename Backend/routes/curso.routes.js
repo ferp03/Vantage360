@@ -1,11 +1,13 @@
-const express = require('express');
-const multer = require('multer');
-const router = express.Router();
-const { supabaseAdmin } = require('../api/supabase');
-const supabase = supabaseAdmin;
+import express from 'express';
+import multer from 'multer';
+import { supabaseAdmin } from '../api/supabase.js';
 
+const router = express.Router();
+const supabase = supabaseAdmin;
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+
+
 
 router.put('/empleado/:id/curso/:cursoId', upload.single('archivo'), async (req, res) => {
   const { id, cursoId } = req.params;
@@ -278,4 +280,4 @@ router.delete('/empleado/:id/curso/:cursoId', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

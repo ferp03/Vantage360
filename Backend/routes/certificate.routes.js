@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const multer = require('multer');
-const { supabaseAdmin } = require('../api/supabase');
-const dotenv = require('dotenv');
+import express from 'express';
+import multer from 'multer';
+import dotenv from 'dotenv';
+import { supabaseAdmin } from '../api/supabase.js';
 dotenv.config();
+const router = express.Router();
 
 // Configuración de Multer
 const storage = multer.memoryStorage();
@@ -272,4 +272,4 @@ router.delete('/certificado/:certificacion_id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

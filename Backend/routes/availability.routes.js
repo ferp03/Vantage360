@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { supabaseAdmin } = require('../api/supabase');
+import { supabaseAdmin } from '../api/supabase.js';
 
 const supabase = supabaseAdmin;
 
@@ -219,4 +219,4 @@ router.put('/empleados/:id/disponibilidad', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

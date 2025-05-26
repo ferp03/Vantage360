@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
+import { supabaseAdmin } from '../api/supabase.js';
 const router = express.Router();
-const { supabaseAdmin } = require('../api/supabase');
 const supabase = supabaseAdmin;
 
 // Obtener info básica del empleado
@@ -503,5 +503,4 @@ router.delete('/empleado/:id/habilidad/:habilidad_id', async (req, res) => {
   }
 });
 
-
-module.exports = router; 
+export default router;

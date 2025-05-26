@@ -1,20 +1,17 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const serverless = require('serverless-http');
+import express from 'express';
+import cors from 'cors';
 
-const authRoutes = require('../routes/auth.routes');
-const chuckRoutes = require('../routes/chuck.routes');
-const dummyRoutes = require('../routes/dummy.routes');
-const perfilRoutes = require('../routes/perfil.routes');
-const updateRoutes = require('../routes/update.routes');
-const availabilityRoutes = require('../routes/availability.routes'); 
-const certificateRoutes = require('../routes/certificate.routes');
-const cursosRoutes = require('../routes/curso.routes');
-const proyectosRoutes = require('../routes/proyecto.routes');
-// const participacionRoutes = require('./routes/participacion.routes');
-const infoRoutes = require('../routes/info.routes');
-const geminiRoutes = require('../routes/ia.routers'); 
+import authRoutes from '../routes/auth.routes.js';
+import chuckRoutes from '../routes/chuck.routes.js';
+import dummyRoutes from '../routes/dummy.routes.js';
+import perfilRoutes from '../routes/perfil.routes.js';
+import updateRoutes from '../routes/update.routes.js';
+import availabilityRoutes from '../routes/availability.routes.js';
+import certificateRoutes from '../routes/certificate.routes.js';
+import cursosRoutes from '../routes/curso.routes.js';
+import proyectosRoutes from '../routes/proyecto.routes.js';
+import infoRoutes from '../routes/info.routes.js';
+import geminiRoutes from '../routes/ia.routers.js';
 
 const app = express();
 const port = 3000;

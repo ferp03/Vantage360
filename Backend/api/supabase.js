@@ -1,5 +1,5 @@
-const { createClient } = require('@supabase/supabase-js');
-const dotenv = require('dotenv');
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
 dotenv.config();
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -10,6 +10,4 @@ const SUPABASE_SERVICE_KEY = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY; 
 // const supabaseAnon = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Instancia para operaciones administrativas (clave de servicio)
-const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-
-module.exports =  { supabaseAdmin };
+export const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);

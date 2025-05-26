@@ -1,9 +1,10 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
 router.get('/gemini-api-key', (req, res) => {
   res.json({ apiKey: process.env.GEMINI_API_KEY });
 });
 
-module.exports = router;
+export default router;
