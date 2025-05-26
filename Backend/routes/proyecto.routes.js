@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { supabaseAdmin } = require('../supabase');
+const { supabaseAdmin } = require('../api/supabase');
 const supabase = supabaseAdmin;
 
 router.get('/proyecto/check-schema', async (req, res) => {

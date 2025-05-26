@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { supabaseAdmin } = require('../supabase');
+const { supabaseAdmin } = require('../api/supabase');
 const dotenv = require('dotenv');
 dotenv.config();
 
