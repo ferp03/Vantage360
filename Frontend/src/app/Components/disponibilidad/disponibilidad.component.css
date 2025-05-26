@@ -61,11 +61,6 @@
   border-radius: 8px;
 }
 
-/* .filtro-item {
-  margin-right: 15px;
-  margin-bottom: 10px;
-} */
-
 .filtro-item label {
   color: hsl(var(--accenture-black));
   margin-right: 8px;
@@ -80,17 +75,8 @@
   color: hsl(var(--foreground));
 }
 
-.filtro-item.checkbox {
-  display: flex;
-  align-items: center;
-}
-
 .filtro-item.checkbox label {
   margin-left: 5px;
-}
-
-.filtro-item.checkbox input[type="checkbox"] {
-  accent-color: #9668e6;
 }
 
 .btn-limpiar {
@@ -222,16 +208,6 @@
   border-radius: 4px;
   font-size: 12px;
   font-weight: bold;
-}
-
-.disponible-badge {
-  background-color: rgba(76, 175, 80, 0.15);
-  color: #66bb6a;
-}
-
-.no-disponible-badge {
-  background-color: rgba(244, 67, 54, 0.15);
-  color: #ef5350;
 }
 
 /* Botones de acción */
@@ -437,10 +413,6 @@
 
 input:focus {
   outline: none;
-}
-/* here is code of animated border */
-.form:focus-within:before {
-  transform: scale(1);
 }
 
 .reset {

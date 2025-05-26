@@ -1,791 +1,83 @@
-  
-  
-  .contenedor-detalle {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 92vh;
-    width: 100vw;
-    background: var(--accenture-gray-50);
-    padding: 3.6rem;
-    padding-top: 0;
-    box-sizing: border-box;
-    overflow-y: scroll;
-    scrollbar-width: none; /* For Firefox */
-    -ms-overflow-style: none; /* For Internet Explorer and Edge */
-  }
 
-  .caja-info {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid hsl(var(--ring));
-    box-shadow: 1px 2px 6px #B998F7;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-radius: 15px;
-    padding: 1.5rem;
-    margin-bottom: 20px;
-  }
-
-  .caja-info-superior {
-    display: flex;
-    gap: 2rem;
-    /* background-color: #1C1C24; */
-    color: black;
-    flex-wrap: wrap;
-    position: relative
-  }
-
-  .botones {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .izquierda {
-    flex: 1 1 100%;
-    min-width: 300px;
-    max-width: 50%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    column-count: 1;  
-  }
-
-  .izquierda-superior {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    column-gap: 50px;
-    max-height: calc(7 * 60px); /* asume 40px por fila */
-    padding-right: 15px;
-  }
-
-  .izquierda-habilidades {
-    flex: 1 1 45%;
-    min-width: 250px;
-  }
-
-  .people_lead {
-    flex: 1 1 45%;
-    min-width: 250px;
-    padding-top: 15px;
-  }
-
-  .habilidades {
-    box-shadow: 1px 2px 6px #B998F7;
-    transition: transform 0.2s, box-shadow 0.2s;
-    padding: 1rem 1.5rem;
-    border-radius: 10px;
-  }
-
-  .habilidad-container {
-    position: relative;
-    display: inline-block;
-    margin: 5px;
-  }
-
-  .habilidad-etiqueta {
-    background: var(--accenture-gray-500);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    cursor: default;
-    display: inline-block;
-    color: white;
-  }
-
-  .etiquetas-habilidad {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 1rem 0;
-    color: white;
-  }
-
-  .etiquetas-habilidad span {
-    background: var(--accenture-gray-500);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    cursor: default;
-  }
-
-  .etiquetas-habilidad span:hover {
-    background: #333;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transform: scale(1.05);
-  }
-
-  .habilidad-tooltip {
-    visibility: hidden;
-    width: 200px;
-    background-color: #333;
-    color: #fff;
-    text-align: left;
-    padding: 10px;
-    border-radius: 6px;
-    position: absolute;
-    z-index: 1000; /* Asegura que esté por encima de otros elementos */
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-size: 0.8rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    pointer-events: auto; /* Evita que el tooltip interfiera con otros elementos */
-  }
-
-  .habilidad-tooltip::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #333 transparent transparent transparent;
-  }
-
-  .habilidad-container:hover .habilidad-tooltip,
-  .habilidad-tooltip:hover {     
-    visibility: visible;
-    opacity: 1;
-  }
-
-  .habilidad-container:hover .habilidad-etiqueta {
-    background: #333;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transform: scale(1.05);
-  }
-
-  .derecha {
-    flex: 1;
-    width: 50%;
-    box-shadow: 1px 2px 6px #B998F7;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-
-  .boton-editar,
-  .boton-guardar,
-  .boton-cambiar-pass,
-  .boton-agregar,
-  .boton-editar-cuadro {
-    align-self: flex-end;
-    background-color: #9668e6;
-    color: white;
-    padding: 0.5rem 1.2rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-
-  .boton-editar:hover,
-  .boton-guardar:hover,
-  .boton-cambiar-pass:hover,
-  .boton-agregar:hover,
-  .boton-editar-cuadro:hover {
-    background-color: #9668e6ae;
-    transform: scale(1.05);
-  }
-
-  .carrera {
-    /* background: #1C1C24; */
-    color: black;
-    border-radius: 15px;
-    border: 1px solid hsl(var(--ring));
-    box-shadow: 1px 2px 6px #B998F7;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    padding: 1.5rem;
-    position: relative;
-  }
-
-  .linea-tiempo {
-    display: flex;
-    gap: 1rem;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    padding: 1rem 0.5rem 1rem 0.5rem;
-  }
-
-
-  .linea-tiempo::-webkit-scrollbar {
-    display: none;
-  }
-
-  .elemento-tiempo {
-    position: relative;
-    width: 300px;
-    max-width: 300px;
-    border: 1px solid hsl(var(--ring));
-    box-shadow: 1px 2px 6px #B998F7;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    padding: 1rem 1rem 1rem 1rem;
-    border-radius: 10px;
-    flex-shrink: 0;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-  }
-
-  .elemento-tiempo:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px #B998F7;
-    cursor: pointer;
-  }
-
-  .boton-agregar-exp {
-    background-color: #9668e6;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    font-size: 1.5rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .agregar-tarjeta {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--accenture-gray-200);
-    border: 2px dashed #aaa;
-  }
-
-  .boton-cancelar {
-    margin-top: 0.5rem;
-    background-color: var(--accenture-gray-500);
-    color: white;
-    border: none;
-  }
-
-  .boton-cancelar:hover {
-    background-color: var(--accenture-gray-600);
-  }
-
-  .error {
-    color: red;
-    font-size: 0.75rem;
-    display: block;
-    margin-top: 2px;
-  }
-
-  .encabezado-habilidades {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-  }
-
-  .encabezado-habilidades h4 {
-    margin: 0;
-  }
-
-  .boton-agregar-habilidad {
-    background-color: #9668e6;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-  }
-
-  .boton-agregar-habilidad:hover {
-    background-color: #333;
-  }
-
-  .boton-editar-trayectoria-global {
-    margin-top: 1.5rem;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-  }
-
-  /* Estilos para el formulario de experiencia */
-  .experiencia-form {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    padding: 20px 15px;
-    /* background-color: #adacac; */
-    border-radius: 10px;
-    /* box-shadow: inset 0 0 20px rgba(138, 86, 232, 0.1); */
-  }
-
-  /* Estilo para cada grupo de campo */
-  .campo-grupo {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .campo-grupo label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 500;
-    color: black;
-    font-size: 14px;
-  }
-
-  /* Estilo mejorado para los inputs */
-  .campo-grupo input,
-  .campo-grupo textarea {
-    padding: 10px 12px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(138, 86, 232, 0.3);
-    border-radius: 6px;
-    font-size: 14px;
-    transition: all 0.2s ease;
-    color: #000000;
-  }
-
-  .campo-grupo input:focus,
-  .campo-grupo textarea:focus {
-    outline: none;
-    border-color: #9668e6;
-    box-shadow: 0 0 0 2px rgba(150, 104, 230, 0.2);
-  }
-
-  /* Estilo para la descripción */
-  .campo-grupo textarea {
-    min-height: 100px;
-    resize: vertical;
-    line-height: 1.5;
-  }
-
-  /* Contenedor de fechas */
-  .fechas-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 12px;
-    /* background-color: rgba(30, 30, 40, 0.5); */
-    border-radius: 8px;
-    /* border-left: 3px solid rgba(150, 104, 230, 0.7); */
-  }
-
-  /* Estilo para el checkbox */
-  .campo-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 2px;
-    margin-top: -6px;
-    margin-bottom: -6px;
-  }
-
-  .campo-checkbox input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: #9668e6;
-    cursor: pointer;
-  }
-
-  .campo-checkbox label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    color: black;
-  }
-
-  /* Estilo para mensajes de error */
-  .error {
-    color: #ff6b6b;
-    font-size: 12px;
-    margin-top: 2px;
-  }
-
-  /* Estilo para los inputs con error */
-  .error-input {
-    border-color: #ff6b6b !important;
-    background-color: rgba(255, 107, 107, 0.05) !important;
-  }
-
-/* Estilo para el modal de contraseña */
-  .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-  }
-
-  .modal-contenido {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .modal-contenido h3 {
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #333;
-    text-align: center;
-  }
-
-  .modal-contenido label {
-    font-weight: bold;
-    margin-top: 1rem;
-    margin-bottom: 0.25rem;
-    color: #333;
-  }
-
-  .modal-contenido input {
-    padding: 0.6rem 0.8rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .modal-contenido input {
-    padding: 0.6rem 0.8rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .error {
-    color: red;
-    font-size: 0.75rem;
-    margin-top: 0.2rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .acciones-modal {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-
-  .acciones-modal button {
-    padding: 0.5rem 1.2rem;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    background-color: #FF4F5E;
-    color: white;
-    transition: background-color 0.2s ease;
-  }
-
-  .acciones-modal button:hover {
-    background-color: #333;
-  }
-
-  .acciones-modal button.cancelar {
-    background-color: #666666;
-  }
-
-  .acciones-modal button.cancelar:hover {
-    background-color: #888;
-  }
-
-  .caja-info.editando,
-  .carrera.modo-edicion {
-    border: 2px dashed #6f42c1;
-    transition: all 0.3s ease;
-  }
-
-  .acciones-modal button mat-icon,
-  .acciones-modal button .material-icons{
-    font-size:18px;            
-    line-height:1;            
-    margin:0;                  
-  }
-
-  .modal-contenido p {
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
-    color: #555;
-    text-align: center;
-  }
-
-  /* Añadidos los nuevos estilos */
-  .acciones {
-    display: flex;
-    margin-top: 15px;
-    gap: 10px;
-  }
-
-  .boton-guardar,
-  .boton-cancelar,
-  .boton-eliminar {
-    display: flex;
-    align-items: center;
-    padding: 8px 15px;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    gap: 5px;
-  }
-
-  .boton-eliminar {
-    background-color: #ff0000;
-    color: white;
-    border: none;
-  }
-
-  .modo-edicion input:focus,
-  .modo-edicion textarea:focus {
-    outline: none;
-    border-color: #9668e6;
-    box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.25);
-  }
-
-  .material-icons {
-    vertical-align: middle;
-    font-size: 20px; 
-    margin-right: 5px; 
-  }
-
-  label .material-icons,
-  button .material-icons {
-    vertical-align: middle;
-    margin-right: 5px;
-  }
-
-
-  .h3-tooltip-container {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .tooltip {
-    position: relative;
-    cursor: pointer;
-  }
-
-  .tooltip .tooltip-text {
-    visibility: hidden;
-    width: max-content;
-    background-color: #333;
-    color: #fff;
-    text-align: left;
-    padding: 6px 8px;
-    border-radius: 6px;
-    position: absolute;
-    z-index: 1;
-    top: 0; 
-    left: 115px;
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-size: 15px;
-  }
-
-  .tooltip:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-  }
-
-  .boton-eliminar:hover {
-    background-color: #ff00008f;
-  }
-
-  .boton-editar-cuadro {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: #2136f3;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 12px;
-    cursor: pointer;
-    z-index: 5;
-  }
-
-  .boton-editar-cuadro:hover {
-    background-color: #1976d2;
-  }
-
-  .material-icons {
-    vertical-align: middle;
-    font-size: 1.25em;
-    margin-right: .35em;
-  }
-
-  .chart-container {
-    width: auto;
-    background-color: #f7f7f7;
-    border-radius: 10px;
-    min-height: 300px;
-    min-width: 550px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-  }
-
-  #pieChart {
-    width: auto !important;
-    height: 300px !important;
-    display: block;
-  }
-
-  #pieChart2 {
-    width: auto !important;
-    height: 300px !important;
-    display: block;
-  }
-
-  #barChart {
-    width: auto !important;
-    height: 300px !important;
-    display: block;  
-  }
-
-  .chart-chips {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-  }
-
-  .chart-chip {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    padding: 5px 10px;
-    border-radius: 20px;
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 14px;
-    color: #333;
-  }
-
-  .chart-chip:hover {
-    background-color: #e0e0e0;
-    transform: translateY(-2px);
-  }
-
-  .chart-chip.active {
-    background-color: #9668e6;
-    color: white;
-    border-color: #9668e6;
-    box-shadow: 0 2px 8px rgba(150, 104, 230, 0.4);
-  }
-
-  .chart-chip .material-icons {
-    font-size: 18px;
-  }
-
-::ng-deep .mat-mdc-form-field-subscript-wrapper {
-  display: none !important;
+.contenedor-detalle {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 92vh;
+  width: 100vw;
+  background: var(--accenture-gray-50);
+  padding: 3.6rem;
+  padding-top: 0;
+  box-sizing: border-box;
+  overflow-y: scroll;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
 }
 
-br {
-  display: block;
-  content: "";
-  margin-bottom: 7.5px;
-}
-
-.mensaje-exito {
-  background-color: #4CAF50;
-  color: white;
-  padding: 12px;
-  border-radius: 4px;
+.caja-info {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid hsl(var(--ring));
+  box-shadow: 1px 2px 6px #B998F7;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 15px;
+  padding: 1.5rem;
   margin-bottom: 20px;
+}
+
+.caja-info-superior {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  animation: fadeIn 0.3s ease-in;
+  gap: 2rem;
+  /* background-color: #1C1C24; */
+  color: black;
+  flex-wrap: wrap;
+  position: relative
 }
 
-.mensaje-exito .material-icons {
-  font-size: 20px;
-}
-
-.alert {
-  padding: 10px 15px;
-  border-radius: 6px;
-  margin: 10px 0;
-  font-weight: 500;
+.botones {
   display: flex;
-  align-items: center;
-  animation: fadeIn 0.3s ease-in-out;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.alert-success {
-  background-color: #e8f5e9;
-  color: #43a047;
-  border-left: 4px solid #43a047;
+.izquierda {
+  flex: 1 1 100%;
+  min-width: 300px;
+  max-width: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  column-count: 1;  
 }
 
-.mt-3 {
-  margin-top: 15px;
+.izquierda-superior {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  column-gap: 50px;
+  max-height: calc(7 * 60px); /* asume 40px por fila */
+  padding-right: 15px;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+.izquierda-habilidades {
+  flex: 1 1 45%;
+  min-width: 250px;
 }
 
-
-button[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
+.people_lead {
+  flex: 1 1 45%;
+  min-width: 250px;
+  padding-top: 15px;
 }
-  
-@keyframes fadeOut {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(-10px); }
+
+.habilidades {
+  box-shadow: 1px 2px 6px #B998F7;
+  transition: transform 0.2s, box-shadow 0.2s;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
 }
 
 .habilidad-container {
@@ -794,31 +86,722 @@ button[disabled] {
   margin: 5px;
 }
 
-.boton-eliminar-hab {
+.habilidad-etiqueta {
+  background: var(--accenture-gray-500);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: default;
+  display: inline-block;
+  color: white;
+}
+
+.etiquetas-habilidad {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 1rem 0;
+  color: white;
+}
+
+.etiquetas-habilidad span {
+  background: var(--accenture-gray-500);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.etiquetas-habilidad span:hover {
+  background: #333;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.habilidad-tooltip {
+  visibility: hidden;
+  width: 200px;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  padding: 10px;
+  border-radius: 6px;
   position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: #ff4f5e;
+  z-index: 1000; /* Asegura que esté por encima de otros elementos */
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  pointer-events: auto; /* Evita que el tooltip interfiera con otros elementos */
+}
+
+.habilidad-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+.habilidad-container:hover .habilidad-tooltip,
+.habilidad-tooltip:hover {     
+  visibility: visible;
+  opacity: 1;
+}
+
+.habilidad-container:hover .habilidad-etiqueta {
+  background: #333;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.derecha {
+  flex: 1;
+  width: 50%;
+  box-shadow: 1px 2px 6px #B998F7;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.boton-editar,
+.boton-guardar,
+.boton-cambiar-pass,
+.boton-agregar,
+.boton-editar-cuadro {
+  align-self: flex-end;
+  background-color: #9668e6;
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.boton-editar:hover,
+.boton-guardar:hover,
+.boton-cambiar-pass:hover,
+.boton-agregar:hover,
+.boton-editar-cuadro:hover {
+  background-color: #9668e6ae;
+  transform: scale(1.05);
+}
+
+.carrera {
+  /* background: #1C1C24; */
+  color: black;
+  border-radius: 15px;
+  border: 1px solid hsl(var(--ring));
+  box-shadow: 1px 2px 6px #B998F7;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.linea-tiempo {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 1rem 0.5rem 1rem 0.5rem;
+}
+
+.elemento-tiempo {
+  position: relative;
+  width: 300px;
+  max-width: 300px;
+  border: 1px solid hsl(var(--ring));
+  box-shadow: 1px 2px 6px #B998F7;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 1rem 1rem 1rem 1rem;
+  border-radius: 10px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.elemento-tiempo:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px #B998F7;
+  cursor: pointer;
+}
+
+.boton-agregar-exp {
+  background-color: #9668e6;
   color: white;
   border: none;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  font-size: 0.7rem;
+  width: 48px;
+  height: 48px;
+  font-size: 1.5rem;
+  font-weight: bold;
   cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.agregar-tarjeta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accenture-gray-200);
+  border: 2px dashed #aaa;
+}
+
+.boton-cancelar {
+  margin-top: 0.5rem;
+  background-color: var(--accenture-gray-500);
+  color: white;
+  border: none;
+}
+
+.boton-cancelar:hover {
+  background-color: var(--accenture-gray-600);
+}
+
+.error {
+  color: red;
+  font-size: 0.75rem;
+  display: block;
+  margin-top: 2px;
+}
+
+.encabezado-habilidades {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.encabezado-habilidades h4 {
+  margin: 0;
+}
+
+.boton-agregar-habilidad {
+  background-color: #9668e6;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  opacity: 0;
-  transition: opacity 0.3s ease;
 }
 
-.habilidad-container:hover .boton-eliminar-hab {
+.boton-agregar-habilidad:hover {
+  background-color: #333;
+}
+
+.boton-editar-trayectoria-global {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Estilos para el formulario de experiencia */
+.experiencia-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px 15px;
+  /* background-color: #adacac; */
+  border-radius: 10px;
+  /* box-shadow: inset 0 0 20px rgba(138, 86, 232, 0.1); */
+}
+
+/* Estilo para cada grupo de campo */
+.campo-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campo-grupo label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  color: black;
+  font-size: 14px;
+}
+
+/* Estilo mejorado para los inputs */
+.campo-grupo input,
+.campo-grupo textarea {
+  padding: 10px 12px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(138, 86, 232, 0.3);
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  color: #000000;
+}
+
+.campo-grupo input:focus,
+.campo-grupo textarea:focus {
+  outline: none;
+  border-color: #9668e6;
+  box-shadow: 0 0 0 2px rgba(150, 104, 230, 0.2);
+}
+
+/* Estilo para la descripción */
+.campo-grupo textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* Contenedor de fechas */
+.fechas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  /* background-color: rgba(30, 30, 40, 0.5); */
+  border-radius: 8px;
+  /* border-left: 3px solid rgba(150, 104, 230, 0.7); */
+}
+
+/* Estilo para el checkbox */
+.campo-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 2px;
+  margin-top: -6px;
+  margin-bottom: -6px;
+}
+
+.campo-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #9668e6;
+  cursor: pointer;
+}
+
+.campo-checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  color: black;
+}
+
+/* Estilo para mensajes de error */
+.error {
+  color: #ff6b6b;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+/* Estilo para los inputs con error */
+.error-input {
+  border-color: #ff6b6b !important;
+  background-color: rgba(255, 107, 107, 0.05) !important;
+}
+
+/* Estilo para el modal de contraseña */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-contenido {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-contenido h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+.modal-contenido label {
+  font-weight: bold;
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
+  color: #333;
+}
+
+.modal-contenido input {
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modal-contenido input {
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.error {
+  color: red;
+  font-size: 0.75rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.acciones-modal {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.acciones-modal button {
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #FF4F5E;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+.acciones-modal button:hover {
+  background-color: #333;
+}
+
+.acciones-modal button.cancelar {
+  background-color: #666666;
+}
+
+.acciones-modal button.cancelar:hover {
+  background-color: #888;
+}
+
+.caja-info.editando,
+.carrera.modo-edicion {
+  border: 2px dashed #6f42c1;
+  transition: all 0.3s ease;
+}
+
+.acciones-modal button mat-icon,
+.acciones-modal button .material-icons{
+  font-size:18px;            
+  line-height:1;            
+  margin:0;                  
+}
+
+.modal-contenido p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #555;
+  text-align: center;
+}
+
+/* Añadidos los nuevos estilos */
+.acciones {
+  display: flex;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.boton-guardar,
+.boton-cancelar,
+.boton-eliminar {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  gap: 5px;
+}
+
+.boton-eliminar {
+  background-color: #ff0000;
+  color: white;
+  border: none;
+}
+
+.modo-edicion input:focus,
+.modo-edicion textarea:focus {
+  outline: none;
+  border-color: #9668e6;
+  box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.25);
+}
+
+.material-icons {
+  vertical-align: middle;
+  font-size: 20px; 
+  margin-right: 5px; 
+}
+
+label .material-icons,
+button .material-icons {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+
+.h3-tooltip-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tooltip {
+  position: relative;
+  cursor: pointer;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: max-content;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  padding: 6px 8px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  top: 0; 
+  left: 115px;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 15px;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
   opacity: 1;
 }
 
-.boton-eliminar-hab .material-icons {
+.boton-eliminar:hover {
+  background-color: #ff00008f;
+}
+
+.boton-editar-cuadro {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #2136f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.boton-editar-cuadro:hover {
+  background-color: #1976d2;
+}
+
+.material-icons {
+  vertical-align: middle;
+  font-size: 1.25em;
+  margin-right: .35em;
+}
+
+.chart-container {
+  width: auto;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  min-height: 300px;
+  min-width: 550px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+#pieChart {
+  width: auto !important;
+  height: 300px !important;
+  display: block;
+}
+
+#pieChart2 {
+  width: auto !important;
+  height: 300px !important;
+  display: block;
+}
+
+#barChart {
+  width: auto !important;
+  height: 300px !important;
+  display: block;  
+}
+
+.chart-chips {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.chart-chip {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
   font-size: 14px;
+  color: #333;
+}
+
+.chart-chip:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.chart-chip .material-icons {
+  font-size: 18px;
+}
+
+br {
+display: block;
+content: "";
+margin-bottom: 7.5px;
+}
+
+.mensaje-exito {
+background-color: #4CAF50;
+color: white;
+padding: 12px;
+border-radius: 4px;
+margin-bottom: 20px;
+display: flex;
+align-items: center;
+gap: 8px;
+animation: fadeIn 0.3s ease-in;
+}
+
+.mensaje-exito .material-icons {
+font-size: 20px;
+}
+
+.alert {
+padding: 10px 15px;
+border-radius: 6px;
+margin: 10px 0;
+font-weight: 500;
+display: flex;
+align-items: center;
+animation: fadeIn 0.3s ease-in-out;
+}
+
+.alert-success {
+background-color: #e8f5e9;
+color: #43a047;
+border-left: 4px solid #43a047;
+}
+
+.mt-3 {
+margin-top: 15px;
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(-10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+
+button[disabled] {
+opacity: 0.6;
+cursor: not-allowed;
+}
+
+@keyframes fadeOut {
+from { opacity: 1; transform: translateY(0); }
+to { opacity: 0; transform: translateY(-10px); }
+}
+
+.habilidad-container {
+position: relative;
+display: inline-block;
+margin: 5px;
+}
+
+.boton-eliminar-hab {
+position: absolute;
+top: -8px;
+right: -8px;
+background-color: #ff4f5e;
+color: white;
+border: none;
+border-radius: 50%;
+width: 20px;
+height: 20px;
+font-size: 0.7rem;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 0;
+opacity: 0;
+transition: opacity 0.3s ease;
+}
+
+.habilidad-container:hover .boton-eliminar-hab {
+opacity: 1;
+}
+
+.boton-eliminar-hab .material-icons {
+font-size: 14px;
 }
 
