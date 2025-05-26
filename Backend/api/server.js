@@ -35,8 +35,8 @@ app.use('/api', certificateRoutes);
 app.use('/api', cursosRoutes);
 app.use('/api', proyectosRoutes);
 // app.use(participacionRoutes);
-app.use(infoRoutes);
-app.use(geminiRoutes);
+app.use('/api', infoRoutes);
+app.use('/api', geminiRoutes);
 
 module.exports = serverless(app);
 
