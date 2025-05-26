@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
+import { supabaseAdmin } from '../api/supabase.js';
 const router = express.Router();
-const { supabaseAdmin } = require('../api/supabase');
 const supabase = supabaseAdmin;
 
 // Funciones de validación
@@ -96,4 +96,4 @@ router.put('/update', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

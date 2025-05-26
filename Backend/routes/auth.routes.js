@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const dotenv = require('dotenv');
-const jwt = require('jsonwebtoken');
-const { supabaseAdmin } = require('../api/supabase');
+import express from 'express';
+import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
+import { supabaseAdmin } from '../api/supabase.js';
 dotenv.config();
+const router = express.Router();
 
 const supabase = supabaseAdmin;
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -160,4 +160,4 @@ router.post('/login', async (req, res) => {
     });
   });
 
-module.exports = router;
+export default router;
