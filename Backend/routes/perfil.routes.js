@@ -60,6 +60,9 @@ router.get('/empleado/:id/habilidades', async (req, res) => {
     const { data, error } = await supabase
       .from('_empleado_habilidad')
       .select(`
+        habilidad_id,
+        nivel,
+        descripcion,
         habilidad:_habilidad (
           nombre,
           categoria
@@ -79,6 +82,7 @@ router.get('/empleado/:id/habilidades', async (req, res) => {
 
     // Mapear los datos a un formato más conveniente
     const habilidades = data.map(entry => ({
+      id: entry.habilidad_id,
       nombre: entry.habilidad.nombre,
       categoria: entry.habilidad.categoria,
       nivel: entry.nivel || 'Nivel no especificado',
@@ -471,6 +475,31 @@ router.post('/empleado/:id/habilidad', async (req, res) => {
   } catch (error) {
     console.error('Error inesperado:', error);
     return res.status(500).json({ success: false, error: 'Error en el servidor' });
+  }
+});
+
+// Eliminar una habilidad asociada a un empleado
+router.delete('/empleado/:id/habilidad/:habilidad_id', async (req, res) => {
+  const { id, habilidad_id } = req.params;
+
+  try {
+    const { error } = await supabase
+      .from('_empleado_habilidad')
+      .delete()
+      .eq('empleado_id', id)
+      .eq('habilidad_id', habilidad_id);
+
+    if (error) {
+      console.error('Error al quitar habilidad:', error.message);
+      return res
+        .status(500)
+        .json({ success: false, error: 'No se pudo eliminar la habilidad del empleado' });
+    }
+
+    return res.status(200).json({ success: true, message: 'Habilidad desvinculada' });
+  } catch (err) {
+    console.error('Error inesperado:', err);
+    return res.status(500).json({ success: false, error: 'Error del servidor' });
   }
 });
 
