@@ -177,7 +177,6 @@
                 {{ empleado.disponible ? 'Disponible' : empleado.razon }}
               </span>
             </td>
-
             <td>
               <!-- Botón para abrir el modal de edición -->
               <button class="btn-accion" (click)="seleccionarComentarios(empleado)"><mat-icon>chat</mat-icon></button>
@@ -231,7 +230,7 @@
     </div>
 
     <!-- Modal de comentarios -->
-<div class="modal-overlay comment-modal" *ngIf="empleadoSeleccionado && mostrarModalComentarios">
+<div class="modal-overlay comment-modal" *ngIf="mostrarModalComentarios">
   <div class="modal comment-modal">
     <div class="modal-header">
       <h3>Comentarios</h3>
@@ -246,6 +245,13 @@
       <div>
        <div>
         <p>Comentarios <button class="boton-comentario"><mat-icon class="icono-persona">add_circle</mat-icon></button></p>
+          <textarea name="descripcion" id="descripcion" [(ngModel)]="comentarioTexto"></textarea>          
+          <label for="proyecto_id">Seleccionar proyecto:</label>
+            <select id="proyecto_id" [(ngModel)]="proyectoSeleccionado" name="proyectoSeleccionado">
+              <option *ngFor="let proyecto of proyectosEmpleado" [ngValue]="proyecto">
+                {{ proyecto.nombre }}
+              </option>
+            </select>
         <ul>
           <li *ngFor="let comentario of comentariosPasados" class="comentario-item">
             <mat-icon class="icono-persona">person</mat-icon>{{ comentario.autor_nombre }} <br>
@@ -257,5 +263,8 @@
       </div>
     </div>
   </div>
+  <div class="modal-footer">
+    <button class="btn-cancelar" (click)="cancelarComentarios()"><span class="material-icons">cancel</span>Cancelar</button>
+    <button class="btn-guardar" (click)="agregarComentarios()"><span class="material-icons">save</span>Guardar comentario</button>
 </div>
 </div>

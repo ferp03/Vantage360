@@ -51,4 +51,26 @@ router.post('/empleado/:uuid/comentarios', async (req, res) => {
   }
 });
 
+
+router.get('/empleado/:uuid/proyectos', async (req, res) => {
+  try {
+    const empleadoId = req.params.uuid;
+
+    const { data, error } = await supabase
+      .rpc('get_proyectos_actuales', { _id: empleadoId });
+
+
+    if (error) throw error;
+    if (!data || data.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron proyectos para este empleado' });
+    }
+
+    return res.json(data);
+  } catch (error) {
+    console.error('Error al obtener proyectos:', error);
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+
 module.exports = router;

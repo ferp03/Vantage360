@@ -421,6 +421,7 @@ textarea:focus,
 /* Estilo del modal de comentarios */
 .comment-modal.modal {
   width: 800px;
+  height: 600px;
   max-height: 90vh;
   flex-direction: column;
 }

@@ -4,13 +4,14 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
 
 interface Comentarios {
-  empleado_id: number;
-  descripcion: string;
+  comentario_id: number;
   fecha_generacion: string;
   autor_id: string;
-  autor_nombre: string;
+  empleado_comentado_id: string;
   proyecto_id: number;
-  proyecto_nombre: string;
+  descripcion: string;
+  autor_nombre?: string;
+  proyecto_nombre?: string;
 }
 
 @Component({
@@ -57,10 +58,13 @@ export class DisponibilidadComponent implements OnInit {
   proyecto_id: number = 0;
   autor_nombre: string = '';
   proyecto_nombre: string = '';
+  proyectoSeleccionado: any = null;
+  proyectosEmpleado: any[] = [];
 
   
   constructor(
     private apiService: ApiService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -225,63 +229,72 @@ export class DisponibilidadComponent implements OnInit {
   }
 
   seleccionarComentarios(empleado: any): void {
-  this.empleadoSeleccionado = empleado;
-  this.comentarioTexto = '';
-  this.mostrarModalComentarios = true;
+    this.empleadoSeleccionado = empleado;
+    this.comentarioTexto = '';
+    this.mostrarModalComentarios = true;
+    this.proyectosEmpleado = empleado.proyectos || [];
 
-  // Llama al API para obtener los comentarios del empleado
-  this.apiService.obtenerComentarioEmpleado(empleado.empleado_id).subscribe({
-    next: (comentarios: any[]) => {
-      // Mapear los comentarios para incluir nombres
-      this.comentariosPasados = comentarios.map(comentario => ({
-        ...comentario,
-        autor_nombre: comentario.autor_nombre || 'Desconocido',
-        proyecto_nombre: comentario.proyecto_nombre || 'Sin proyecto'
-      }));
-      this.fecha_generacion = comentarios[0]?.fecha_generacion || '';
-      console.log('Comentarios obtenidos:', this.comentariosPasados);
-    },
-    error: (error) => {
-      console.error('Error al obtener comentarios:', error);
-      this.comentariosPasados = [];
-    }
-  });
-}
-
-
-  agregarComentarios(): void {
-  if (!this.empleadoSeleccionado || !this.comentarioTexto.trim() || !this.autor_id || !this.proyecto_id) {
-    this.error = 'Todos los campos son obligatorios';
-    return;
-  }
-
-    const datos = {
-      autor_id: this.autor_id, // UUID del autor del comentario
-      proyecto_id: this.proyecto_id, // ID del proyecto
-      descripcion: this.comentarioTexto.trim() // contenido del comentario
-    };
-
-    const empleadoComentadoId = this.empleadoSeleccionado.empleado_id;
-
-    this.apiService.agregarComentario(empleadoComentadoId, datos).subscribe({
-      next: (res: any) => {
-        this.mostrarModalComentarios = false;
-        this.empleadoSeleccionado = null;
-        this.comentarioTexto = '';
-        this.error = '';
+    // Llama al API para obtener los comentarios del empleado
+    this.apiService.obtenerComentarioEmpleado(empleado.empleado_id).subscribe({
+      next: (comentarios: any[]) => {
+        // Mapear los comentarios para incluir nombres
+        this.comentariosPasados = comentarios.map(comentario => ({
+          ...comentario,
+          autor_nombre: comentario.autor_nombre || 'Desconocido',
+          autor_id: comentario.autor_id || '',
+          proyecto_nombre: comentario.proyecto_nombre || 'Sin proyecto',
+          proyecto_id: comentario.proyecto_id || 0
+        }));
+        this.fecha_generacion = comentarios[0]?.fecha_generacion || '';
+        console.log('Comentarios obtenidos:', this.comentariosPasados);
       },
-      error: (err) => {
-        console.error('Error al guardar comentario:', err);
-        this.error = err.error?.error || 'Error al conectar con el servidor';
+      error: (error) => {
+        console.error('Error al obtener comentarios:', error);
+        this.comentariosPasados = [];
       }
     });
   }
 
+  agregarComentarios(): void {
+    if (!this.empleadoSeleccionado?.empleado_id || !this.comentarioTexto.trim()) {
+      this.error = 'El comentario es obligatorio';
+      return;
+    }
+
+    const datos = {
+      autor_id: this.empleadoSeleccionado.empleado_id,
+      proyecto_id: this.proyectoSeleccionado.proyecto_id || 0,
+      descripcion: this.comentarioTexto.trim(),
+      empleado_comentado_id: this.empleadoSeleccionado.empleado_id
+    };
+
+    console.log('Datos a enviar para comentario:', datos);
+
+    this.apiService.agregarComentario(this.empleadoSeleccionado, datos).subscribe({
+      next: (nuevoComentario: Comentarios) => {
+        this.comentariosPasados.unshift({
+          ...nuevoComentario,
+          autor_nombre: this.autor_nombre,
+          proyecto_nombre: this.proyectoSeleccionado?.nombre || 'Sin proyecto'
+        });
+        
+        this.comentarioTexto = '';
+        this.proyectoSeleccionado = null;
+        this.error = '';
+      },
+      error: (err) => {
+        console.error('Error al guardar comentario:', err);
+        this.error = err.error?.message || 'Error al conectar con el servidor';
+      }
+    });
+  }
 
   cancelarComentarios(): void {
     this.mostrarModalComentarios = false;
     this.empleadoSeleccionado = null;
     this.comentarioTexto = '';
+    this.proyectoSeleccionado = null;
+    this.error = '';
   }
 
   // Paginación
@@ -305,5 +318,4 @@ export class DisponibilidadComponent implements OnInit {
       this.currentPage--;
     }
   }
-
 }
