@@ -25,15 +25,15 @@ app.use(cors({
 app.use(bodyParser.json());
 
 // Modulos
-app.use(authRoutes);
-app.use(chuckRoutes);
-app.use(dummyRoutes);
-app.use(perfilRoutes);
-app.use(updateRoutes);
-app.use(availabilityRoutes);
-app.use(certificateRoutes);
-app.use(cursosRoutes);
-app.use(proyectosRoutes);
+app.use('/api', authRoutes);
+app.use('/api', chuckRoutes);
+app.use('/api', dummyRoutes);
+app.use('/api', perfilRoutes);
+app.use('/api', updateRoutes);
+app.use('/api', availabilityRoutes);
+app.use('/api', certificateRoutes);
+app.use('/api', cursosRoutes);
+app.use('/api', proyectosRoutes);
 // app.use(participacionRoutes);
 app.use(infoRoutes);
 app.use(geminiRoutes);
