@@ -141,7 +141,7 @@
     transition: opacity 0.3s;
     font-size: 0.8rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    pointer-events: none; /* Evita que el tooltip interfiera con otros elementos */
+    pointer-events: auto; /* Evita que el tooltip interfiera con otros elementos */
   }
 
   .habilidad-tooltip::after {
@@ -155,7 +155,8 @@
     border-color: #333 transparent transparent transparent;
   }
 
-  .habilidad-container:hover .habilidad-tooltip {
+  .habilidad-container:hover .habilidad-tooltip,
+  .habilidad-tooltip:hover {     
     visibility: visible;
     opacity: 1;
   }
@@ -772,3 +773,12 @@ button[disabled] {
   from { opacity: 1; transform: translateY(0); }
   to { opacity: 0; transform: translateY(-10px); }
 }
+
+.boton-eliminar-hab {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: .4rem;
+}
+.boton-eliminar-hab mat-icon { font-size: 18px; color: #d32f2f; }
+

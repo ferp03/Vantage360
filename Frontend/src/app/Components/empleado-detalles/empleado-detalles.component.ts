@@ -243,29 +243,26 @@ export class EmpleadoDetallesComponent implements OnInit {
     });
   }
 
-  cargarHabilidades() {
+  private cargarHabilidades(): void {
     if (!this.empleadoId) return;
-    
+
     this.apiService.getEmpleadoHabilidades(this.empleadoId).subscribe({
       next: (res) => {
-        if (res.success) {
-          console.log('Datos de habilidades recibidos:', res.data); // Para depuración
-          
-          // Asegurar que todos los campos existan
-          this.habilidades = res.data.map((hab: any) => ({
-            id: hab.id || null,
-            nombre: hab.nombre || 'Habilidad sin nombre',
-            nivel: hab.nivel || hab.nivel_habilidad || 'Nivel no especificado',
-            descripcion: hab.descripcion || 'Sin descripción disponible',
-          }));
-          
-          console.log('Habilidades procesadas:', this.habilidades); // Verificar el resultado
-        }
+        if (!res.success) return;
+
+        this.habilidades = res.data.map((row: any) => ({
+          id: Number(
+                 row.habilidad_id ??
+                 row.habilidad?.habilidad_id ??
+                 row.id ??
+                 null
+               ),                     
+          nombre:       row.nombre      ?? row.habilidad?.nombre      ?? '—',
+          nivel:        row.nivel       ?? row.nivel_habilidad        ?? 'Sin nivel',
+          descripcion:  row.descripcion ?? 'Sin descripción'
+        }));
       },
-      error: (err) => {
-        console.error('Error al obtener habilidades:', err);
-        // Opcional: mostrar mensaje al usuario
-      }
+      error: err => console.error('Error al obtener habilidades:', err)
     });
   }
 
@@ -1038,4 +1035,25 @@ changeActiveChart(chartType: string) {
     this.editandoIndice = null;
     }
   }
+
+  eliminarHabilidad(hab: Habilidad) {
+  if (!this.empleadoId) return;
+  if (hab.id == null) {                
+    console.error('habilidad sin id');
+    return;
+  }
+
+  if (!confirm(`¿Eliminar "${hab.nombre}"?`)) return;
+
+  this.apiService
+      .deleteEmpleadoHabilidad(this.empleadoId, hab.id)
+      .subscribe({
+        next: () =>
+          (this.habilidades = this.habilidades.filter(h => h.id !== hab.id)),
+        error: err => {
+          console.error('Error al borrar', err);
+          alert('No se pudo eliminar la habilidad');
+        }
+      });
+}
 }

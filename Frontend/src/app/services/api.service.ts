@@ -231,4 +231,12 @@ export class ApiService {
   getProyectosActuales(userId: string): Observable<any> {
   return this.http.get(`${this.apiUrl}/proyecto/actuales/${userId}`);
   }
+
+  // Eliminar Habilidad
+  deleteEmpleadoHabilidad(empleadoId: string, habilidadId: number) {
+  return this.http.delete<{ success: boolean; message: string }>(
+    `${this.apiUrl}/empleado/${empleadoId}/habilidad/${habilidadId}`
+  );
+}
+
 } 

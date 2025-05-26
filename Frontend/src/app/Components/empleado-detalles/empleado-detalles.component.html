@@ -81,6 +81,12 @@
           <div class="habilidad-tooltip">
             <div><strong>Nivel:</strong> {{ habilidad.nivel }}</div>
             <div><strong>Descripción:</strong> {{ habilidad.descripcion }}</div>
+            <button
+            *ngIf="editandoInfo && esMiPerfil"
+            class="boton-eliminar-hab"
+            (click)="eliminarHabilidad(habilidad)">
+          <mat-icon>delete</mat-icon>
+        </button>
           </div>
         </div>
       </div>
