@@ -107,6 +107,7 @@ export class EmpleadoDetallesComponent implements OnInit {
     formatoEmail: false,
   };
 
+  habilidadPendiente: Habilidad | null = null;
   mensajeCambioContrasena = '';
   mostrarMensajeCambioContrasena = false;
   mensajeDesvanecido: boolean = false;
@@ -1053,6 +1054,33 @@ changeActiveChart(chartType: string) {
         error: err => {
           console.error('Error al borrar', err);
           alert('No se pudo eliminar la habilidad');
+        }
+      });
+}
+
+  abrirModalEliminar(hab: Habilidad): void {
+  this.habilidadPendiente = hab;
+}
+
+confirmarEliminarHabilidad(): void {
+  const hab = this.habilidadPendiente;
+
+  if (!this.empleadoId || hab?.id === undefined) {
+    this.habilidadPendiente = null;
+    return;                   
+  }
+
+  this.apiService
+      .deleteEmpleadoHabilidad(this.empleadoId, hab.id)
+      .subscribe({
+        next: () => {
+          this.habilidades = this.habilidades.filter(h => h.id !== hab.id);
+          this.habilidadPendiente = null;
+        },
+        error: err => {
+          console.error('Error al borrar', err);
+          alert('No se pudo eliminar la habilidad');
+          this.habilidadPendiente = null;
         }
       });
 }

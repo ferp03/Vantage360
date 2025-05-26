@@ -81,13 +81,10 @@
           <div class="habilidad-tooltip">
             <div><strong>Nivel:</strong> {{ habilidad.nivel }}</div>
             <div><strong>Descripción:</strong> {{ habilidad.descripcion }}</div>
-            <button
-            *ngIf="editandoInfo && esMiPerfil"
-            class="boton-eliminar-hab"
-            (click)="eliminarHabilidad(habilidad)">
-          <mat-icon>delete</mat-icon>
-        </button>
           </div>
+          <button *ngIf="editandoInfo && esMiPerfil" class="boton-eliminar-hab" (click)="abrirModalEliminar(habilidad)">
+              <span class="material-icons">close</span>
+          </button>
         </div>
       </div>
       <h4><span class="material-icons">school</span> Certificados</h4>
@@ -381,10 +378,21 @@
       </div>
     </div>
 
+    <div class="modal" *ngIf="habilidadPendiente">
+  <div class="modal-contenido">
+    <h3><mat-icon>delete</mat-icon> Eliminar habilidad</h3>
 
+    <p>¿Seguro que deseas eliminar
+       <b>{{ habilidadPendiente.nombre }}</b> de tu perfil?</p>
 
-  
-
+    <div class="acciones-modal">
+      <button (click)="confirmarEliminarHabilidad()">
+        <mat-icon>check</mat-icon> Sí, eliminar
+      </button>
+      <button class="cancelar" (click)="habilidadPendiente = null">
+        <mat-icon>close</mat-icon> Cancelar
+      </button>
+    </div>
 
   <div class="modal" *ngIf="mostrarModalContrasena">
     <div class="modal-contenido">

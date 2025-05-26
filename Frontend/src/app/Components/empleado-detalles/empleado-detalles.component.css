@@ -774,11 +774,37 @@ button[disabled] {
   to { opacity: 0; transform: translateY(-10px); }
 }
 
-.boton-eliminar-hab {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  margin-left: .4rem;
+.habilidad-container {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
 }
-.boton-eliminar-hab mat-icon { font-size: 18px; color: #d32f2f; }
+
+.boton-eliminar-hab {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff4f5e;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.habilidad-container:hover .boton-eliminar-hab {
+  opacity: 1;
+}
+
+.boton-eliminar-hab .material-icons {
+  font-size: 14px;
+}
 
