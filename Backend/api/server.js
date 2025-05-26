@@ -52,9 +52,9 @@ app.use('/api', proyectosRoutes);
 app.use('/api', infoRoutes);
 app.use('/api', geminiRoutes);
 
-module.exports = serverless(app);
-
 // Iniciar el servidor en local
-// app.listen(port, () => {
-//   console.log(`Servidor backend corriendo en http://localhost:${port}`);
-// });
+app.listen(port, () => {
+  console.log(`Servidor backend corriendo en http://localhost:3000`);
+});
+
+export default app;
