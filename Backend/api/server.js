@@ -17,6 +17,7 @@ const infoRoutes = require('../routes/info.routes');
 const geminiRoutes = require('../routes/ia.routers'); 
 
 const app = express();
+port = 3000;
 
 const allowedOrigins = [
   'http://localhost:4200',
@@ -54,7 +55,7 @@ app.use('/api', geminiRoutes);
 
 // Iniciar el servidor en local
 app.listen(port, () => {
-  console.log(`Servidor backend corriendo en http://localhost:3000`);
+  console.log(`Servidor backend corriendo en http://localhost:${port}`);
 });
 
 export default app;
