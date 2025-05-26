@@ -498,7 +498,7 @@
 
   .acciones-modal {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 1rem;
     margin-top: 2rem;
   }
@@ -509,7 +509,7 @@
     border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
-    background-color: #000;
+    background-color: #FF4F5E;
     color: white;
     transition: background-color 0.2s ease;
   }
@@ -519,7 +519,7 @@
   }
 
   .acciones-modal button.cancelar {
-    background-color: #aaa;
+    background-color: #666666;
   }
 
   .acciones-modal button.cancelar:hover {
@@ -530,6 +530,20 @@
   .carrera.modo-edicion {
     border: 2px dashed #6f42c1;
     transition: all 0.3s ease;
+  }
+
+  .acciones-modal button mat-icon,
+  .acciones-modal button .material-icons{
+    font-size:18px;            
+    line-height:1;            
+    margin:0;                  
+  }
+
+  .modal-contenido p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    color: #555;
+    text-align: center;
   }
 
   /* Añadidos los nuevos estilos */
