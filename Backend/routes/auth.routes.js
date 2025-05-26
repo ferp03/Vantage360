@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
-const { supabaseAdmin } = require('../supabase');
+const { supabaseAdmin } = require('../api/supabase');
 dotenv.config();
 
 const supabase = supabaseAdmin;
