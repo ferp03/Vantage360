@@ -17,7 +17,7 @@ const infoRoutes = require('../routes/info.routes');
 const geminiRoutes = require('../routes/ia.routers'); 
 
 const app = express();
-port = 3000;
+const port = 3000;
 
 const allowedOrigins = [
   'http://localhost:4200',
