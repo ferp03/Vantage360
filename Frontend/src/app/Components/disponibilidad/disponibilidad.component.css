@@ -341,7 +341,7 @@ button mat-icon.icono-persona {
 .modal-content {
   padding: 20px;
   color: var(--foreground);
-  overflow-y: auto;
+  /* overflow-y: auto; */
 }
 
 /* Botones */
@@ -401,16 +401,10 @@ button mat-icon.icono-persona {
 }
 
 ul {
-  list-style-type: none; /* Elimina los puntos de la lista */
+  list-style-type: none;
   padding: 0;
   margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  column-gap: 25px;
-  height: calc(8 * 49px); 
-  max-width: 100%;
-  overflow: hidden;
+  
 }
 
 textarea {
@@ -445,7 +439,7 @@ textarea:focus,
   margin-bottom: 10px;     /* Espacio entre elementos */
   border-radius: 5px;      /* Bordes redondeados */
   background-color: var(--accenture-gray-100); /* Color de fondo suave */
-  width: 45%;
+  width: 90%;
   white-space: normal;  /* Permite saltos de línea */
   word-wrap: break-word;  /* Rompe palabras largas si es necesario */
   line-height: 1.5;

@@ -64,9 +64,9 @@ export class DisponibilidadComponent implements OnInit {
   proyectoSeleccionado: any = null;
   proyectosEmpleado: any[] = [];
   mostrarFormularioComentario: boolean = false;
-  comentariosPaginaActual: number = 1;
-  comentariosPorPagina: number = 6;
-  indicesPagina: number[] = [];
+  // comentariosPaginaActual: number = 1;
+  // comentariosPorPagina: number = 6;
+  // indicesPagina: number[] = [];
 
   
   constructor(
@@ -241,7 +241,7 @@ export class DisponibilidadComponent implements OnInit {
     this.mostrarModalComentarios = true;
     this.proyectosEmpleado = empleado.proyectos || [];
     console.log('Empleado seleccionado:', this.empleadoSeleccionadoComentarios);
-    this.comentariosPaginaActual = 1;
+    // this.comentariosPaginaActual = 1;
 
 
 
@@ -349,29 +349,29 @@ export class DisponibilidadComponent implements OnInit {
   }
 
    // Paginación COMENTARIOS
-  get comentariosPaginados(): Comentarios[] {
-    const inicio = (this.comentariosPaginaActual - 1) * this.comentariosPorPagina;
-    const fin = inicio + this.comentariosPorPagina;
-    return this.comentariosPasados.slice(inicio, fin);
-  }
+//   get comentariosPaginados(): Comentarios[] {
+//     const inicio = (this.comentariosPaginaActual - 1) * this.comentariosPorPagina;
+//     const fin = inicio + this.comentariosPorPagina;
+//     return this.comentariosPasados.slice(inicio, fin);
+//   }
 
-  get totalPagesComment(): number {
-  return Math.ceil(this.comentariosPasados.length / this.comentariosPorPagina);
-}
+//   get totalPagesComment(): number {
+//   return Math.ceil(this.comentariosPasados.length / this.comentariosPorPagina);
+// }
 
 
-  siguientePaginaComentarios(): void {
-  const totalPaginas = Math.ceil(this.comentariosPasados.length / this.comentariosPorPagina);
-  if (this.comentariosPaginaActual < totalPaginas) {
-    this.comentariosPaginaActual++;
-  }
-}
+//   siguientePaginaComentarios(): void {
+//   const totalPaginas = Math.ceil(this.comentariosPasados.length / this.comentariosPorPagina);
+//   if (this.comentariosPaginaActual < totalPaginas) {
+//     this.comentariosPaginaActual++;
+//   }
+// }
 
-paginaAnteriorComentarios(): void {
-  if (this.comentariosPaginaActual > 1) {
-    this.comentariosPaginaActual--;
-  }
-}
+// paginaAnteriorComentarios(): void {
+//   if (this.comentariosPaginaActual > 1) {
+//     this.comentariosPaginaActual--;
+//   }
+// }
 
 
 }
