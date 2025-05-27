@@ -1067,6 +1067,7 @@ confirmarEliminarHabilidad(): void {
 
   if (!this.empleadoId || hab?.id === undefined) {
     this.habilidadPendiente = null;
+    this.habilidadSeleccionada = null;
     return;                   
   }
 
@@ -1076,18 +1077,17 @@ confirmarEliminarHabilidad(): void {
         next: () => {
           this.habilidades = this.habilidades.filter(h => h.id !== hab.id);
           this.habilidadPendiente = null;
+          this.habilidadSeleccionada = null;
         },
         error: err => {
           console.error('Error al borrar', err);
           alert('No se pudo eliminar la habilidad');
           this.habilidadPendiente = null;
+          this.habilidadSeleccionada = null;
         }
       });
 }
 
-// ...existing code...
-
-  // Propiedades para edición de habilidades
   habilidadEditando: Habilidad | null = null;
   nivelSeleccionado: string = '';
   descripcionEditada: string = '';

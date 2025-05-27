@@ -196,7 +196,6 @@
 .boton-agregar:hover,
 .boton-editar-cuadro:hover {
   background-color: #9668e6ae;
-  transform: scale(1.05);
 }
 
 .carrera {
@@ -509,7 +508,7 @@
 }
 
 .acciones-modal button:hover {
-  background-color: #333;
+  background-color: #d32f2f;
 }
 
 .acciones-modal button.cancelar {
@@ -621,7 +620,7 @@ button .material-icons {
 }
 
 .boton-eliminar:hover {
-  background-color: #ff00008f;
+  background-color: #d32f2f;
 }
 
 .boton-editar-cuadro {
@@ -839,7 +838,6 @@ font-size: 14px;
   height: 16px;
 }
 
-/* Estilos para el contenedor de habilidades */
 .habilidad-container {
   display: flex;
   align-items: center;
@@ -871,10 +869,12 @@ font-size: 14px;
   border-radius: 50%;
   border: none;
   background-color: #f0f0f0;
-  color: #666;
+  color: #f0f0f0;
   cursor: pointer;
   padding: 0;
+  opacity: 1;
   margin-left: 4px;
+  visibility: visible;
 }
 
 .boton-acciones-hab:hover {
@@ -893,7 +893,8 @@ font-size: 14px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-top: 25px;
+  margin-bottom: 8px;
 }
 
 .boton-opcion {
@@ -917,9 +918,54 @@ font-size: 14px;
 }
 
 .boton-opcion.boton-eliminar {
-  color: #d32f2f;
+  color: #b62727;
 }
 
 .boton-opcion.boton-eliminar:hover {
   background-color: #ffebee;
 }
+
+.boton-guardar {
+  background-color: #9668e6 !important;
+  color: white !important;
+}
+
+.boton-guardar:hover {
+  background-color: #7e4ed0 !important;
+}
+
+.modal-contenido select,
+.modal-contenido textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+  background-color: #fdfdfd;
+  box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.modal-contenido select:focus,
+.modal-contenido textarea:focus {
+  outline: none;
+  border-color: #9668e6; 
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.modal-contenido label {
+  display: flex;
+  align-items: center;
+  gap: 6px; 
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+  color: #333;
+}
+
+.modal-contenido label .material-icons {
+  font-size: 18px;
+  vertical-align: middle;
+}
+
+
