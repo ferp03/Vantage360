@@ -18,7 +18,7 @@ const port = 3000;
 
 const allowedOrigins = [
   'http://localhost:4200',
-  'https://vantage360-frontend.vercel.app'
+  'https://vantage360.vercel.app'
 ];
 
 app.use(cors({
