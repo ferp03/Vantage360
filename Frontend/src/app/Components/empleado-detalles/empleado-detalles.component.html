@@ -81,7 +81,7 @@
             <span class="habilidad-etiqueta">{{ habilidad.nombre }}</span>
             
             <button *ngIf="editandoInfo && esMiPerfil" class="boton-acciones-hab" (click)="abrirMenuHabilidad(habilidad)">
-              <span class="material-icons">more_vert</span>
+              <span class="material-icons">settings</span>
             </button>
           </div>
           
@@ -407,7 +407,6 @@
       </div>
     </div>
 
-    
 <div class="modal" *ngIf="habilidadEditando">
   <div class="modal-contenido">
     <h3><mat-icon>edit</mat-icon> Editar habilidad</h3>
@@ -441,7 +440,7 @@
   </div>
 </div>
 
-    <div class="modal" *ngIf="habilidadPendiente">
+<div class="modal" *ngIf="habilidadPendiente">
   <div class="modal-contenido">
     <h3><mat-icon>delete</mat-icon> Eliminar habilidad</h3>
 
@@ -456,45 +455,45 @@
         <mat-icon>close</mat-icon> Cancelar
       </button>
     </div>
+  </div>
+</div>
 
-  <div class="modal" *ngIf="mostrarModalContrasena">
-    <div class="modal-contenido">
-      <h3><span class="material-icons">lock</span> Cambiar contraseña</h3>
-      <div class="mensaje-exito" *ngIf="mostrarMensajeExito">
-        <span class="material-icons">check_circle</span>
-          ¡Contraseña cambiada con éxito!
-      </div>
-      <label><span class="material-icons">vpn_key</span> Contraseña actual:</label>
-      <input type="password" [(ngModel)]="contrasenaActual" />
-      <span class="error" *ngIf="erroresPass.actual">Campo requerido</span>
+<div class="modal" *ngIf="mostrarModalContrasena">
+  <div class="modal-contenido">
+    <h3><span class="material-icons">lock</span> Cambiar contraseña</h3>
+    <div class="mensaje-exito" *ngIf="mostrarMensajeExito">
+      <span class="material-icons">check_circle</span>
+        ¡Contraseña cambiada con éxito!
+    </div>
+    <label><span class="material-icons">vpn_key</span> Contraseña actual:</label>
+    <input type="password" [(ngModel)]="contrasenaActual" />
+    <span class="error" *ngIf="erroresPass.actual">Campo requerido</span>
 
-      <label>
-        <span class="material-icons">lock_open</span> Nueva contraseña:
-      </label>
-      <input type="password" [(ngModel)]="nuevaContrasena" />
-      <span class="error" *ngIf="erroresPass.nueva">
-        {{erroresPass.mensajeError || 'La contraseña debe tener al menos 8 caracteres'}}
-      </span>
+    <label>
+      <span class="material-icons">lock_open</span> Nueva contraseña:
+    </label>
+    <input type="password" [(ngModel)]="nuevaContrasena" />
+    <span class="error" *ngIf="erroresPass.nueva">
+      {{erroresPass.mensajeError || 'La contraseña debe tener al menos 8 caracteres'}}
+    </span>
 
-      <label>
-        <span class="material-icons">lock_outline</span> Confirmar nueva contraseña:
-      </label>
-      <input type="password" [(ngModel)]="confirmarContrasena" />
-      <span class="error" *ngIf="erroresPass.confirmar">Las contraseñas no coinciden</span>
-      
+    <label>
+      <span class="material-icons">lock_outline</span> Confirmar nueva contraseña:
+    </label>
+    <input type="password" [(ngModel)]="confirmarContrasena" />
+    <span class="error" *ngIf="erroresPass.confirmar">Las contraseñas no coinciden</span>
+    
+    <div class="error-mensaje" *ngIf="erroresPass.mensajeError">
+      <span class="material-icons">error</span> {{erroresPass.mensajeError}}
+    </div>
 
-      <div class="error-mensaje" *ngIf="erroresPass.mensajeError">
-        <span class="material-icons">error</span> {{erroresPass.mensajeError}}
-      </div>
-
-      <div class="acciones-modal">
-        <button (click)="confirmarCambioContrasena()">
-          <span class="material-icons">check</span> Confirmar
-        </button>
-        <button class="cancelar" (click)="cerrarModalContrasena()">
-          <span class="material-icons">close</span> Cancelar
-        </button>
-      </div>
+    <div class="acciones-modal">
+      <button (click)="confirmarCambioContrasena()">
+        <span class="material-icons">check</span> Confirmar
+      </button>
+      <button class="cancelar" (click)="cerrarModalContrasena()">
+        <span class="material-icons">close</span> Cancelar
+      </button>
     </div>
   </div>
 </div>

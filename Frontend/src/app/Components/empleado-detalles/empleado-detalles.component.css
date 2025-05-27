@@ -968,4 +968,51 @@ font-size: 14px;
   vertical-align: middle;
 }
 
+.habilidad-container {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.habilidad-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.habilidad-etiqueta {
+  flex-grow: 1;
+}
+
+.boton-acciones-hab {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  padding: 2px;
+  min-width: 24px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, background-color 0.2s;
+}
+
+.boton-acciones-hab:hover {
+  opacity: 1;
+}
+
+.boton-acciones-hab .material-icons {
+  font-size: 16px;
+}
+
+.habilidad-container:hover .boton-acciones-hab {
+  opacity: 0.9;
+}
+
 
