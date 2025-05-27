@@ -181,10 +181,10 @@
                 {{ empleado.disponible ? 'Disponible' : empleado.razon }}
               </span>
             </td>
-
             <td>
               <!-- Botón para abrir el modal de edición -->
-              <button class="btn-accion" (click)="seleccionarEmpleado(empleado)">Editar</button>
+              <button class="btn-accion" (click)="seleccionarComentarios(empleado)"><mat-icon>chat</mat-icon></button>
+              <button class="btn-accion" (click)="seleccionarEmpleado(empleado)"><mat-icon>edit</mat-icon></button>
             </td>
           </tr>
         </tbody>
@@ -199,8 +199,8 @@
     </div>
 
     <!-- Modal de edición -->
-    <div class="modal-overlay" *ngIf="empleadoSeleccionado">
-      <div class="modal">
+    <div class="modal-overlay edit-modal" *ngIf="empleadoSeleccionado">
+      <div class="modal edit-modal">
         <div class="modal-header">
           <h3>Actualizar disponibilidad</h3>
           <button class="btn-cerrar" (click)="cancelarActualizacion()">×</button>
@@ -232,4 +232,61 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal de comentarios -->
+<div class="modal-overlay comment-modal" *ngIf="mostrarModalComentarios">
+  <div class="modal comment-modal">
+    <div class="modal-header">
+      <h3>Comentarios</h3>
+      <button class="btn-cerrar" (click)="cancelarComentarios()">×</button>
+    </div>
+    <div class="modal-content">
+      <div class="empleado-detalle">
+        <p class="nombre">{{ empleadoSeleccionadoComentarios?.nombre }} {{ empleadoSeleccionadoComentarios?.apellido_paterno }}</p>
+        <p class="usuario">&#64;{{ empleadoSeleccionadoComentarios?.usuario }}</p>
+        <p class="correo">{{ empleadoSeleccionadoComentarios?.email }}</p>
+      </div>
+      <div>
+       <div>
+        <p>Comentarios 
+          <button class="boton-comentario" (click)="mostrarComentarios()">
+            <mat-icon class="icono-persona">add_circle</mat-icon>
+          </button>
+        </p>
+
+        <!-- Mostrar solo si se activa con el botón -->
+        <div *ngIf="mostrarFormularioComentario">
+          <label for="proyecto_id">Seleccionar proyecto: </label>
+          <select
+            id="proyecto_id"
+            class="select-proyecto"
+            [(ngModel)]="proyectoSeleccionado"
+            name="proyectoSeleccionado"
+          >
+            <option *ngFor="let proyecto of proyectosEmpleado" [ngValue]="proyecto">
+              {{ proyecto.nombre }}
+            </option>
+          </select>
+          <br><textarea placeholder="Escribe un comentario..." name="descripcion" id="descripcion" [(ngModel)]="comentarioTexto"></textarea> 
+          <div class="modal-footer">
+            <button class="btn-cancelar" (click)="cancelarComentario()">
+              <span class="material-icons">cancel</span>Cancelar
+            </button>
+            <button class="btn-guardar" (click)="agregarComentarios()">
+              <span class="material-icons">save</span>Guardar comentario
+            </button>
+          </div>
+        </div>
+        <div style="height: 440px; overflow-y: auto; padding: 8px;">
+          <ul style="columns: 2; column-gap: 16px; list-style-type: none; padding: 0; margin: 0;">
+            <li *ngFor="let comentario of comentariosPasados" class="comentario-item" style="break-inside: avoid; margin-bottom: 16px;">
+              <mat-icon class="icono-persona">person</mat-icon>{{ comentario.autor_nombre }} 
+              <mat-icon class="icono-proyecto">assignment</mat-icon>{{ comentario.proyecto_nombre }} <br>
+              {{ comentario.descripcion }} <br>
+              <span class="fecha-comentario">{{ comentario.fecha_generacion | date:'shortDate' }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>    
+  </div>
 </div>

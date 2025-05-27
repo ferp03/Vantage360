@@ -12,6 +12,7 @@ import cursosRoutes from '../routes/curso.routes.js';
 import proyectosRoutes from '../routes/proyecto.routes.js';
 import infoRoutes from '../routes/info.routes.js';
 import geminiRoutes from '../routes/ia.routers.js';
+import commentRoutes from '../routes/comments.routes.js';
 
 const app = express();
 const port = 3000;
@@ -49,6 +50,7 @@ app.use('/api', proyectosRoutes);
 // app.use(participacionRoutes);
 app.use('/api', infoRoutes);
 app.use('/api', geminiRoutes);
+app.use(commentRoutes);
 
 // Iniciar el servidor en local
 app.listen(port, () => {

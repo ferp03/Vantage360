@@ -2,6 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
+
+interface Comentarios {
+  comentario_id: number;
+  fecha_generacion: string;
+  autor_id: string;
+  empleado_comentado_id: string;
+  proyecto_id: number;
+  descripcion: string;
+  autor_nombre?: string;
+  proyecto_nombre?: string;
+}
 import { ReporteService } from 'src/app/services/reporte.service';
 
 @Component({
@@ -11,6 +22,7 @@ import { ReporteService } from 'src/app/services/reporte.service';
 })
 export class DisponibilidadComponent implements OnInit {
   empleados: any[] = [];
+  comentarios: any[] = [];
   empleadosFiltrados: any[] = [];
 
   // Ahora incluimos habilidad en los filtros
@@ -37,10 +49,31 @@ export class DisponibilidadComponent implements OnInit {
   empleadoSeleccionado: any = null;
   nuevoEstado: string = '';
   nuevaCargabilidad: number | null = null;
+  mostrarModalActualizar: boolean = false;
 
+
+  empleadoSeleccionadoComentarios: any = null; // Nueva variable para el modal de comentarios
+  comentarioSeleccionado: any = null;
+  mostrarModalComentarios: boolean = false;
+  comentariosPasados: Comentarios[] = [];
+  comentarioTexto: string = '';
+  fecha_generacion: string = '';
+  autor_id: number = 0;
+  proyecto_id: number = 0;
+  autor_nombre: string = '';
+  proyecto_nombre: string = '';
+  proyectoSeleccionado: any = null;
+  proyectosEmpleado: any[] = [];
+  mostrarFormularioComentario: boolean = false;
+  // comentariosPaginaActual: number = 1;
+  // comentariosPorPagina: number = 6;
+  // indicesPagina: number[] = [];
+
+  
   constructor(
     private apiService: ApiService,
     private router: Router,
+    private authService: AuthService,
     private reporteService: ReporteService,
   ) {}
 
@@ -204,6 +237,94 @@ export class DisponibilidadComponent implements OnInit {
     this.nuevaCargabilidad = null;
   }
 
+  seleccionarComentarios(empleado: any): void {
+    this.empleadoSeleccionadoComentarios = empleado;  
+    this.comentarioTexto = '';
+    this.mostrarModalComentarios = true;
+    this.proyectosEmpleado = empleado.proyectos || [];
+    console.log('Empleado seleccionado:', this.empleadoSeleccionadoComentarios);
+    // this.comentariosPaginaActual = 1;
+    // Llama al API para obtener los comentarios del empleado
+    this.apiService.obtenerComentarioEmpleado(empleado.empleado_id).subscribe({
+      next: (comentarios: any[]) => {
+        // Mapear los comentarios para incluir nombres
+        this.comentariosPasados = comentarios.map(comentario => ({
+          ...comentario,
+          autor_nombre: comentario.autor_nombre || 'Desconocido',
+          autor_id: comentario.autor_id || '',
+          proyecto_nombre: comentario.proyecto_nombre || 'Sin proyecto',
+          proyecto_id: comentario.proyecto_id || 0
+        }));
+        this.fecha_generacion = comentarios[0]?.fecha_generacion || '';
+        console.log('Comentarios obtenidos:', this.comentariosPasados);
+      },
+      error: (error) => {
+        console.error('Error al obtener comentarios:', error);
+        this.comentariosPasados = [];
+      }
+    });
+  }
+
+  mostrarComentarios() {
+  this.mostrarFormularioComentario = !this.mostrarFormularioComentario;
+
+}
+
+  agregarComentarios(): void {
+    if (!this.empleadoSeleccionadoComentarios?.empleado_id || !this.comentarioTexto.trim()) {
+      this.error = 'El comentario es obligatorio';
+      return;
+    }
+    
+    const datos = {
+      autor_id: this.authService.userId,
+      proyecto_id: this.proyectoSeleccionado.proyecto_id || 0,
+      descripcion: this.comentarioTexto.trim(),
+      empleado_comentado_id: this.empleadoSeleccionadoComentarios.empleado_id
+    };
+
+    console.log('Datos a enviar para comentario:', datos);
+
+    this.apiService.agregarComentario(this.empleadoSeleccionado, datos).subscribe({
+      next: (nuevoComentario: Comentarios) => {
+        this.comentariosPasados.unshift({
+          ...nuevoComentario,
+          autor_nombre: this.autor_nombre,
+          proyecto_nombre: this.proyectoSeleccionado?.nombre || 'Sin proyecto'
+        });
+        
+        this.comentarioTexto = '';
+        this.proyectoSeleccionado = null;
+        this.error = '';
+      },
+      error: (err) => {
+        console.error('Error al guardar comentario:', err);
+        this.error = err.error?.message || 'Error al conectar con el servidor';
+      }
+
+    });
+
+    this.seleccionarComentarios(this.empleadoSeleccionadoComentarios);
+
+  }
+
+  cancelarComentario(): void {
+    this.mostrarFormularioComentario = false;
+    this.empleadoSeleccionado = null;
+    this.comentarioTexto = '';
+    this.proyectoSeleccionado = null;
+    this.error = '';
+  }
+
+  cancelarComentarios(): void {
+    this.mostrarModalComentarios = false;
+    this.mostrarFormularioComentario = false;
+    this.empleadoSeleccionadoComentarios = null;
+    this.comentarioTexto = '';
+    this.proyectoSeleccionado = null;
+    this.error = '';
+  }
+
   generarReporteCargabilidad(): void {
   if (this.empleadosFiltrados.length === 0) {
     this.error = 'No hay empleados para generar el reporte';
@@ -234,4 +355,31 @@ export class DisponibilidadComponent implements OnInit {
       this.currentPage--;
     }
   }
+
+   // Paginación COMENTARIOS
+//   get comentariosPaginados(): Comentarios[] {
+//     const inicio = (this.comentariosPaginaActual - 1) * this.comentariosPorPagina;
+//     const fin = inicio + this.comentariosPorPagina;
+//     return this.comentariosPasados.slice(inicio, fin);
+//   }
+
+//   get totalPagesComment(): number {
+//   return Math.ceil(this.comentariosPasados.length / this.comentariosPorPagina);
+// }
+
+
+//   siguientePaginaComentarios(): void {
+//   const totalPaginas = Math.ceil(this.comentariosPasados.length / this.comentariosPorPagina);
+//   if (this.comentariosPaginaActual < totalPaginas) {
+//     this.comentariosPaginaActual++;
+//   }
+// }
+
+// paginaAnteriorComentarios(): void {
+//   if (this.comentariosPaginaActual > 1) {
+//     this.comentariosPaginaActual--;
+//   }
+// }
+
+
 }
