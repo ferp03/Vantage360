@@ -27,6 +27,10 @@ interface Proyecto {
   capabilities: Capabilities;
   habilidades: Habilidad[];
   selectedVista: string;
+  delivery_lead?: {
+    id: string;  // o uuid si es el caso
+    nombre: string;
+  }; 
 }
 
 @Component({
@@ -184,6 +188,61 @@ cargarProyectosActuales(): void {
       }
     });
 }
+
+// Modal
+// En tu ParticipacionPComponent
+showJoinModal: boolean = false;
+selectedProject: Proyecto | null = null;
+
+openJoinModal(proyecto: Proyecto): void {
+  if (this.showJoinModal) {
+    return;
+  }
+  this.selectedProject = proyecto;
+  this.showJoinModal = true;
+}
+
+closeJoinModal(event?: Event): void {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  this.showJoinModal = false;
+  this.selectedProject = null;
+}
+
+confirmJoin(): void {
+  if (!this.selectedProject) return;
+
+  const empleadoId = this.authService.userId;
+  const proyectoId = this.selectedProject.proyecto_id;
+
+  if (!empleadoId) {
+    return;
+  }
+
+  this.apiService.unirseAProyecto(empleadoId, proyectoId)
+    .subscribe({
+      next: (response) => {
+        this.showJoinModal = false;
+        this.selectedProject = null;
+        
+        // Recargar datos después de 1 segundo
+        setTimeout(() => {
+          this.cargarProyectosDisponibles();
+          this.cargarProyectosActuales();
+        }, 1000);
+      },
+      error: (error) => {
+        console.error('Error detallado:', error);
+        
+        const errorMsg = error.error?.error || 
+                        error.error?.message || 
+                        'Error al unirse al proyecto';
+      }
+    });
+}
+
 
 openTab(tabId: string) {
   this.activeTab = tabId;

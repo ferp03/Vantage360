@@ -232,6 +232,19 @@ export class ApiService {
   return this.http.get(`${this.apiUrl}/proyecto/actuales/${userId}`);
   }
 
+  // Unirse a un proyecto
+  unirseAProyecto(empleadoId: string, proyectoId: number): Observable<any> {
+  return this.http.post(`${this.apiUrl}/proyecto/unirse`, {
+    empleado_id: empleadoId,
+    proyecto_id: proyectoId
+  }).pipe(
+    catchError(error => {
+      console.error('Error en la solicitud:', error);
+      return throwError(() => error);
+    })
+  );
+  }
+
   // Eliminar Habilidad
   deleteEmpleadoHabilidad(empleadoId: string, habilidadId: number) {
   return this.http.delete<{ success: boolean; message: string }>(
