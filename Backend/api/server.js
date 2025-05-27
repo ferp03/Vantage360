@@ -50,7 +50,7 @@ app.use('/api', proyectosRoutes);
 // app.use(participacionRoutes);
 app.use('/api', infoRoutes);
 app.use('/api', geminiRoutes);
-app.use(commentRoutes);
+app.use('/api', commentRoutes);
 
 // Iniciar el servidor en local
 app.listen(port, () => {
