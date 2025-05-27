@@ -274,15 +274,15 @@
           </div>
         </div>
         <div style="height: 440px; overflow-y: auto; padding: 8px;">
-  <ul style="columns: 2; column-gap: 16px; list-style-type: none; padding: 0; margin: 0;">
-    <li *ngFor="let comentario of comentariosPasados" class="comentario-item" style="break-inside: avoid; margin-bottom: 16px;">
-      <mat-icon class="icono-persona">person</mat-icon>{{ comentario.autor_nombre }} 
-      <mat-icon class="icono-proyecto">assignment</mat-icon>{{ comentario.proyecto_nombre }} <br>
-      {{ comentario.descripcion }} <br>
-      <span class="fecha-comentario">{{ comentario.fecha_generacion | date:'shortDate' }}</span>
-    </li>
-  </ul>
-</div>
+          <ul style="columns: 2; column-gap: 16px; list-style-type: none; padding: 0; margin: 0;">
+            <li *ngFor="let comentario of comentariosPasados" class="comentario-item" style="break-inside: avoid; margin-bottom: 16px;">
+              <mat-icon class="icono-persona">person</mat-icon>{{ comentario.autor_nombre }} 
+              <mat-icon class="icono-proyecto">assignment</mat-icon>{{ comentario.proyecto_nombre }} <br>
+              {{ comentario.descripcion }} <br>
+              <span class="fecha-comentario">{{ comentario.fecha_generacion | date:'shortDate' }}</span>
+            </li>
+          </ul>
+        </div>
       </div>    
   </div>
 </div>
