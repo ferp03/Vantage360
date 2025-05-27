@@ -203,10 +203,10 @@ openJoinModal(proyecto: Proyecto): void {
 }
 
 closeJoinModal(event?: Event): void {
-  if (event) {
-    event.preventDefault();
-    event.stopPropagation();
-  }
+  // if (event) {
+  //   event.preventDefault();
+  //   event.stopPropagation();
+  // }
   this.showJoinModal = false;
   this.selectedProject = null;
 }

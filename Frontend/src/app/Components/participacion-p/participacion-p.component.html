@@ -112,19 +112,19 @@
                     Integrantes
                   </button>
                 </div>
-                <!-- Modal -->
-                 <div class="modal-overlay" *ngIf="showJoinModal" (click)="closeJoinModal($event)">
-                  <div class="modal-container" (click)="$event.stopPropagation()">
-                    <h3>Confirmar participación</h3>
-                    <p>¿Estás seguro que deseas unirte al proyecto "{{selectedProject?.nombre}}"?</p>
-                    <div class="modal-actions">
-                      <button class="btn-cancel" (click)="closeJoinModal($event)">Cancelar</button>
-                      <button class="btn-confirm" (click)="confirmJoin()">Confirmar</button>
-                    </div>
-                  </div>
-                </div>
-
               </div>
+              
+              <!-- Modal -->
+              <div class="modal-overlay" *ngIf="showJoinModal" (click)="closeJoinModal()">
+               <div class="modal-container" (click)="$event.stopPropagation()">
+                 <h3>Confirmar participación</h3>
+                 <p>¿Estás seguro que deseas unirte al proyecto "{{selectedProject?.nombre}}"?</p>
+                 <div class="modal-actions">
+                   <button class="btn-cancel" (click)="closeJoinModal()">Cancelar</button>
+                   <button class="btn-confirm" (click)="confirmJoin()">Confirmar</button>
+                 </div>
+               </div>
+             </div>
             </div>
           </div>
         </div>
