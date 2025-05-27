@@ -27,12 +27,20 @@ interface ExperienciaLaboral {
   descripcion: string;
   esNueva?: boolean;
   esPuestoActual?: boolean;
-  capability_id?: number; 
+  capability_id?: number;
+  habilidad_id?: number;
+  habilidad_nombre?: string; 
+  habilidad_nivel?: string;
 }
 
 interface Capability {
   id: number;
   nombre: string;
+}
+interface HabilidadOption {
+  id: number;
+  nombre: string;
+  categoria?: string;
 }
 
 interface Ciudades {
@@ -48,6 +56,7 @@ interface ErroresExperiencia {
   fin?: boolean;
   descripcion?: boolean;
   fechaInvalida?: boolean;
+  habilidad?: boolean;
 }
 
 interface Ceritifcado {
@@ -96,6 +105,14 @@ export class EmpleadoDetallesComponent implements OnInit {
     fecha_inicio: ' ',
     capability_proyecto: ' '
   };
+
+  habilidadesOptions: HabilidadOption[] = []; // Lista de habilidades disponibles
+  nivelesHabilidad = [
+    { value: 'Básico', display: 'Básico' },
+    { value: 'Intermedio', display: 'Intermedio' },
+    { value: 'Avanzado', display: 'Avanzado' }
+  ];
+
 
   pieChart: Chart | null = null;
   pieChart2: Chart | null = null;
@@ -186,7 +203,34 @@ export class EmpleadoDetallesComponent implements OnInit {
       this.activeChart = "pie2"
       setTimeout(() => this.renderizarGraficas(), 50); // Aquí va la función que quieres ejecutar después
     });
+    this.cargarOpcionesHabilidades();
   }
+
+  cargarOpcionesHabilidades(): void {
+    this.apiService.getHabilidades().subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.habilidadesOptions = res.data.map((h: any) => ({
+            id: h.habilidad_id || h.id,
+            nombre: h.nombre,
+            categoria: h.categoria
+          }));
+        }
+      },
+      error: (err) => console.error('Error al cargar habilidades:', err)
+    });
+  }
+
+  onHabilidadSeleccionada(index: number): void {
+  const exp = this.experiencias[index];
+  if (exp.habilidad_id) {
+    const habilidadSeleccionada = this.habilidadesOptions.find(h => h.id === exp.habilidad_id);
+    exp.habilidad_nombre = habilidadSeleccionada?.nombre || '';
+  } else {
+    exp.habilidad_nombre = '';
+    exp.habilidad_nivel = '';
+  }
+}
   
   cargarCapabilities(): Promise<void> {
     return new Promise<void>((resolve) => {
@@ -480,29 +524,32 @@ export class EmpleadoDetallesComponent implements OnInit {
 
   guardarExperienciaForzado(index: number) {
     if (!this.esMiPerfil || !this.editandoTrayectoria) return;
-    
+  
     console.log('Guardando experiencia forzadamente:', index);
-    
+  
     const exp = this.experiencias[index];
-    
-    this.errores[index] = {
+
+    // Validaciones
+    const errores: ErroresExperiencia = {
       titulo: !exp.titulo?.trim(),
       titulo_proyecto: !exp.titulo_proyecto?.trim(),
       empresa: !exp.empresa?.trim(),
       inicio: !exp.inicio?.trim(),
       fin: !exp.esPuestoActual && !exp.fin?.trim(),
       descripcion: !exp.descripcion?.trim(),
-      fechaInvalida: false
+      fechaInvalida: false,
+      habilidad: exp.habilidad_id ? !exp.habilidad_nivel : false
     };
 
     this.validarFechas(index);
+    this.errores[index] = errores;
 
-    if (Object.values(this.errores[index]).some(e => e)) {
-      console.log('Hay errores de validación, no se puede guardar');
+    if (Object.values(errores).some(e => e)) {
+      console.log('Errores de validación:', errores);
       return;
     }
-    
-    const payload = {
+  
+    const payload: any = {
       titulo_puesto: exp.titulo,
       titulo_proyecto: exp.titulo_proyecto,
       empresa: exp.empresa,
@@ -513,8 +560,14 @@ export class EmpleadoDetallesComponent implements OnInit {
       capability_id: exp.capability_id
     };
 
-    console.log('Payload a guardar:', payload);
-    
+    // Agregar campos de habilidad solo si existen
+    if (exp.habilidad_id) {
+      payload.habilidad_id = exp.habilidad_id;
+      payload.habilidad_nivel = exp.habilidad_nivel;
+    }
+
+    console.log('Payload completo:', payload);
+  
     if (exp.esNueva) {
       if (!this.empleadoId) return;
       this.apiService.createExperiencia(this.empleadoId, payload).subscribe({
@@ -541,7 +594,7 @@ export class EmpleadoDetallesComponent implements OnInit {
           console.error('Error al actualizar experiencia:', err);
         }
       });
-    }
+    } 
   }
 
   cancelarEdicionExperiencia(index: number) {
@@ -609,7 +662,10 @@ export class EmpleadoDetallesComponent implements OnInit {
       descripcion: '',
       esNueva: true,
       esPuestoActual: false,
-      capability_id: undefined
+      capability_id: undefined,
+      habilidad_id: undefined,
+      habilidad_nombre: '', 
+      habilidad_nivel: ''   
     };
     
     this.experiencias.unshift(nueva);
