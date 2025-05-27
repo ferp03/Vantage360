@@ -252,4 +252,8 @@ export class ApiService {
   );
 }
 
+  // Actualizar Habilidad
+  updateEmpleadoHabilidad(empleadoId: string, habilidadId: number, datos: {nivel: string, descripcion: string}): Observable<any> {
+      return this.http.put(`${this.apiUrl}/empleado/${empleadoId}/habilidad/${habilidadId}`, datos);
+    }
 } 

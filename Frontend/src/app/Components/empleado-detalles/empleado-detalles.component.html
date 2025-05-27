@@ -77,16 +77,45 @@
       
       <div class="etiquetas-habilidad">
         <div *ngFor="let habilidad of habilidades" class="habilidad-container">
-          <span class="habilidad-etiqueta">{{ habilidad.nombre }}</span>
+          <div class="habilidad-content">
+            <span class="habilidad-etiqueta">{{ habilidad.nombre }}</span>
+            
+            <button *ngIf="editandoInfo && esMiPerfil" class="boton-acciones-hab" (click)="abrirMenuHabilidad(habilidad)">
+              <span class="material-icons">more_vert</span>
+            </button>
+          </div>
+          
           <div class="habilidad-tooltip">
             <div><strong>Nivel:</strong> {{ habilidad.nivel }}</div>
             <div><strong>Descripción:</strong> {{ habilidad.descripcion }}</div>
           </div>
-          <button *ngIf="editandoInfo && esMiPerfil" class="boton-eliminar-hab" (click)="abrirModalEliminar(habilidad)">
-              <span class="material-icons">close</span>
-          </button>
         </div>
       </div>
+
+      <div class="modal modal-acciones" *ngIf="habilidadSeleccionada">
+        <div class="modal-contenido modal-pequeno">
+          <h3><mat-icon>settings</mat-icon> Acciones para habilidad</h3>
+          
+          <p class="mb-3">¿Qué deseas hacer con <b>{{ habilidadSeleccionada.nombre }}</b>?</p>
+          
+          <div class="opciones-acciones">
+            <button class="boton-opcion" (click)="editarHabilidad(habilidadSeleccionada)">
+              <mat-icon>edit</mat-icon> Editar habilidad
+            </button>
+            
+            <button class="boton-opcion boton-eliminar" (click)="abrirModalEliminar(habilidadSeleccionada)">
+              <mat-icon>delete</mat-icon> Eliminar habilidad
+            </button>
+          </div>
+
+          <div class="acciones-modal">
+            <button class="cancelar" (click)="habilidadSeleccionada = null">
+              <mat-icon>close</mat-icon> Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+
       <h4><span class="material-icons">school</span> Certificados</h4>
       <ul>
         <li *ngFor="let certificado of certificados">{{ certificado.nombre }}</li>
@@ -377,6 +406,40 @@
       </button>
       </div>
     </div>
+
+    
+<div class="modal" *ngIf="habilidadEditando">
+  <div class="modal-contenido">
+    <h3><mat-icon>edit</mat-icon> Editar habilidad</h3>
+    
+    <p class="mb-3">Editando <b>{{ habilidadEditando.nombre }}</b></p> 
+    
+    <div class="campo-grupo">
+      <label><mat-icon>grade</mat-icon> Nivel:</label>
+      <select [(ngModel)]="nivelSeleccionado">
+        <option *ngFor="let nivel of nivelesHabilidad" [value]="nivel">{{ nivel }}</option>
+      </select>
+    </div>
+    
+    <div class="campo-grupo">
+      <label><mat-icon>description</mat-icon> Descripción:</label>
+      <textarea 
+        [(ngModel)]="descripcionEditada" 
+        rows="3"
+        placeholder="Describe tu experiencia con esta habilidad..."
+      ></textarea>
+    </div>
+
+    <div class="acciones-modal">
+      <button class="boton-guardar"(click)="guardarCambiosHabilidad()">
+        <mat-icon>check</mat-icon> Guardar cambios
+      </button>
+      <button class="cancelar" (click)="cancelarEdicionHabilidad()">
+        <mat-icon>close</mat-icon> Cancelar
+      </button>
+    </div>
+  </div>
+</div>
 
     <div class="modal" *ngIf="habilidadPendiente">
   <div class="modal-contenido">
