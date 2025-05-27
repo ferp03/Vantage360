@@ -399,4 +399,21 @@ router.post('/proyecto/unirse', async (req, res) => {
   }
 });
 
+router.get('/proyecto/integrantes/:id', async (req, res) => {
+  try{
+
+    const id = req.body;
+    const { data, error } = await supabase.rpc('get_integrantes_proyecto', id);
+    
+    if(error) {
+      return res.status(400).json({success: false, error: error.message});
+    }
+
+    return res.status(200).json({success: true, data: data});
+
+  } catch (err) {
+    return res.status(400).json({success: false, error: err.message});
+  }
+})
+
 export default router;
