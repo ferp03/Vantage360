@@ -47,8 +47,9 @@
                     <span class="chip-activo">Disponible</span>
                   </div>
                 </div>
-                
+                <!-- Nombre del autor -->
                 <div class="project-dates">
+                  <strong>Delivery lead:</strong> {{proyecto.delivery_lead?.nombre || 'No asignado'}}
                   <div class="date-label">
                     <strong>Inicio:</strong> {{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}
                   </div>
@@ -95,13 +96,14 @@
                     </span>
                   </div>
                 </div>
-
                 <div class="project-progress">
                   <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
                   <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
                 </div>
-                <div class="project-actions">
-                  <button class="btn-participate">
+
+                <!-- Botones -->
+                 <div class="project-actions">
+                  <button class="btn-participate" (click)="openJoinModal(proyecto)">
                     <span class="material-icons">group_add</span>
                     Participar
                   </button>
@@ -110,6 +112,18 @@
                     Integrantes
                   </button>
                 </div>
+                <!-- Modal -->
+                 <div class="modal-overlay" *ngIf="showJoinModal" (click)="closeJoinModal($event)">
+                  <div class="modal-container" (click)="$event.stopPropagation()">
+                    <h3>Confirmar participación</h3>
+                    <p>¿Estás seguro que deseas unirte al proyecto "{{selectedProject?.nombre}}"?</p>
+                    <div class="modal-actions">
+                      <button class="btn-cancel" (click)="closeJoinModal($event)">Cancelar</button>
+                      <button class="btn-confirm" (click)="confirmJoin()">Confirmar</button>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -128,9 +142,9 @@
                   <div class="project-status">
                     <span class="chip-activo">Activo</span>
                   </div>
-                </div>
-                
+                </div>              
                 <div class="project-dates">
+                  <strong>Delviery lead:</strong> {{proyecto.delivery_lead?.nombre || 'No asignado'}}
                   <div class="date-label">
                     <strong>Inicio:</strong> {{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}
                   </div>
@@ -212,8 +226,8 @@
                     <span class="chip-finalizado">Finalizado</span>
                   </div>
                 </div>
-                
                 <div class="project-dates">
+                  <strong>Delivery lead:</strong> {{proyecto.delivery_lead?.nombre || 'No asignado'}}
                   <div class="date-label">
                     <strong>Inicio:</strong> {{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}
                   </div>
