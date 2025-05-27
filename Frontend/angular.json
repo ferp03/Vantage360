@@ -68,8 +68,8 @@
               "outputHashing": "all", 
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "replace": "src/envs/environment.ts",
+                  "with": "src/envs/environment.prod.ts"
                 }
               ]
             },
