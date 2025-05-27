@@ -1084,4 +1084,86 @@ confirmarEliminarHabilidad(): void {
         }
       });
 }
+
+// ...existing code...
+
+  // Propiedades para edición de habilidades
+  habilidadEditando: Habilidad | null = null;
+  nivelSeleccionado: string = '';
+  descripcionEditada: string = '';
+
+  // Definir opciones de nivel
+  nivelesHabilidad = ['Básico', 'Intermedio', 'Avanzado'];
+
+  // Método para abrir modal de edición de habilidad
+  abrirModalEditar(hab: Habilidad): void {
+    this.habilidadEditando = { ...hab };
+    this.nivelSeleccionado = hab.nivel;
+    this.descripcionEditada = hab.descripcion;
+  }
+
+  // Método para cancelar la edición
+  cancelarEdicionHabilidad(): void {
+    this.habilidadEditando = null;
+    this.nivelSeleccionado = '';
+    this.descripcionEditada = '';
+  }
+
+  guardarCambiosHabilidad(): void {
+    if (!this.empleadoId || !this.habilidadEditando || this.habilidadEditando.id === undefined) {
+      this.habilidadEditando = null;
+      return;
+    }
+
+    const datos = {
+      nivel: this.nivelSeleccionado,
+      descripcion: this.descripcionEditada
+    };
+
+    this.apiService.updateEmpleadoHabilidad(this.empleadoId, this.habilidadEditando.id, datos)
+      .subscribe({
+        next: (res) => {
+          if (res.success) {
+            const index = this.habilidades.findIndex(h => h.id === this.habilidadEditando!.id);
+            if (index !== -1) {
+              this.habilidades[index].nivel = this.nivelSeleccionado;
+              this.habilidades[index].descripcion = this.descripcionEditada;
+            }
+            
+            this.mensajeExito = 'Habilidad actualizada correctamente';
+            this.mostrarMensajeExito = true;
+            
+            setTimeout(() => {
+              this.mensajeDesvanecido = true;
+            }, 1000); 
+            
+            setTimeout(() => {
+              this.mostrarMensajeExito = false;
+              this.mensajeDesvanecido = false;
+            }, 3000);
+            
+            this.habilidadEditando = null;
+          } else {
+            console.error('Error al actualizar habilidad:', res.error);
+            alert('No se pudo actualizar la habilidad');
+          }
+        },
+        error: (err) => {
+          console.error('Error al actualizar habilidad:', err);
+          this.habilidadEditando = null;
+        }
+      });
+  }
+
+habilidadSeleccionada: Habilidad | null = null;
+
+abrirMenuHabilidad(habilidad: Habilidad): void {
+  this.habilidadSeleccionada = habilidad;
 }
+
+editarHabilidad(habilidad: Habilidad): void {
+  this.habilidadSeleccionada = null; 
+  this.abrirModalEditar(habilidad); 
+}
+}
+

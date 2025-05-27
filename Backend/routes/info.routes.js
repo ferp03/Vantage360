@@ -87,5 +87,30 @@ router.get('/habilidades', async (req, res) => {
   }
 })
 
+// Editar una habilidad
+router.put('/empleado/:id/habilidad/:habilidad_id', async (req, res) => {
+  const { id, habilidad_id } = req.params;
+  const { nivel, descripcion } = req.body;
+
+  try {
+    const { error } = await supabase
+      .from('_empleado_habilidad')
+      .update({ nivel, descripcion })
+      .eq('empleado_id', id)
+      .eq('habilidad_id', habilidad_id);
+
+    if (error) {
+      console.error('Error al actualizar habilidad:', error.message);
+      return res
+        .status(500)
+        .json({ success: false, error: 'No se pudo actualizar la habilidad del empleado' });
+    }
+
+    return res.status(200).json({ success: true, message: 'Habilidad actualizada correctamente' });
+  } catch (err) {
+    console.error('Error inesperado:', err);
+    return res.status(500).json({ success: false, error: 'Error del servidor' });
+  }
+});
 
 export default router;
