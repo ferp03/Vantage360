@@ -238,33 +238,60 @@
     </div>
     <div class="modal-content">
       <div class="empleado-detalle">
-        <p class="nombre">{{ empleadoSeleccionado?.nombre }} {{ empleadoSeleccionado?.apellido_paterno }}</p>
-        <p class="usuario">&#64;{{ empleadoSeleccionado?.usuario }}</p>
-        <p class="correo">{{ empleadoSeleccionado?.email }}</p>
+        <p class="nombre">{{ empleadoSeleccionadoComentarios?.nombre }} {{ empleadoSeleccionadoComentarios?.apellido_paterno }}</p>
+        <p class="usuario">&#64;{{ empleadoSeleccionadoComentarios?.usuario }}</p>
+        <p class="correo">{{ empleadoSeleccionadoComentarios?.email }}</p>
       </div>
       <div>
        <div>
-        <p>Comentarios <button class="boton-comentario"><mat-icon class="icono-persona">add_circle</mat-icon></button></p>
-          <textarea name="descripcion" id="descripcion" [(ngModel)]="comentarioTexto"></textarea>          
-          <label for="proyecto_id">Seleccionar proyecto:</label>
-            <select id="proyecto_id" [(ngModel)]="proyectoSeleccionado" name="proyectoSeleccionado">
-              <option *ngFor="let proyecto of proyectosEmpleado" [ngValue]="proyecto">
-                {{ proyecto.nombre }}
-              </option>
-            </select>
+        <p>Comentarios 
+          <button class="boton-comentario" (click)="mostrarComentarios()">
+            <mat-icon class="icono-persona">add_circle</mat-icon>
+          </button>
+        </p>
+
+        <!-- Mostrar solo si se activa con el botón -->
+        <div *ngIf="mostrarFormularioComentario">
+          <label for="proyecto_id">Seleccionar proyecto: </label>
+          <select
+            id="proyecto_id"
+            class="select-proyecto"
+            [(ngModel)]="proyectoSeleccionado"
+            name="proyectoSeleccionado"
+          >
+            <option *ngFor="let proyecto of proyectosEmpleado" [ngValue]="proyecto">
+              {{ proyecto.nombre }}
+            </option>
+          </select>
+          <br><textarea placeholder="Escribe un comentario..." name="descripcion" id="descripcion" [(ngModel)]="comentarioTexto"></textarea> 
+          <div class="modal-footer">
+            <button class="btn-cancelar" (click)="cancelarComentario()">
+              <span class="material-icons">cancel</span>Cancelar
+            </button>
+            <button class="btn-guardar" (click)="agregarComentarios()">
+              <span class="material-icons">save</span>Guardar comentario
+            </button>
+          </div>
+        </div>
         <ul>
-          <li *ngFor="let comentario of comentariosPasados" class="comentario-item">
-            <mat-icon class="icono-persona">person</mat-icon>{{ comentario.autor_nombre }} <br>
+          <li *ngFor="let comentario of comentariosPaginados" class="comentario-item">
+            <mat-icon class="icono-persona">person</mat-icon>{{ comentario.autor_nombre }} 
             <mat-icon class="icono-proyecto">assignment</mat-icon>{{ comentario.proyecto_nombre }} <br>
             {{ comentario.descripcion }} <br>
             <span class="fecha-comentario">{{ comentario.fecha_generacion | date:'shortDate' }}</span>
           </li>
         </ul>
-      </div>
-    </div>
+        </div>
+
+        <div class="paginacioncomment">
+          <div *ngIf="!cargando && !error && totalPagesComment > 1" class="pagination">
+          <button (click)="paginaAnteriorComentarios()" [disabled]="comentariosPaginaActual === 1">
+            <img src="/assets/arrow-left-solid.svg" alt="Prev" class="arrows">
+          </button>
+          <span>{{ comentariosPaginaActual }} / {{ totalPagesComment }}</span>
+          <button (click)="siguientePaginaComentarios()" [disabled]="comentariosPaginaActual === totalPagesComment">
+            <img src="/assets/arrow-right-solid.svg" alt="Next" class="arrows">
+          </button>
+        </div>
   </div>
-  <div class="modal-footer">
-    <button class="btn-cancelar" (click)="cancelarComentarios()"><span class="material-icons">cancel</span>Cancelar</button>
-    <button class="btn-guardar" (click)="agregarComentarios()"><span class="material-icons">save</span>Guardar comentario</button>
-</div>
 </div>

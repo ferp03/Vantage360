@@ -48,7 +48,10 @@ export class DisponibilidadComponent implements OnInit {
   empleadoSeleccionado: any = null;
   nuevoEstado: string = '';
   nuevaCargabilidad: number | null = null;
+  mostrarModalActualizar: boolean = false;
 
+
+  empleadoSeleccionadoComentarios: any = null; // Nueva variable para el modal de comentarios
   comentarioSeleccionado: any = null;
   mostrarModalComentarios: boolean = false;
   comentariosPasados: Comentarios[] = [];
@@ -60,12 +63,16 @@ export class DisponibilidadComponent implements OnInit {
   proyecto_nombre: string = '';
   proyectoSeleccionado: any = null;
   proyectosEmpleado: any[] = [];
+  mostrarFormularioComentario: boolean = false;
+  comentariosPaginaActual: number = 1;
+  comentariosPorPagina: number = 6;
+  indicesPagina: number[] = [];
 
   
   constructor(
     private apiService: ApiService,
-    private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -229,10 +236,14 @@ export class DisponibilidadComponent implements OnInit {
   }
 
   seleccionarComentarios(empleado: any): void {
-    this.empleadoSeleccionado = empleado;
+    this.empleadoSeleccionadoComentarios = empleado;  
     this.comentarioTexto = '';
     this.mostrarModalComentarios = true;
     this.proyectosEmpleado = empleado.proyectos || [];
+    console.log('Empleado seleccionado:', this.empleadoSeleccionadoComentarios);
+    this.comentariosPaginaActual = 1;
+
+
 
     // Llama al API para obtener los comentarios del empleado
     this.apiService.obtenerComentarioEmpleado(empleado.empleado_id).subscribe({
@@ -255,17 +266,22 @@ export class DisponibilidadComponent implements OnInit {
     });
   }
 
+  mostrarComentarios() {
+  this.mostrarFormularioComentario = !this.mostrarFormularioComentario;
+
+}
+
   agregarComentarios(): void {
-    if (!this.empleadoSeleccionado?.empleado_id || !this.comentarioTexto.trim()) {
+    if (!this.empleadoSeleccionadoComentarios?.empleado_id || !this.comentarioTexto.trim()) {
       this.error = 'El comentario es obligatorio';
       return;
     }
-
+    
     const datos = {
-      autor_id: this.empleadoSeleccionado.empleado_id,
+      autor_id: this.authService.userId,
       proyecto_id: this.proyectoSeleccionado.proyecto_id || 0,
       descripcion: this.comentarioTexto.trim(),
-      empleado_comentado_id: this.empleadoSeleccionado.empleado_id
+      empleado_comentado_id: this.empleadoSeleccionadoComentarios.empleado_id
     };
 
     console.log('Datos a enviar para comentario:', datos);
@@ -286,12 +302,25 @@ export class DisponibilidadComponent implements OnInit {
         console.error('Error al guardar comentario:', err);
         this.error = err.error?.message || 'Error al conectar con el servidor';
       }
+
     });
+
+    this.seleccionarComentarios(this.empleadoSeleccionadoComentarios);
+
+  }
+
+  cancelarComentario(): void {
+    this.mostrarFormularioComentario = false;
+    this.empleadoSeleccionado = null;
+    this.comentarioTexto = '';
+    this.proyectoSeleccionado = null;
+    this.error = '';
   }
 
   cancelarComentarios(): void {
     this.mostrarModalComentarios = false;
-    this.empleadoSeleccionado = null;
+    this.mostrarFormularioComentario = false;
+    this.empleadoSeleccionadoComentarios = null;
     this.comentarioTexto = '';
     this.proyectoSeleccionado = null;
     this.error = '';
@@ -318,4 +347,31 @@ export class DisponibilidadComponent implements OnInit {
       this.currentPage--;
     }
   }
+
+   // Paginación COMENTARIOS
+  get comentariosPaginados(): Comentarios[] {
+    const inicio = (this.comentariosPaginaActual - 1) * this.comentariosPorPagina;
+    const fin = inicio + this.comentariosPorPagina;
+    return this.comentariosPasados.slice(inicio, fin);
+  }
+
+  get totalPagesComment(): number {
+  return Math.ceil(this.comentariosPasados.length / this.comentariosPorPagina);
+}
+
+
+  siguientePaginaComentarios(): void {
+  const totalPaginas = Math.ceil(this.comentariosPasados.length / this.comentariosPorPagina);
+  if (this.comentariosPaginaActual < totalPaginas) {
+    this.comentariosPaginaActual++;
+  }
+}
+
+paginaAnteriorComentarios(): void {
+  if (this.comentariosPaginaActual > 1) {
+    this.comentariosPaginaActual--;
+  }
+}
+
+
 }

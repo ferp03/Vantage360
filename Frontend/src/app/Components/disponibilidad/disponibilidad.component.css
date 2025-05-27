@@ -52,7 +52,7 @@
   font-size: 14px;
 }
 
-.filtro-item select, .filtro-item input {
+.filtro-item select, .filtro-item input, .select-proyecto {
   padding: 8px;
   border-radius: 4px;
   background-color: hsl(var(--input));
@@ -270,6 +270,7 @@ button mat-icon.icono-persona {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  
 }
 
 .arrows {
@@ -388,7 +389,7 @@ button mat-icon.icono-persona {
 
 /* Inputs y textarea */
 .form-group select, .form-group input, textarea {
-  width: 100%;
+  width: 50%;
   padding: 8px;
   border: 1px solid rgba(138, 86, 232, 0.3);
   border-radius: 4px;
@@ -397,6 +398,19 @@ button mat-icon.icono-persona {
   font-family: inherit;
   font-size: 0.95rem;
   margin-top: 5px;
+}
+
+ul {
+  list-style-type: none; /* Elimina los puntos de la lista */
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  column-gap: 25px;
+  height: calc(8 * 49px); 
+  max-width: 100%;
+  overflow: hidden;
 }
 
 textarea {
@@ -421,8 +435,7 @@ textarea:focus,
 /* Estilo del modal de comentarios */
 .comment-modal.modal {
   width: 800px;
-  height: 600px;
-  max-height: 90vh;
+  height: 650px;
   flex-direction: column;
 }
 
@@ -432,7 +445,10 @@ textarea:focus,
   margin-bottom: 10px;     /* Espacio entre elementos */
   border-radius: 5px;      /* Bordes redondeados */
   background-color: var(--accenture-gray-100); /* Color de fondo suave */
-  width: 30%;
+  width: 45%;
+  white-space: normal;  /* Permite saltos de línea */
+  word-wrap: break-word;  /* Rompe palabras largas si es necesario */
+  line-height: 1.5;
 }
 
 .fecha-comentario {
