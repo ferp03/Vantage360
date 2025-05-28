@@ -15,14 +15,49 @@
         </nav>
     </div>
     
-    <div class="login-container" #menu>
-        <div class="dropdown" [class.show]="menuAbierto">
-            <button class="avatar-button" (click)="toggleMenu()">{{ username?.[0] || "A" }}</button>
-            <div class="dropdown-content" *ngIf="menuAbierto">
-                <a (click)="menuAbierto=false" routerLink="/empleado-detalles/{{empleadoId}}">Mi perfil</a>
-                <a *ngIf="esAdmin()" (click)="menuAbierto=false" routerLink="/crear-cuenta">Crear cuenta</a>
-                <hr>
-                <a (click)="logout()">Log out</a>
+    <div class="right-section">
+        <!-- Notificaciones -->
+        <div class="notification-container" #notificationMenu>
+            <button class="notification-button" (click)="toggleNotificationMenu($event)">
+                <i class="bx bx-bell" 
+                [style.color]="hasUnreadNotifications ? '#9668e6' : '#333'"></i>
+                <span *ngIf="hasUnreadNotifications" class="notification-badge">
+                    {{unreadNotificationsCount}}
+                </span>
+            </button>
+            <!-- Menú desplegable -->
+            <div class="notification-dropdown" *ngIf="notificationMenuAbierto">
+                <div class="notification-header">
+                    <h3>Notificaciones</h3>
+                </div>
+                <div class="notification-list">
+                    <div *ngFor="let notification of notifications" 
+                        class="notification-item" 
+                        [class.unread]="!notification.read">
+                        <span *ngIf="!notification.read" class="unread-dot"></span>
+                        <div class="notification-content">
+                            {{notification.message}}
+                        </div>
+                        <div class="notification-time">
+                            {{notification.date | date:'short'}}
+                        </div>
+                    </div>
+                    <div *ngIf="notifications.length === 0" class="empty-notifications">
+                        No hay notificaciones
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Menú de usuario existente -->
+        <div class="login-container" #menu>
+            <div class="dropdown" [class.show]="menuAbierto">
+                <button class="avatar-button" (click)="toggleMenu()">{{ username?.[0] || "A" }}</button>
+                <div class="dropdown-content" *ngIf="menuAbierto">
+                    <a (click)="menuAbierto=false" routerLink="/empleado-detalles/{{empleadoId}}">Mi perfil</a>
+                    <a *ngIf="esAdmin()" (click)="menuAbierto=false" routerLink="/crear-cuenta">Crear cuenta</a>
+                    <hr>
+                    <a (click)="logout()">Log out</a>
+                </div>
             </div>
         </div>
     </div>

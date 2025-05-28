@@ -149,9 +149,16 @@ router.get('/empleado/:empleado_id/certificados', async (req, res) => {
       });
     }
 
+    // Formatear fechas para asegurar consistencia
+    const certificadosFormateados = data.map(cert => ({
+      ...cert,
+      fecha_emision: cert.fecha_emision ? new Date(cert.fecha_emision).toISOString() : null,
+      fecha_vencimiento: cert.fecha_vencimiento ? new Date(cert.fecha_vencimiento).toISOString() : null
+    }));
+
     return res.status(200).json({ 
       success: true,
-      data 
+      data: certificadosFormateados
     });
 
   } catch (err) {
