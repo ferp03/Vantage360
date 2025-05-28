@@ -80,9 +80,12 @@
           <div class="habilidad-content">
             <span class="habilidad-etiqueta">{{ habilidad.nombre }}</span>
             
-            <button *ngIf="editandoInfo && esMiPerfil" class="boton-acciones-hab" (click)="abrirMenuHabilidad(habilidad)">
-              <span class="material-icons">settings</span>
-            </button>
+            <mat-icon
+            class="engrane-clic"
+            *ngIf="editandoInfo && esMiPerfil"
+            (click)="abrirMenuHabilidad(habilidad)">
+            settings
+          </mat-icon>
           </div>
           
           <div class="habilidad-tooltip">
