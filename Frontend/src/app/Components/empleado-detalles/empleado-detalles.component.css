@@ -1021,7 +1021,9 @@ font-size: 14px;
   line-height: 1;
   transition:                
   transform 0.25s ease, color  0.25s ease;
-  color: #666;               
+  color: #666;        
+  top: -6px;  
+  right: -6px;     
 }
 
 .engrane-clic:hover,
