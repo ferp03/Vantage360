@@ -1200,7 +1200,7 @@ confirmarEliminarHabilidad(): void {
   nivelSeleccionado: string = '';
   descripcionEditada: string = '';
 
-  // Definir opciones de nivel
+  // Definir opciones de los niveles
   nivelHabilidad = ['Básico', 'Intermedio', 'Avanzado'];
 
   // Método para abrir modal de edición de habilidad
