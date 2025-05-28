@@ -314,6 +314,32 @@
             <span class="error" *ngIf="errores[i].empresa">Campo requerido</span>
           </div>
 
+          <div class="campo-grupo">
+            <label><span class="material-icons">star</span> Habilidad:</label>
+            <select 
+              [(ngModel)]="experiencia.habilidad_id" 
+              (change)="onHabilidadSeleccionada(i)"
+              [class.error-input]="errores[i]?.habilidad">
+              <option [ngValue]="undefined">Ninguna</option>
+              <option *ngFor="let habilidad of habilidadesOptions" 
+                      [ngValue]="habilidad.id">
+                {{ habilidad.nombre }}
+                <span *ngIf="habilidad.categoria">({{ habilidad.categoria }})</span>
+              </option>
+            </select>
+          </div>
+
+
+          <div class="campo-grupo">
+            <label><span class="material-icons">grade</span> Nivel:</label>
+            <select [(ngModel)]="experiencia.habilidad_nivel">
+              <option value="">Selecciona un nivel</option>
+              <option value="Básico">Básico</option>
+              <option value="Intermedio">Intermedio</option>
+              <option value="Avanzado">Avanzado</option>
+            </select>
+          </div>
+
           <div class="campo-checkbox">
             <input type="checkbox" id="puestoActual{{i}}" [ngModel]="experiencia.esPuestoActual" (ngModelChange)="experiencia.esPuestoActual = $event; togglePuestoActual(i)" />
             <label for="puestoActual{{i}}">

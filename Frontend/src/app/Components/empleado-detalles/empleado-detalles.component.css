@@ -321,7 +321,35 @@
   gap: 10px;
 }
 
-/* Estilos para el formulario de experiencia */
+
+.experiencia-form .mat-select:focus {
+  outline: none;
+  border-color: #9668e6;
+  box-shadow: 0 0 0 2px rgba(150, 104, 230, 0.2);
+}
+
+/* Estilo para el panel desplegable del select */
+.mat-select-panel {
+  background: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Asegurar que el form-field no tenga márgenes extra */
+.experiencia-form .mat-form-field-appearance-outline .mat-form-field-wrapper {
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilo para el outline del mat-form-field */
+.experiencia-form .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: rgba(138, 86, 232, 0.3);
+}
+
+.experiencia-form .mat-form-field-appearance-outline .mat-form-field-outline-thick {
+  color: #9668e6;
+}
+
 .experiencia-form {
   display: flex;
   flex-direction: column;
