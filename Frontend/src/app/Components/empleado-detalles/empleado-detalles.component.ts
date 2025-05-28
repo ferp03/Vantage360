@@ -1201,7 +1201,7 @@ confirmarEliminarHabilidad(): void {
   descripcionEditada: string = '';
 
   // Definir opciones de nivel
-  nivelesHabilidad = ['Básico', 'Intermedio', 'Avanzado'];
+  nivelHabilidad = ['Básico', 'Intermedio', 'Avanzado'];
 
   // Método para abrir modal de edición de habilidad
   abrirModalEditar(hab: Habilidad): void {
