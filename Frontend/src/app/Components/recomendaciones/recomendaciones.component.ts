@@ -1,7 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { forkJoin } from 'rxjs';
+
 import { GeminiService } from '../../services/gemini.service';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../auth/auth.service';
+
+interface RecomItem {
+  titulo: string;
+  descripcion: string;
+  porcentaje?: string;
+}
 
 @Component({
   selector: 'app-recomendaciones',
@@ -11,48 +19,39 @@ import { AuthService } from '../../auth/auth.service';
 export class RecomendacionesComponent implements OnInit {
   cursos: any[] = [];
   certificados: any[] = [];
+  habilidades: string[] = [];
   empleadoId = '';
   cargando = false;
   error: string | null = null;
   estado: 'inicio' | 'cargando' | 'listo' = 'inicio';
-
-  recomendacionesCursos: { titulo: string, descripcion: string }[] = [];
-  recomendacionesCertificados: { titulo: string, descripcion: string }[] = [];
+  recomendacionesCursos: RecomItem[] = [];
+  recomendacionesCertificados: RecomItem[] = [];
+  recomendacionesProyectos: RecomItem[] = [];
 
   constructor(
-    private geminiService: GeminiService,
+    private gemini: GeminiService,
     private api: ApiService,
     private auth: AuthService
   ) {}
 
   ngOnInit(): void {
-    const userId = this.auth.userId;
-    if (userId) {
-      this.empleadoId = userId;
-      this.cargarCursosYCertificados();
-    } else {
+    const id = this.auth.userId;
+    if (!id) {
       this.error = 'No se pudo obtener el ID del usuario.';
+      return;
     }
-  }
-
-  cargarCursosYCertificados(): void {
-    this.api.obtenerCursosEmpleado(this.empleadoId).subscribe({
-      next: (resCursos) => {
-        this.cursos = resCursos.data || [];
-        this.api.obtenerCertificadosPorEmpleado(this.empleadoId).subscribe({
-          next: (resCerts) => {
-            this.certificados = resCerts.data || [];
-          },
-          error: (err) => {
-            console.error(err);
-            this.error = 'Error al cargar certificados.';
-          }
-        });
+    this.empleadoId = id;
+    forkJoin({
+      cursos: this.api.obtenerCursosEmpleado(id),
+      certificados: this.api.obtenerCertificadosPorEmpleado(id),
+      habilidades: this.api.getEmpleadoHabilidades(id)
+    }).subscribe({
+      next: ({ cursos, certificados, habilidades }) => {
+        this.cursos = cursos?.data || [];
+        this.certificados = certificados?.data || [];
+        this.habilidades = (habilidades?.data || []).flatMap((h: any) => this.tokens(h.nombre));
       },
-      error: (err) => {
-        console.error(err);
-        this.error = 'Error al cargar cursos.';
-      }
+      error: () => (this.error = 'Error al cargar datos iniciales.')
     });
   }
 
@@ -62,62 +61,157 @@ export class RecomendacionesComponent implements OnInit {
     this.error = null;
     this.recomendacionesCursos = [];
     this.recomendacionesCertificados = [];
-
-    const nombresCursos = this.cursos.map(c => c.nombre);
-    const nombresCertificados = this.certificados.map(c => c.nombre);
-
-    const prompt = `
-Un empleado ha completado los siguientes cursos: ${nombresCursos.join(', ')}.
-Y ha obtenido los siguientes certificados: ${nombresCertificados.join(', ')}.
-Sugiere exclusivamente cursos adicionales y certificaciones útiles para su desarrollo profesional.
-
-Formato obligatorio:
-Nombre del curso o certificación – Breve descripción.
-
-Condiciones:
-- Máximo 6 palabras en el nombre.
-- La descripción debe ser clara, útil y rica en contenido, con tanto detalle como sea posible sin exceder 50 palabras. Usa el espacio completo si es necesario.
-- No uses viñetas, ni negritas, ni encabezados.
-- No incluyas introducción, solo las recomendaciones en el formato solicitado.
-- Clasifica primero los cursos, luego las certificaciones.
-- Devuelve solo 3 de cada uno.
-`;
-
-    this.geminiService.generarRespuesta(prompt).subscribe({
-      next: (res: any) => {
-        const textoRespuesta = res.candidates[0]?.content?.parts[0]?.text || '';
-        const recomendaciones = this.formatearRecomendacion(textoRespuesta);
-
-        this.recomendacionesCursos = recomendaciones.slice(0, 3);
-        this.recomendacionesCertificados = recomendaciones.slice(3, 6);
-
+    this.recomendacionesProyectos = [];
+    let cursosCertsReady = false;
+    let proyectosReady = false;
+    const done = () => {
+      if (cursosCertsReady && proyectosReady) {
         this.estado = 'listo';
         this.cargando = false;
+      }
+    };
+    this.recomendarCursosCerts(() => {
+      cursosCertsReady = true;
+      done();
+    });
+    this.recomendarProyectos(() => {
+      proyectosReady = true;
+      done();
+    });
+  }
+
+  private recomendarCursosCerts(cb: () => void): void {
+    const cursosCorpTomados = this.cursos.filter(c => this.esCapacitacionCorp(c.nombre)).map(c => c.nombre);
+    const cursosCorpTexto = cursosCorpTomados.length > 0 ? cursosCorpTomados.join(', ') : 'ninguno';
+    const certificadosTomados = this.certificados.map(c => c.nombre).join(', ') || 'ninguno';
+    const skillsTexto = Array.from(new Set(this.habilidades)).join(', ') || 'ninguna';
+    const prompt = `
+El empleado ha completado las siguientes CAPACITACIONES CORPORATIVAS obligatorias: ${cursosCorpTexto}.
+También posee estos certificados: ${certificadosTomados}.
+Sus principales habilidades técnicas son: ${skillsTexto}.
+
+TAREA: 
+• Propón EXACTAMENTE 3 nuevas CAPACITACIONES CORPORATIVAS (ética, RSC, ciberseguridad, cumplimiento, salud y seguridad, etc.) que NO estén en la lista anterior.
+• Propón EXACTAMENTE 3 certificaciones NUEVAS que complementen sus habilidades y perfil.
+
+FORMATO (línea por recomendación, sin texto adicional):
+Nombre (máx. 8 palabras) – Explicación concreta y persuasiva (máx. 60 palabras). pero min unas 20 no puede ser tan corta, dame una explicacion decente, nada de una palabra  mas
+
+PRIMERO los 3 cursos, luego las 3 certificaciones. Sin listas ni encabezados. No uses asteriscos ni markdown.
+`;
+    this.gemini.generarRespuesta(prompt).subscribe({
+      next: res => {
+        const txt = res?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        const items = this.parseLineas(txt);
+        this.recomendacionesCursos = items.slice(0, 3);
+        this.recomendacionesCertificados = items.slice(3, 6);
+        cb();
       },
-      error: (err) => {
-        console.error('Error completo:', err);
-        this.error = 'Error al generar recomendaciones.';
-        this.estado = 'inicio';
-        this.cargando = false;
+      error: () => {
+        this.error = 'Error al generar cursos y certificaciones.';
+        cb();
       }
     });
   }
 
-  formatearRecomendacion(texto: string): { titulo: string, descripcion: string }[] {
-    const lineas = texto.split('\n').filter(linea => linea.includes('–'));
-    const resultados: { titulo: string, descripcion: string }[] = [];
-
-    for (let linea of lineas) {
-      const [tituloRaw, descripcionRaw] = linea.split('–').map(p => p.trim());
-
-      if (tituloRaw && descripcionRaw) {
-        const titulo = tituloRaw.split(' ').slice(0, 6).join(' ');
-        const descripcion = descripcionRaw.split(' ').slice(0, 50).join(' ');
-
-        resultados.push({ titulo, descripcion });
+  private recomendarProyectos(cb: () => void): void {
+    this.api.getProyectosDisponibles(this.empleadoId).subscribe({
+      next: r => {
+        const proyectos = (r.proyectos || r || []) as any[];
+        const rank = proyectos
+          .map(p => {
+            const reqSet = new Set<string>();
+            (p.habilidades || []).forEach((h: any) => this.tokens(h.nombre).forEach(tok => reqSet.add(tok)));
+            const req = Array.from(reqSet);
+            const match = req.filter(rq => this.habilidades.includes(rq));
+            const pct = req.length ? Math.round((match.length / req.length) * 100) : 0;
+            return {
+              id: p.proyecto_id,
+              nombre: p.nombre,
+              descripcion: p.descripcion,
+              req,
+              match,
+              pct,
+              pctTxt: `${pct}%`
+            };
+          })
+          .sort((a, b) => b.pct - a.pct)
+          .slice(0, 3);
+        const prompt = this.promptProyectos(rank);
+        this.gemini.generarRespuesta(prompt).subscribe({
+          next: resIA => {
+            const txt = resIA?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+            const explic = this.parseLineas(txt);
+            this.recomendacionesProyectos = rank.map((p, i) => ({
+              titulo: p.nombre,
+              descripcion: explic[i]?.descripcion || 'Proyecto relevante para tu crecimiento.',
+              porcentaje: p.pctTxt
+            }));
+            cb();
+          },
+          error: () => {
+            this.recomendacionesProyectos = rank.map(p => ({
+              titulo: p.nombre,
+              descripcion: 'Proyecto relevante para tu desarrollo profesional y para aplicar tus competencias.',
+              porcentaje: p.pctTxt
+            }));
+            cb();
+          }
+        });
+      },
+      error: () => {
+        this.error = 'Error al obtener proyectos.';
+        cb();
       }
-    }
+    });
+  }
 
-    return resultados;
+  private promptProyectos(lista: { nombre: string; descripcion: string; pct: number; match: string[] }[]): string {
+    const habilidadesEmpleado = Array.from(new Set(this.habilidades)).join(', ') || 'ninguna';
+    const detalle = lista
+      .map(
+        (p, i) => `
+${i + 1}. ${p.nombre}
+Descripción: ${p.descripcion}
+Habilidades relevantes del empleado: ${p.match.join(', ') || 'N/A'}
+Grado de afinidad con el perfil: ${p.pct}%`
+      )
+      .join('\n');
+    return `
+Eres asesor de carrera. El empleado domina las siguientes habilidades: ${habilidadesEmpleado}.
+
+Redacta UNA sola línea por proyecto, con el formato:
+Nombre del proyecto – Explicación (máx. 60 palabras) resaltando cómo el proyecto impulsa mi desarrollo profesional y me permite aplicar o ampliar al menos una de sus habilidades mencionadas.
+No uses listas, encabezados, porcentajes, asteriscos ni markdown.
+
+${detalle}
+`;
+  }
+
+  private parseLineas(txt: string): RecomItem[] {
+    const clean = (s: string) => s.replace(/^(\*\*|\*)\s*/, '').trim();
+    return txt
+      .split('\n')
+      .filter(l => l.includes('–') || l.includes('-'))
+      .map(l => l.replace(' - ', ' – '))
+      .map(l => {
+        const [tit, desc] = l.split('–').map(s => clean(s));
+        return { titulo: tit, descripcion: desc };
+      });
+  }
+
+  private esCapacitacionCorp(nombre: string): boolean {
+    return /ética|integridad|cumplimiento|compliance|anticorrup|soborno|responsabilidad|sostenibilidad|diversidad|inclusi[oó]n|ciber|phishing|fraude|datos|seguridad de la informaci[oó]n|acoso|salud y seguridad|protecci[oó]n civil|emergencia/i.test(
+      nombre
+    );
+  }
+
+  private tokens(original: string): string[] {
+    return original
+      .toLowerCase()
+      .replace(/[._]/g, ' ')
+      .split(/[,/]| y |\&/g)
+      .map(t => t.trim())
+      .filter(Boolean);
   }
 }
