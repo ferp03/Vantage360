@@ -81,10 +81,13 @@ export class RecomendacionesComponent implements OnInit {
   }
 
   private recomendarCursosCerts(cb: () => void): void {
-    const cursosCorpTomados = this.cursos.filter(c => this.esCapacitacionCorp(c.nombre)).map(c => c.nombre);
+    const cursosCorpTomados = this.cursos
+      .filter(c => this.esCapacitacionCorp(c.nombre))
+      .map(c => c.nombre);
     const cursosCorpTexto = cursosCorpTomados.length > 0 ? cursosCorpTomados.join(', ') : 'ninguno';
     const certificadosTomados = this.certificados.map(c => c.nombre).join(', ') || 'ninguno';
     const skillsTexto = Array.from(new Set(this.habilidades)).join(', ') || 'ninguna';
+
     const prompt = `
 El empleado ha completado las siguientes CAPACITACIONES CORPORATIVAS obligatorias: ${cursosCorpTexto}.
 También posee estos certificados: ${certificadosTomados}.
@@ -94,17 +97,36 @@ TAREA:
 • Propón EXACTAMENTE 3 nuevas CAPACITACIONES CORPORATIVAS (ética, RSC, ciberseguridad, cumplimiento, salud y seguridad, etc.) que NO estén en la lista anterior.
 • Propón EXACTAMENTE 3 certificaciones NUEVAS que complementen sus habilidades y perfil.
 
-FORMATO (línea por recomendación, sin texto adicional):
-Nombre (máx. 8 palabras) – Explicación concreta y persuasiva (máx. 60 palabras). pero min unas 20 no puede ser tan corta, dame una explicacion decente, nada de una palabra  mas
+REQUISITOS PARA CADA RECOMENDACIÓN:
+• El nombre debe tener un máximo de 8 palabras.
+• La explicación debe tener entre 20 y 60 palabras. No puede ser una sola palabra, ni una frase genérica. Debe explicar cómo esa capacitación o certificación es útil o relevante para el empleado.
 
-PRIMERO los 3 cursos, luego las 3 certificaciones. Sin listas ni encabezados. No uses asteriscos ni markdown.
+FORMATO (una línea por recomendación, sin encabezados ni listas):
+Nombre – Explicación (entre 20 y 60 palabras). Sin usar guiones, asteriscos ni markdown.
+PRIMERO los 3 cursos, luego las 3 certificaciones.
 `;
+
     this.gemini.generarRespuesta(prompt).subscribe({
       next: res => {
         const txt = res?.candidates?.[0]?.content?.parts?.[0]?.text || '';
         const items = this.parseLineas(txt);
-        this.recomendacionesCursos = items.slice(0, 3);
-        this.recomendacionesCertificados = items.slice(3, 6);
+
+        const isValidDescripcion = (desc: string) => desc.split(' ').length >= 10;
+
+        this.recomendacionesCursos = items.slice(0, 3).map(item => ({
+          ...item,
+          descripcion: isValidDescripcion(item.descripcion)
+            ? item.descripcion
+            : 'Capacitación relevante que fortalece tus competencias en cumplimiento y responsabilidad profesional.'
+        }));
+
+        this.recomendacionesCertificados = items.slice(3, 6).map(item => ({
+          ...item,
+          descripcion: isValidDescripcion(item.descripcion)
+            ? item.descripcion
+            : 'Certificación que complementa tu perfil técnico y mejora tu proyección profesional.'
+        }));
+
         cb();
       },
       error: () => {
