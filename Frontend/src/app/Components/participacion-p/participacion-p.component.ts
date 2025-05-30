@@ -17,6 +17,7 @@ interface Habilidad {
   nivel_esperado: string;
 }
 
+
 interface Proyecto {
   proyecto_id: number;
   nombre: string;
@@ -28,9 +29,19 @@ interface Proyecto {
   habilidades: Habilidad[];
   selectedVista: string;
   delivery_lead?: {
-    id: string;  // o uuid si es el caso
+    id: string;
     nombre: string;
-  }; 
+  };
+  // Agrega esta propiedad
+  puedeEditar?: boolean;
+  editando?: boolean;
+  datosTemporales?: {  
+    nombre: string;
+    descripcion: string;
+    fecha_inicio: string;
+    fecha_fin: string;
+    progreso: number;
+  };
 }
 
 @Component({
@@ -174,8 +185,19 @@ cargarProyectosActuales(): void {
         const proyectos = response.proyectos || response || [];
         const { actuales, pasados } = this.filtrarProyectosPorFecha(proyectos);
         
-        this.proyectosActuales = actuales.map(p => ({ ...p, selectedVista: 'puestos' }));
-        this.proyectosPasados = pasados.map(p => ({ ...p, selectedVista: 'puestos' }));
+        // editar
+        this.proyectosActuales = actuales.map(p => ({ 
+          ...p, 
+          selectedVista: 'puestos',
+          puedeEditar: p.delivery_lead?.id === this.authService.userId
+        }));
+        
+        this.proyectosPasados = pasados.map(p => ({ 
+          ...p, 
+          selectedVista: 'puestos',
+          puedeEditar: p.delivery_lead?.id === this.authService.userId
+        }));
+        
         this.actualesCount = this.proyectosActuales.length;
         this.pasadosCount = this.proyectosPasados.length;
       },
@@ -188,7 +210,6 @@ cargarProyectosActuales(): void {
       }
     });
 }
-
 // Modal
 // En tu ParticipacionPComponent
 showJoinModal: boolean = false;
@@ -255,6 +276,42 @@ openTab(tabId: string) {
   if (tabId === 'pasados' && this.pasadosCount === 0) {
     // a
   }
+}
+
+// editar proyecto
+habilitarEdicion(proyecto: Proyecto): void {
+  if (!proyecto.puedeEditar) return;
+  
+  proyecto.editando = true;
+  proyecto.datosTemporales = {
+    nombre: proyecto.nombre || '', 
+    descripcion: proyecto.descripcion || '',
+    fecha_inicio: proyecto.fecha_inicio || new Date().toISOString().split('T')[0],
+    fecha_fin: proyecto.fecha_fin || new Date().toISOString().split('T')[0],
+    progreso: proyecto.progreso || 0
+  };
+}
+
+cancelarEdicion(proyecto: Proyecto): void {
+  proyecto.editando = false;
+  proyecto.datosTemporales = undefined;
+}
+
+guardarCambios(proyecto: Proyecto): void {
+  if (!proyecto.datosTemporales) return;
+  Object.assign(proyecto, proyecto.datosTemporales);
+  
+  this.apiService.actualizarProyecto(proyecto).subscribe({
+    next: (response) => {
+      proyecto.editando = false;
+      proyecto.datosTemporales = undefined;
+      this.cargarProyectosActuales();
+    },
+    error: (error) => {
+      console.error('Error al actualizar:', error);
+      this.cancelarEdicion(proyecto);
+    }
+  });
 }
 
 }

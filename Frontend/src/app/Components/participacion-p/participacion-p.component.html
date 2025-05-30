@@ -128,90 +128,113 @@
             </div>
           </div>
         </div>
-        
-        <!-- Pestaña Actuales -->
-        <div class="tab-pane" [class.active]="activeTab === 'actuales'">
-          <div class="projects-container">
-            <div *ngIf="proyectosActuales.length === 0" class="empty-message">
-              No tienes proyectos actuales
-            </div>
-            <div class="projects-grid">
-              <div class="project-card" *ngFor="let proyecto of proyectosActuales">
-                <div class="project-header">
-                  <h3>{{proyecto.nombre}}</h3>
-                  <div class="project-status">
-                    <span class="chip-activo">Activo</span>
-                  </div>
-                </div>              
-                <div class="project-dates">
-                  <span> <strong>Delviery lead: </strong> {{proyecto.delivery_lead?.nombre || 'No asignado'}}</span>
-                  <div class="date-label">
-                    <strong>Inicio:</strong> {{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}
-                  </div>
-                  <div class="date-label">
-                    <strong>Fin:</strong> {{proyecto.fecha_fin | date:'dd/MM/yyyy'}}
-                  </div>
-                </div>
-                
-                <div class="project-description">
-                  <div class="description-title">
-                    <span class="material-icons">info</span> Descripción:
-                  </div>
-                  <div>{{proyecto.descripcion || 'Sin descripción'}}</div>
-                </div>
-                
-                <div class="project-skills" *ngIf="proyecto.capabilities">
-                  <div class="skills-title">
-                    <span 
-                      class="toggle-title" 
-                      [class.active]="proyecto.selectedVista === 'puestos'" 
-                      (click)="setVistaProyecto(proyecto, 'puestos')"
-                      style="cursor:pointer"
-                    >
-                      <span class="material-icons">construction</span> Puestos
-                    </span>
-                    <span> | </span>
-                    <span 
-                      class="toggle-title" 
-                      [class.active]="proyecto.selectedVista === 'habilidades'" 
-                      (click)="setVistaProyecto(proyecto, 'habilidades')"
-                      style="cursor:pointer"
-                    >
-                      <span class="material-icons">psychology</span> Habilidades
-                    </span>
-                  </div>
-                  <div class="skills-tags" *ngIf="proyecto.selectedVista === 'puestos'">
-                    <span class="skill-tag" *ngFor="let puesto of getPuestos(proyecto.capabilities)">
-                      {{puesto}}
-                    </span>
-                  </div>
-                  <div class="skills-tags" *ngIf="proyecto.selectedVista === 'habilidades'">
-                    <span class="skill-tag" *ngFor="let habilidad of proyecto.habilidades">
-                      {{habilidad.nombre}} ({{habilidad.nivel_esperado}})
-                    </span>
-                  </div>
-                </div>
 
-                <div class="project-progress">
-                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
-                  <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
-                </div>
-
-                <div class="project-actions">
-                  <button class="btn-participate">
-                    <span class="material-icons">group_add</span>
-                    Información
-                  </button>
-                  <button class="btn-details">
-                    <span class="material-icons">visibility</span>
-                    Integrantes
-                  </button>
-                </div>
-              </div>
-            </div>
+       <!-- Pestaña Actuales -->
+<div class="tab-pane" [class.active]="activeTab === 'actuales'">
+  <div class="projects-container">
+    <div *ngIf="proyectosActuales.length === 0" class="empty-message">
+      No tienes proyectos actuales
+    </div>
+    <div class="projects-grid">
+      <div class="project-card" *ngFor="let proyecto of proyectosActuales">
+        <div class="project-header">
+          <!-- Campo nombre editable -->
+          <div *ngIf="!proyecto.editando; else editNombre">
+            <h3>{{proyecto.nombre}}</h3>
+          </div>
+          <ng-template #editNombre>
+            <input type="text" 
+                   [ngModel]="proyecto.datosTemporales?.nombre || ''" 
+                   (ngModelChange)="proyecto.datosTemporales && (proyecto.datosTemporales.nombre = $event)"
+                   class="edit-input">
+          </ng-template>
+          
+          <div class="project-status">
+            <span class="chip-activo">Activo</span>
+          </div>
+        </div>
+        <div class="project-dates">
+          <span><strong>Delivery lead:</strong> {{proyecto.delivery_lead?.nombre || 'No asignado'}}</span>
+          
+          <!-- Fecha inicio editable -->
+          <div class="date-label">
+            <strong>Inicio:</strong>
+            <span *ngIf="!proyecto.editando">{{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}</span>
+            <input *ngIf="proyecto.editando" 
+                   type="date" 
+                   [ngModel]="proyecto.datosTemporales?.fecha_inicio || ''"
+                   (ngModelChange)="proyecto.datosTemporales && (proyecto.datosTemporales.fecha_inicio = $event)"
+                   class="edit-date">
+          </div>
+          
+          <!-- Fecha fin editable -->
+          <div class="date-label">
+            <strong>Fin:</strong>
+            <span *ngIf="!proyecto.editando">{{proyecto.fecha_fin | date:'dd/MM/yyyy'}}</span>
+            <input *ngIf="proyecto.editando" 
+                   type="date" 
+                   [ngModel]="proyecto.datosTemporales?.fecha_fin || ''"
+                   (ngModelChange)="proyecto.datosTemporales && (proyecto.datosTemporales.fecha_fin = $event)"
+                   class="edit-date">
           </div>
         </div>
         
+        <!-- Descripción editable -->
+        <div class="project-description">
+          <div class="description-title">
+            <span class="material-icons">info</span> Descripción:
+          </div>
+          <div *ngIf="!proyecto.editando">{{proyecto.descripcion || 'Sin descripción'}}</div>
+          <textarea *ngIf="proyecto.editando" 
+                    [ngModel]="proyecto.datosTemporales?.descripcion || ''"
+                    (ngModelChange)="proyecto.datosTemporales && (proyecto.datosTemporales.descripcion = $event)"
+                    class="edit-textarea"></textarea>
+        </div>
+        
+        <!-- Progress editable -->
+        <div class="project-progress">
+          <div *ngIf="!proyecto.editando" class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
+          <input *ngIf="proyecto.editando" 
+                 type="range" 
+                 min="0" 
+                 max="100" 
+                 [ngModel]="proyecto.datosTemporales?.progreso || 0"
+                 (ngModelChange)="proyecto.datosTemporales && (proyecto.datosTemporales.progreso = $event)"
+                 class="edit-range">
+          <span class="progress-text">
+            {{proyecto.editando ? (proyecto.datosTemporales?.progreso ?? 0) : proyecto.progreso}}%
+          </span>
+        </div>
+
+        <div class="project-actions">
+          <!-- Botones de edición movidos aquí -->
+          <button *ngIf="proyecto.puedeEditar && !proyecto.editando" 
+                  class="btn-participate" 
+                  (click)="habilitarEdicion(proyecto)">
+            <span class="material-icons">edit</span>
+            Editar
+          </button>
+          
+          <button *ngIf="proyecto.editando" 
+                  class="btn-save " 
+                  (click)="guardarCambios(proyecto)">
+            <span class="material-icons">save</span>
+            <!-- Guardar -->
+          </button>
+          
+          <button *ngIf="proyecto.editando" (click)="cancelarEdicion(proyecto)" class="btn-cancel">
+                <span class="material-icons">cancel</span>
+              </button>
+          
+          <button class="btn-details">
+            <span class="material-icons">visibility</span>
+            Integrantes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
         <!-- Pestaña Pasados -->
         <div class="tab-pane" [class.active]="activeTab === 'pasados'">
           <div class="projects-container">

@@ -399,4 +399,43 @@ router.post('/proyecto/unirse', async (req, res) => {
   }
 });
 
+// Editar un proyecto
+router.put('/proyecto/:id', async (req, res) => {
+  try {
+    const proyectoId = req.params.id;
+    const proyectoData = req.body;
+
+    // Verificar que el usuario es el delivery lead
+    const { data: proyectoExistente, error: proyectoError } = await supabase
+      .from('proyecto')
+      .select('delivery_lead')
+      .eq('proyecto_id', proyectoId)
+      .single();
+
+    if (proyectoError || !proyectoExistente) {
+      return res.status(404).json({ success: false, error: 'Proyecto no encontrado' });
+    }
+
+    if (proyectoExistente.delivery_lead !== req.user.id) {
+      return res.status(403).json({ success: false, error: 'No tienes permisos para editar este proyecto' });
+    }
+
+    // Actualizar el proyecto
+    const { data, error } = await supabase
+      .from('proyecto')
+      .update(proyectoData)
+      .eq('proyecto_id', proyectoId)
+      .select();
+
+    if (error) {
+      return res.status(400).json({ success: false, error: error.message });
+    }
+
+    return res.status(200).json({ success: true, proyecto: data });
+    
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 export default router;
