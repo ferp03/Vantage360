@@ -27,6 +27,7 @@ export class RecomendacionesComponent implements OnInit {
   recomendacionesCursos: RecomItem[] = [];
   recomendacionesCertificados: RecomItem[] = [];
   recomendacionesProyectos: RecomItem[] = [];
+  private recomendacionesGeneradas = false;
 
   constructor(
     private gemini: GeminiService,
@@ -50,7 +51,13 @@ export class RecomendacionesComponent implements OnInit {
         this.cursos = cursos?.data || [];
         this.certificados = certificados?.data || [];
         this.habilidades = (habilidades?.data || []).flatMap((h: any) => this.tokens(h.nombre));
+        
+        if (!this.recomendacionesGeneradas) {
+          this.generarRecomendaciones();
+          this.recomendacionesGeneradas = true;
+        }
       },
+
       error: () => (this.error = 'Error al cargar datos iniciales.')
     });
   }
