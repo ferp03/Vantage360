@@ -131,10 +131,7 @@ router.get('/empleado/:id/trayectoria', async (req, res) => {
   const { id } = req.params;
 
   const { data, error } = await supabase
-    .from('historial_laboral')
-    .select('historial_id, capability_id, proyecto_id, titulo_proyecto, empresa, descripcion, fecha_inicio, fecha_fin, es_puesto_actual')
-    .eq('empleado_id', id)
-    .order('fecha_inicio', { ascending: false });
+    .rpc('obtener_trayectoria_con_habilidades', {p_empleado_id: id});
 
   if (error) {
     console.error('Error al obtener historial laboral:', error.message);
@@ -150,7 +147,8 @@ router.get('/empleado/:id/trayectoria', async (req, res) => {
     fin: entry.fecha_fin,
     descripcion: entry.descripcion,
     capability_id: entry.capability_id,
-    es_puesto_actual: entry.es_puesto_actual
+    es_puesto_actual: entry.es_puesto_actual,
+    habilidades: entry.habilidades
   }));
 
   return res.status(200).json({
@@ -273,7 +271,8 @@ router.post('/empleado/:id/experiencia', async (req, res) => {
     fecha_inicio, 
     fecha_fin, 
     capability_id, 
-    es_puesto_actual 
+    es_puesto_actual,
+    habilidades
   } = req.body;
 
   if (!titulo_proyecto || !empresa || !descripcion || !fecha_inicio || !capability_id) {
@@ -303,16 +302,32 @@ router.post('/empleado/:id/experiencia', async (req, res) => {
       return res.status(500).json({ success: false, error: 'Error al crear nueva experiencia' });
     }
 
-      if (error) {
-        console.error('Error al crear nueva experiencia:', error.message);
-        return res.status(500).json({ success: false, error: 'Error al crear nueva experiencia' });
-      }
-  
-      return res.status(201).json({ 
-        success: true, 
-        data: {
-          historial_id: data[0].historial_id
+    const historial_id = data[0].historial_id;
+
+    if(habilidades) {
+      if (Array.isArray(habilidades) && habilidades.length > 0) {
+        const habilidadesInsert = habilidades.map(h => ({
+          historial_id: Number(historial_id),
+          habilidad_id: h.habilidad_id,
+          nivel_obtenido: h.nivel
+        }));
+
+        console.log(habilidadesInsert);
+        const { error: errorHabilidades } = await supabase
+          .from('historial_habilidad')
+          .insert(habilidadesInsert);
+
+        if (errorHabilidades) {
+          return res.status(400).json({ success: false, error: 'Error al insertar habilidades a la trayectoria', errorHabilidades });
         }
+      }
+    }
+
+    return res.status(201).json({ 
+      success: true, 
+      data: {
+        historial_id: data[0].historial_id
+      }
       });
     } catch (err) {
       console.error('Error inesperado:', err);
@@ -331,13 +346,15 @@ router.put('/empleado/experiencia/:historial_id', async (req, res) => {
     fecha_inicio, 
     fecha_fin, 
     capability_id,
-    es_puesto_actual
+    es_puesto_actual,
+    habilidades
   } = req.body;
 
   if (!titulo_proyecto || !empresa || !descripcion || !fecha_inicio || !capability_id) {
     return res.status(400).json({ success: false, error: 'Faltan campos requeridos' });
   }
 
+  console.log(habilidades);
   // Usar fecha_fin null si es puesto actual
   const fecha_fin_final = es_puesto_actual ? null : fecha_fin;
 
@@ -358,6 +375,34 @@ router.put('/empleado/experiencia/:historial_id', async (req, res) => {
     return res.status(500).json({ success: false, error: 'Error al actualizar experiencia' });
   }
 
+  if(habilidades){
+    // Borrar habilidades del proyecto y volver a insertar las que vienen en el json
+    const { errorBorrar } = await supabase.from('historial_habilidad').delete().eq('historial_id',historial_id);
+    if (errorBorrar){
+      return res.status(400).json({success: false, error: 'Error al borrar habilidades pasadas'});
+    }
+
+    console.log('Habilidades borradas');
+  
+    if (Array.isArray(habilidades) && habilidades.length > 0) {
+      const habilidadesInsert = habilidades.map(h => ({
+        historial_id: Number(historial_id),
+        habilidad_id: h.habilidad_id,
+        nivel_obtenido: h.nivel
+      }));
+
+      console.log(habilidadesInsert);
+      const { error: errorHabilidades } = await supabase
+        .from('historial_habilidad')
+        .insert(habilidadesInsert);
+
+      if (errorHabilidades) {
+        return res.status(400).json({ success: false, error: 'Error al insertar habilidades nuevas', errorHabilidades });
+      }
+    }
+  }
+
+
   return res.status(200).json({ success: true, message: 'Experiencia actualizada correctamente' });
 });
 
@@ -377,6 +422,13 @@ router.delete('/empleado/experiencia/:historial_id', async (req, res) => {
         error: 'ID de historial inválido' 
       });
     }
+
+    // borrar habilidades ligadas al proyecto
+    const { errorBorrar } = supabase.from('historial_habilidad').delete('*').eq('historial_id',historial_id);
+    if (errorBorrar){
+      return res.status(400).json({success: false, error: 'Error al borrar habilidades'});
+    }
+
     // Ejecutar la eliminación con el ID numérico
     const { data, error } = await supabase
       .from('historial_laboral')
