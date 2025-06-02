@@ -15,6 +15,7 @@ import geminiRoutes from '../routes/ia.routers.js';
 import commentRoutes from '../routes/comments.routes.js';
 
 const app = express();
+app.disable('x-powered-by');
 const port = 3000;
 
 const allowedOrigins = [
