@@ -11,6 +11,11 @@ interface Capabilities {
   };
 }
 
+interface Miembro {
+  nombre: string;
+  capability: string;
+}
+
 interface Habilidad {
   nombre: string;
   habilidad_id: number;
@@ -31,6 +36,7 @@ interface Proyecto {
     id: string;  // o uuid si es el caso
     nombre: string;
   }; 
+  members: Miembro[];
 }
 
 @Component({
@@ -43,7 +49,6 @@ export class ParticipacionPComponent implements OnInit {
   
   selectedVista: 'puestos' | 'habilidades' = 'puestos';
 
-
   proyectosDisponibles: Proyecto[] = [];
   proyectosActuales: Proyecto[] = [];
   proyectosPasados: Proyecto[] = [];
@@ -51,6 +56,10 @@ export class ParticipacionPComponent implements OnInit {
   disponiblesCount: number = 0;
   actualesCount: number = 0;
   pasadosCount: number = 0;
+
+  members: Miembro[] = []; 
+  loadingMembers: boolean = false;
+  errorLoadingMembers: string | null = null;
 
   constructor(
     public authService: AuthService,
@@ -192,6 +201,7 @@ cargarProyectosActuales(): void {
 // Modal
 // En tu ParticipacionPComponent
 showJoinModal: boolean = false;
+showMemberModal: boolean = false;
 selectedProject: Proyecto | null = null;
 
 openJoinModal(proyecto: Proyecto): void {
@@ -202,12 +212,63 @@ openJoinModal(proyecto: Proyecto): void {
   this.showJoinModal = true;
 }
 
+openMemberModal(proyecto: Proyecto): void {
+  if (this.showMemberModal || !proyecto.proyecto_id) return;
+
+  // Inicializa con copia del proyecto y members vacío si no existe
+  this.selectedProject = {
+    ...proyecto,
+    members: proyecto.members || [] // Asegura array vacío si es undefined/null
+  };
+  
+  this.showMemberModal = true;
+  this.loadingMembers = true;
+  this.errorLoadingMembers = null;
+
+  this.apiService.obtenerIntegrantesProyecto(proyecto.proyecto_id).subscribe({
+  next: (response: any) => {
+  if (this.selectedProject) {
+    this.selectedProject = {
+      ...this.selectedProject,
+      members: response.data || []
+    };
+    console.log('Project members:', this.selectedProject.members);
+  }
+
+  this.loadingMembers = false;
+
+  },
+  error: (error) => {
+    console.error('Error loading members:', error);
+    this.errorLoadingMembers = 'Error al cargar los miembros';
+    this.loadingMembers = false;
+    if (this.selectedProject) {
+      // También aquí se puede asignar un nuevo objeto o un nuevo array vacío.
+      this.selectedProject = {
+        ...this.selectedProject,
+        members: []
+      };
+    }
+  }
+});
+
+}
+
 closeJoinModal(event?: Event): void {
   // if (event) {
   //   event.preventDefault();
   //   event.stopPropagation();
   // }
   this.showJoinModal = false;
+  this.selectedProject = null;
+}
+
+closeMemberModal(event?: Event): void {
+  // if (event) {
+  //   event.preventDefault();
+  //   event.stopPropagation();
+  // }
+  this.showMemberModal = false;
   this.selectedProject = null;
 }
 
@@ -256,5 +317,4 @@ openTab(tabId: string) {
     // a
   }
 }
-
 }

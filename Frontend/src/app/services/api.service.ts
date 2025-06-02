@@ -252,4 +252,7 @@ export class ApiService {
   );
 }
 
-} 
+obtenerIntegrantesProyecto(proyectoId: number): Observable<any> {
+  return this.http.get(`${this.apiUrl}/proyecto/${proyectoId}/integrantes`);
+}
+}

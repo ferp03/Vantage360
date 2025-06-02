@@ -49,7 +49,7 @@
                 </div>
                 <!-- Nombre del autor -->
                 <div class="project-dates">
-                  <span> <strong>Delviery lead: </strong> {{proyecto.delivery_lead?.nombre || 'No asignado'}}</span>
+                  <span> <strong>Delivery lead: </strong> {{proyecto.delivery_lead?.nombre || 'No asignado'}}</span>
                   <div class="date-label">
                     <strong>Inicio:</strong> {{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}
                   </div>
@@ -107,7 +107,7 @@
                     <span class="material-icons">group_add</span>
                     Participar
                   </button>
-                  <button class="btn-details">
+                  <button class="btn-details" (click)="openMemberModal(proyecto)">
                     <span class="material-icons">visibility</span>
                     Integrantes
                   </button>
@@ -125,6 +125,46 @@
                  </div>
                </div>
              </div>
+             <!-- Modal de Integrantes (vacío) -->
+              <div class="modal-overlay" *ngIf="showMemberModal" (click)="closeMemberModal()">
+              <div class="modal-container" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                  <h3>Integrantes del proyecto:</h3>
+                  <h4>{{ selectedProject?.nombre }}</h4>
+                </div>
+                
+                <div class="modal-content">
+                  <!-- Estado de carga -->
+                  <div *ngIf="loadingMembers" class="loading-members">
+                    Cargando miembros...
+                  </div>
+                  
+                  <!-- Estado de error -->
+                  <div *ngIf="errorLoadingMembers" class="error-members">
+                    {{ errorLoadingMembers }}
+                  </div>
+                  
+                  <!-- Lista de miembros -->
+                  <ul class="member-list" *ngIf="!loadingMembers && !errorLoadingMembers">
+                    <li *ngFor="let member of selectedProject?.members ">
+                      <div class="member-info">
+                        <span class="member-name">{{ member.nombre }}: </span>
+                        <span class="member-capability">{{ member.capability }}</span>
+                      </div>
+                    </li>
+                    
+                    <!-- Mensaje si no hay miembros -->
+                    <li *ngIf="selectedProject?.members?.length === 0" class="no-members">
+                      No hay empleados asignados a este proyecto
+                    </li>
+                  </ul>
+                </div>
+                
+                <div class="modal-actions">
+                  <button class="btn-cancel" (click)="closeMemberModal()">Cerrar</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -144,7 +184,7 @@
                   </div>
                 </div>              
                 <div class="project-dates">
-                  <span> <strong>Delviery lead: </strong> {{proyecto.delivery_lead?.nombre || 'No asignado'}}</span>
+                  <span> <strong>Delivery lead: </strong> {{proyecto.delivery_lead?.nombre || 'No asignado'}}</span>
                   <div class="date-label">
                     <strong>Inicio:</strong> {{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}
                   </div>
@@ -202,7 +242,7 @@
                     <span class="material-icons">group_add</span>
                     Información
                   </button>
-                  <button class="btn-details">
+                  <button class="btn-details" >
                     <span class="material-icons">visibility</span>
                     Integrantes
                   </button>
@@ -227,7 +267,7 @@
                   </div>
                 </div>
                 <div class="project-dates">
-                  <span> <strong>Delviery lead: </strong> {{proyecto.delivery_lead?.nombre || 'No asignado'}}</span>
+                  <span> <strong>Delivery lead: </strong> {{proyecto.delivery_lead?.nombre || 'No asignado'}}</span>
                   <div class="date-label">
                     <strong>Inicio:</strong> {{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}
                   </div>
