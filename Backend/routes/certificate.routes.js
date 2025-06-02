@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Configuración de Multer
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({ storage, limits: {fileSize: 8000000} });
 
 // Ruta para obtener todos los certificados de un empleado
 router.get('/empleado/api/:empleado_id', async (req, res) => {
