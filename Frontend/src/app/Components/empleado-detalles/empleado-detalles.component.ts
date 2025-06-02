@@ -188,25 +188,23 @@ export class EmpleadoDetallesComponent implements OnInit {
     private location: Location
   ) {}
 
-  ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.empleadoId = params.get('id');
-      const idUsuarioLogueado = this.authService.userId;
-      this.esMiPerfil = (idUsuarioLogueado == this.empleadoId);
+ngOnInit() {
+  this.route.paramMap.subscribe(params => {
+    this.empleadoId = params.get('id');
+    const idUsuarioLogueado = this.authService.userId;
+    this.esMiPerfil = (idUsuarioLogueado == this.empleadoId);
 
-      // Asegurar que solamente perfiles de admin o el propio usario pueda acceder a esta pagina
-      const roles = this.authService.roles;
-      const rolesPremitidos = ['delivery lead', 'people lead'];
-      if(!this.esMiPerfil && !roles.some(rol => rolesPremitidos.includes(rol))){
-        this.location.back();
-      }
-    });
-    
+    // Asegurar que solamente perfiles de admin o el propio usario pueda acceder a esta pagina
+    const roles = this.authService.roles;
+    const rolesPremitidos = ['delivery lead', 'people lead', 'admin'];
+    if(!this.esMiPerfil && !roles.some(rol => rolesPremitidos.includes(rol))){
+      this.location.back();
+    }
+
     this.cargarCiudades().then(() => {
       this.cargarInfoBasica();
     });
     this.cargarHabilidades();
-      // Primero cargamos las capabilities, y después la trayectoria
     this.cargarCapabilities().then(() => {
       this.cargarTrayectoria(); 
     });
@@ -215,10 +213,11 @@ export class EmpleadoDetallesComponent implements OnInit {
     Chart.register(BarElement, BarController, ArcElement, Tooltip, Legend, Title, CategoryScale, LinearScale);
     this.obtenerCurso().then(() => {
       this.activeChart = "pie2"
-      setTimeout(() => this.renderizarGraficas(), 50); // Aquí va la función que quieres ejecutar después
+      setTimeout(() => this.renderizarGraficas(), 50);
     });
     this.cargarOpcionesHabilidades();
-  }
+  });
+}
 
   cargarOpcionesHabilidades(): void {
     this.apiService.getHabilidades().subscribe({
