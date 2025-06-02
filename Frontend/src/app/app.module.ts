@@ -28,6 +28,8 @@ import { SignUpComponent } from './Components/sign-up/sign-up.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { RecomendacionesComponent } from './Components/recomendaciones/recomendaciones.component';
+import { MatChipsModule } from '@angular/material/chips';
+
 
 @NgModule({
   declarations: [
@@ -61,7 +63,8 @@ import { RecomendacionesComponent } from './Components/recomendaciones/recomenda
     MatButtonModule,
     MatDialogModule,
     MatInputModule,
-    MatCardModule
+    MatCardModule,
+    MatChipsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

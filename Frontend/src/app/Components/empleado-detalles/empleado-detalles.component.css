@@ -220,8 +220,7 @@
 
 .elemento-tiempo {
   position: relative;
-  width: 300px;
-  max-width: 300px;
+  width: 400px;
   border: 1px solid hsl(var(--ring));
   box-shadow: 1px 2px 6px #B998F7;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -1059,4 +1058,22 @@ font-size: 14px;
   transform: scale(1.35) rotate(10deg);   
   color: #7e4ed0;                         
   outline: none;                         
+}
+
+.habilidad-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.iconos-nivel mat-icon {
+  cursor: pointer;
+  color: #ccc;
+  font-size: 20px;
+  transition: color 0.2s;
+}
+
+.iconos-nivel mat-icon.activo {
+  color: #f5b301;
 }

@@ -16,12 +16,6 @@ import {
   Title
 } from 'chart.js';
 
-interface SubtitlePluginOptions {
-  text: string;
-  color?: string;
-  font?: string;
-}
-
 interface ExperienciaLaboral {
   historial_id?: number;
   titulo: string;
@@ -36,6 +30,11 @@ interface ExperienciaLaboral {
   habilidad_id?: number;
   habilidad_nombre?: string; 
   habilidad_nivel?: string;
+  habilidades: { 
+    nombre: string;
+    nivel: string;
+    habilidad_id: number
+  }[];
 }
 
 interface Capability {
@@ -142,9 +141,9 @@ export class EmpleadoDetallesComponent implements OnInit {
   experiencias: ExperienciaLaboral[] = [];
   capabilities: Capability[] = [];
   ciudades: Ciudades[] = [];
+  indiceEditandoHabilidad: number | null = null;
 
   experienciasOriginales: { [key: number]: ExperienciaLaboral } = {};
-  private trayectoriaOriginal: ExperienciaLaboral[] = [];
 
   editandoInfo = false;
   editandoTrayectoria = false;
@@ -171,6 +170,14 @@ export class EmpleadoDetallesComponent implements OnInit {
 
   private empleadoId: string | null = null;
   esMiPerfil: boolean = false; 
+
+  habilidadEditando: Habilidad | null = null;
+  nivelSeleccionado: string = '';
+  habilidadSeleccionada: Habilidad | null = null;
+  descripcionEditada: string = '';
+
+  // Definir opciones de los niveles
+  nivelHabilidad = ['Básico', 'Intermedio', 'Avanzado'];
 
   constructor(
     private apiService: ApiService,
@@ -427,79 +434,6 @@ export class EmpleadoDetallesComponent implements OnInit {
     this.experienciasOriginales[index] = { ...this.experiencias[index] };
   }
 
-
-  guardarExperiencia(index: number) {
-    if (!this.esMiPerfil || !this.editandoTrayectoria) return;
-    
-    const exp = this.experiencias[index];
-    
-    this.errores[index] = {
-      titulo: !exp.titulo?.trim(),
-      titulo_proyecto: !exp.titulo_proyecto?.trim(),
-      empresa: !exp.empresa?.trim(),
-      inicio: !exp.inicio?.trim(),
-      fin: !exp.esPuestoActual && !exp.fin?.trim(),
-      descripcion: !exp.descripcion?.trim(),
-      fechaInvalida: false
-    };
-
-    this.validarFechas(index);
-
-    if (Object.values(this.errores[index]).some(e => e)) {
-      return;
-    }
-
-    const esNueva = exp.esNueva;
-    const huboModificaciones = this.detectarCambiosEnExperiencia(index);
-
-    if (!esNueva && !huboModificaciones) {
-      console.log('No se detectaron cambios, cerrando edición');
-      this.editandoIndice = null;
-      return;
-    }
-
-    const payload = {
-      titulo_puesto: exp.titulo,
-      titulo_proyecto: exp.titulo_proyecto,
-      empresa: exp.empresa,
-      descripcion: exp.descripcion,
-      fecha_inicio: exp.inicio,
-      fecha_fin: exp.esPuestoActual ? null : exp.fin,
-      es_puesto_actual: exp.esPuestoActual,
-      capability_id: exp.capability_id
-    };
-
-    if (esNueva) {
-      if (!this.empleadoId) return;
-      this.apiService.createExperiencia(this.empleadoId, payload).subscribe({
-        next: (res) => {
-          console.log('Experiencia creada:', res);
-          if (res && res.data) {
-            exp.historial_id = res.data.historial_id;
-            delete exp.esNueva;
-            this.ordenarExp();
-          }
-          this.editandoIndice = null;
-          this.cargarTrayectoria();
-        },
-        error: (err) => {
-          console.error('Error al crear experiencia:', err);
-        }
-      });
-    } 
-    else if (exp.historial_id) {
-      this.apiService.updateExperiencia(exp.historial_id, payload).subscribe({
-        next: () => {
-          console.log('Experiencia actualizada.');
-          this.ordenarExp();
-          this.editandoIndice = null;
-          this.cargarTrayectoria();
-        },
-        error: (err) => console.error('Error al actualizar experiencia:', err)
-      });
-    }
-  }
-
   detectarCambiosEnExperiencia(index: number): boolean {
     const original = this.experienciasOriginales[index];
     const actual = this.experiencias[index];
@@ -568,9 +502,11 @@ export class EmpleadoDetallesComponent implements OnInit {
     };
 
     // Agregar campos de habilidad solo si existen
-    if (exp.habilidad_id) {
-      payload.habilidad_id = exp.habilidad_id;
-      payload.habilidad_nivel = exp.habilidad_nivel;
+    if (exp.habilidades && exp.habilidades.length > 0) {
+      payload.habilidades = exp.habilidades.map(h => ({
+        habilidad_id: h.habilidad_id,
+        nivel: h.nivel || 'Básico'
+      }));
     }
 
     console.log('Payload completo:', payload);
@@ -670,9 +606,7 @@ export class EmpleadoDetallesComponent implements OnInit {
       esNueva: true,
       esPuestoActual: false,
       capability_id: undefined,
-      habilidad_id: undefined,
-      habilidad_nombre: '', 
-      habilidad_nivel: ''   
+      habilidades: [],
     };
     
     this.experiencias.unshift(nueva);
@@ -1196,12 +1130,6 @@ confirmarEliminarHabilidad(): void {
       });
 }
 
-  habilidadEditando: Habilidad | null = null;
-  nivelSeleccionado: string = '';
-  descripcionEditada: string = '';
-
-  // Definir opciones de los niveles
-  nivelHabilidad = ['Básico', 'Intermedio', 'Avanzado'];
 
   // Método para abrir modal de edición de habilidad
   abrirModalEditar(hab: Habilidad): void {
@@ -1261,17 +1189,51 @@ confirmarEliminarHabilidad(): void {
           this.habilidadEditando = null;
         }
       });
+    }
+  
+  abrirMenuHabilidad(habilidad: Habilidad): void {
+    this.habilidadSeleccionada = habilidad;
   }
 
-habilidadSeleccionada: Habilidad | null = null;
+  editarHabilidad(habilidad: Habilidad): void {
+    this.habilidadSeleccionada = null; 
+    this.abrirModalEditar(habilidad); 
+  }
 
-abrirMenuHabilidad(habilidad: Habilidad): void {
-  this.habilidadSeleccionada = habilidad;
-}
+  compararHabilidades = (a: any, b: any) => a?.habilidad_id === b?.habilidad_id;
 
-editarHabilidad(habilidad: Habilidad): void {
-  this.habilidadSeleccionada = null; 
-  this.abrirModalEditar(habilidad); 
-}
+  obtenerNombreHabilidad(id: number): string {
+    const h = this.habilidadesOptions.find(h => h.id === id);
+    return h ? h.nombre : '—';
+  }
+
+  abrirEditorHabilidadNivel(index: number) {
+    this.indiceEditandoHabilidad = index;
+  }
+
+  removerHabilidad(index: number, habilidad: any) {
+    const habilidades = this.experiencias[index].habilidades;
+    this.experiencias[index].habilidades = habilidades.filter(
+      h => h.habilidad_id !== habilidad.habilidad_id
+    );
+  }
+
+  nivelANumero(nivel: string): number {
+    switch (nivel) {
+      case 'Básico': return 1;
+      case 'Intermedio': return 2;
+      case 'Avanzado': return 3;
+      default: return 1;
+    }
+  }
+
+  numeroANivel(num: number): string {
+    return ['Básico', 'Intermedio', 'Avanzado'][num-1] || 'Básico';
+  }
+
+  establecerNivel(habilidad: any, num: number) {
+    habilidad.nivel = this.numeroANivel(num);
+  }
+
 }
 
