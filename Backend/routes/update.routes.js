@@ -4,7 +4,7 @@ const router = express.Router();
 const supabase = supabaseAdmin;
 
 // Funciones de validación
-const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const isValidEmail = (email) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,10}$/.test(email);
 const isValidUsername = (username) => /^[a-zA-Z0-9_]{3,20}$/.test(username);
 const isNonEmpty = (value) => typeof value === 'string' && value.trim() !== '';
 const isValidName = (name) => /^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s'-]+$/.test(name);
