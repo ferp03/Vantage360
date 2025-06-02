@@ -441,7 +441,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--accenture-gray-50); /* Color personalizado */
+  background-color: rgba(0, 0, 0, 0.7);  
   display: flex;
   justify-content: center;
   align-items: center;
@@ -457,6 +457,7 @@
   max-width: 400px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra más suave */
   border: 1px solid var(--accenture-gray-100); /* Borde sutil si lo deseas */
+  
 }
 
 .modal-actions {
@@ -493,6 +494,21 @@
 .btn-confirm:hover {
   background-color: #9F7AEA; /* Color hover que especificaste */
   transform: translateY(-1px); /* Efecto sutil al hover */
+}
+
+.member-list {
+  list-style-type: none; /* Quita los puntos */
+  padding: 0;            /* Elimina el espacio a la izquierda */
+  margin: 0;
+}
+
+.member-list li {
+  margin-bottom: 8px;    /* Espacio entre miembros */
+}
+
+h4 {       
+  margin-bottom: 8px;   /* Espacio debajo del título */
+  margin-top: 5px;
 }
 
 @keyframes fadeIn {

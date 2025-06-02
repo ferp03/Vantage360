@@ -210,7 +210,7 @@ export class ApiService {
   // Eliminar certificado
   eliminarCertificado(certificacionId: number): Observable<any> {
   return this.http.delete(`${this.apiUrl}/certificado/${certificacionId}`);
-}
+  }
 
   // Editar Curso
   editarCurso(empleadoId: string, cursoId: string, formData: FormData): Observable<any> {
@@ -234,28 +234,28 @@ export class ApiService {
 
   // Obtener proyectos disponibles
   getProyectosActuales(userId: string): Observable<any> {
-  return this.http.get(`${this.apiUrl}/proyecto/actuales/${userId}`);
+    return this.http.get(`${this.apiUrl}/proyecto/actuales/${userId}`);
   }
 
   // Unirse a un proyecto
   unirseAProyecto(empleadoId: string, proyectoId: number): Observable<any> {
-  return this.http.post(`${this.apiUrl}/proyecto/unirse`, {
-    empleado_id: empleadoId,
-    proyecto_id: proyectoId
-  }).pipe(
-    catchError(error => {
-      console.error('Error en la solicitud:', error);
-      return throwError(() => error);
-    })
-  );
+    return this.http.post(`${this.apiUrl}/proyecto/unirse`, {
+      empleado_id: empleadoId,
+      proyecto_id: proyectoId
+    }).pipe(
+      catchError(error => {
+        console.error('Error en la solicitud:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   // Eliminar Habilidad
   deleteEmpleadoHabilidad(empleadoId: string, habilidadId: number) {
-  return this.http.delete<{ success: boolean; message: string }>(
-    `${this.apiUrl}/empleado/${empleadoId}/habilidad/${habilidadId}`
-  );
-}
+    return this.http.delete<{ success: boolean; message: string }>(
+      `${this.apiUrl}/empleado/${empleadoId}/habilidad/${habilidadId}`
+    );
+  }
 
   // Actualizar Habilidad
   updateEmpleadoHabilidad(empleadoId: string, habilidadId: number, datos: {nivel: string, descripcion: string}): Observable<any> {
@@ -270,4 +270,7 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/empleado/${empleadoId}/comentarios`, datos);
   }
 
-} 
+  obtenerIntegrantesProyecto(proyectoId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/proyecto/${proyectoId}/integrantes`);
+  }
+}
