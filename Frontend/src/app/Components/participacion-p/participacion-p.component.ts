@@ -251,8 +251,30 @@ openMemberModal(proyecto: Proyecto): void {
     }
   }
 });
-
 }
+
+sortKeys = (a: any, b: any): number => a.key.localeCompare(b.key);
+
+getMembersGroupedAndSorted() {
+  if (!this.selectedProject?.members) return {};
+
+  const grouped: { [key: string]: Miembro[] } = {};
+
+  for (const member of this.selectedProject.members) {
+    const capability = member.capability || 'Sin categoría';
+    if (!grouped[capability]) {
+      grouped[capability] = [];
+    }
+    grouped[capability].push(member);
+  }
+
+  for (const cap in grouped) {
+    grouped[cap].sort((a, b) => a.nombre.localeCompare(b.nombre));
+  }
+
+  return grouped;
+}
+
 
 closeJoinModal(event?: Event): void {
   // if (event) {
