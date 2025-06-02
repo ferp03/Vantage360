@@ -15,6 +15,8 @@ interface Habilidad {
   nombre: string;
   habilidad_id: number;
   nivel_esperado: string;
+  editando?: boolean;
+  puedeEditar?: boolean;
 }
 
 
@@ -32,7 +34,6 @@ interface Proyecto {
     id: string;
     nombre: string;
   };
-  // Agrega esta propiedad
   puedeEditar?: boolean;
   editando?: boolean;
   datosTemporales?: {  
@@ -42,6 +43,7 @@ interface Proyecto {
     fecha_fin: string;
     progreso: number;
   };
+  
 }
 
 @Component({
@@ -51,8 +53,10 @@ interface Proyecto {
 })
 export class ParticipacionPComponent implements OnInit {
   activeTab: string = 'disponibles';
-  
+  esDeliveryLead: boolean = false;
   selectedVista: 'puestos' | 'habilidades' = 'puestos';
+  currentUserId: string = '';
+  userId: string = '';
 
 
   proyectosDisponibles: Proyecto[] = [];
@@ -67,11 +71,19 @@ export class ParticipacionPComponent implements OnInit {
     public authService: AuthService,
     private dialog: MatDialog,
     private apiService: ApiService
+    
   ) {}
 
   ngOnInit(): void {
     this.cargarProyectosDisponibles();
     this.cargarProyectosActuales();
+    this.currentUserId = this.authService.userId || '';
+    this.userId = this.authService.userId || '';
+    this.verificarDeliveryLead();
+  }
+  verificarDeliveryLead() {
+    const roles = this.authService.roles;
+    this.esDeliveryLead = roles.includes('delivery_lead');
   }
 
   setVistaProyecto(proyecto: Proyecto, vista: 'puestos' | 'habilidades') {
@@ -185,17 +197,17 @@ cargarProyectosActuales(): void {
         const proyectos = response.proyectos || response || [];
         const { actuales, pasados } = this.filtrarProyectosPorFecha(proyectos);
         
-        // editar
+        // Verificar permisos para cada proyecto
         this.proyectosActuales = actuales.map(p => ({ 
           ...p, 
           selectedVista: 'puestos',
-          puedeEditar: p.delivery_lead?.id === this.authService.userId
+          puedeEditar: this.verificarPermisoEdicion(p)
         }));
         
         this.proyectosPasados = pasados.map(p => ({ 
           ...p, 
           selectedVista: 'puestos',
-          puedeEditar: p.delivery_lead?.id === this.authService.userId
+          puedeEditar: this.verificarPermisoEdicion(p)
         }));
         
         this.actualesCount = this.proyectosActuales.length;
@@ -209,6 +221,17 @@ cargarProyectosActuales(): void {
         this.pasadosCount = 0;
       }
     });
+}
+
+// Método para verificar permisos de edición
+verificarPermisoEdicion(proyecto: Proyecto): boolean {
+  // Verifica si el usuario es el delivery_lead del proyecto
+  const esDeliveryLeadDelProyecto = proyecto.delivery_lead?.id === this.authService.userId;
+  
+  // Verifica si el usuario tiene rol de admin (opcional)
+  const esAdmin = this.authService.roles.includes('admin');
+  
+  return esDeliveryLeadDelProyecto || esAdmin;
 }
 // Modal
 // En tu ParticipacionPComponent
@@ -235,24 +258,23 @@ closeJoinModal(event?: Event): void {
 confirmJoin(): void {
   if (!this.selectedProject) return;
 
-  const empleadoId = this.authService.userId;
+  const userId = this.authService.userId;
   const proyectoId = this.selectedProject.proyecto_id;
 
-  if (!empleadoId) {
+  if (!userId) {
     return;
   }
 
-  this.apiService.unirseAProyecto(empleadoId, proyectoId)
+  this.apiService.unirseAProyecto(userId, proyectoId)
     .subscribe({
       next: (response) => {
         this.showJoinModal = false;
         this.selectedProject = null;
         
-        // Recargar datos después de 1 segundo
         setTimeout(() => {
           this.cargarProyectosDisponibles();
           this.cargarProyectosActuales();
-        }, 1000);
+        }, 100);
       },
       error: (error) => {
         console.error('Error detallado:', error);
@@ -280,7 +302,7 @@ openTab(tabId: string) {
 
 // editar proyecto
 habilitarEdicion(proyecto: Proyecto): void {
-  if (!proyecto.puedeEditar) return;
+  if (!proyecto.puedeEditar || !this.verificarPermisoEdicion(proyecto)) return;
   
   proyecto.editando = true;
   proyecto.datosTemporales = {
@@ -298,11 +320,26 @@ cancelarEdicion(proyecto: Proyecto): void {
 }
 
 guardarCambios(proyecto: Proyecto): void {
-  if (!proyecto.datosTemporales) return;
-  Object.assign(proyecto, proyecto.datosTemporales);
+  if (!proyecto.datosTemporales || !this.verificarPermisoEdicion(proyecto)) return;
+
+  let userId = this.userId || this.currentUserId || this.authService.userId;
+  if (!userId) {
+    userId = this.authService.userId;
+  }
   
-  this.apiService.actualizarProyecto(proyecto).subscribe({
-    next: (response) => {
+  if (!userId) {
+    console.error('No se pudo obtener el ID del usuario');
+    return;
+  }
+
+  const datosActualizados = {
+  ...proyecto.datosTemporales,
+  proyecto_id: proyecto.proyecto_id,
+  userId: userId 
+  };
+
+  this.apiService.actualizarProyecto(datosActualizados).subscribe({
+    next: () => {
       proyecto.editando = false;
       proyecto.datosTemporales = undefined;
       this.cargarProyectosActuales();
@@ -313,5 +350,6 @@ guardarCambios(proyecto: Proyecto): void {
     }
   });
 }
+
 
 }

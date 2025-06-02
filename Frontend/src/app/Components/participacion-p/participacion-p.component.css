@@ -491,8 +491,8 @@
 }
 
 .btn-confirm:hover {
-  background-color: #9F7AEA; /* Color hover que especificaste */
-  transform: translateY(-1px); /* Efecto sutil al hover */
+  background-color: #9F7AEA; 
+  transform: translateY(-1px);
 }
 
 @keyframes fadeIn {
@@ -580,11 +580,11 @@
 }
 
 .btn-save {
-  color: #4CAF50;
+  color: #9F7AEA
 }
 
 .btn-cancel {
-  color: #f44336;
+  color: #9F7AEA
 }
 
 .btn-edit:hover, .btn-save:hover, .btn-cancel:hover {

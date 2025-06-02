@@ -9,6 +9,7 @@ import { map, catchError } from 'rxjs/operators';
 })
 export class ApiService {
   private apiUrl = environment.apiUrl;
+  authService: any;
 
   constructor(private http: HttpClient) { }
 
@@ -270,16 +271,30 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/empleado/${empleadoId}/comentarios`, datos);
   }
 
-  actualizarProyecto(proyecto: {proyecto_id: number;nombre?: string;descripcion?: string;fecha_inicio?: string;fecha_fin?: string;progreso?: number;[key: string]: any;
-  }): Observable<any> {
-  const datosPermitidos = {
-    nombre: proyecto.nombre,
-    descripcion: proyecto.descripcion,
-    fecha_inicio: proyecto.fecha_inicio,
-    fecha_fin: proyecto.fecha_fin,
-    progreso: proyecto.progreso
-  };
-  return this.http.put(`${this.apiUrl}/proyecto/${proyecto.proyecto_id}`, datosPermitidos);
-  }
+
+  actualizarProyecto(proyecto: {
+  proyecto_id: number;
+  nombre?: string;
+  descripcion?: string;
+  fecha_inicio?: string;
+  fecha_fin?: string;
+  progreso?: number;
+  // puesto?: string;
+  // habilidades?: string[];
+  userid?: string;
+}): Observable<any> {
+  return this.http.put(`${this.apiUrl}/proyecto/${proyecto.proyecto_id}`, {
+    ...proyecto
+  }).pipe(
+    catchError(error => {
+      console.error('Error en la solicitud:', error);
+      let errorMsg = 'Error al actualizar proyecto';
+      if (error.status === 403) errorMsg = 'No tienes permisos para editar';
+      if (error.status === 404) errorMsg = 'Proyecto no encontrado';
+      return throwError(() => new Error(errorMsg));
+    })
+  );
+}
+
 
 } 

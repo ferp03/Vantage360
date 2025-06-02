@@ -280,13 +280,12 @@ router.post('/proyecto/unirse', async (req, res) => {
       });
     }
 
-    // Insertar la relación
     const { data, error } = await supabase
       .from('empleado_proyecto')
       .insert({
         empleado_id: empleado_id,
         proyecto_id: proyecto_id,
-        fecha_union: new Date().toISOString()  // Campo adicional útil
+        fecha_union: new Date().toISOString() 
       })
       .select();
 
@@ -402,10 +401,13 @@ router.post('/proyecto/unirse', async (req, res) => {
 // Editar un proyecto
 router.put('/proyecto/:id', async (req, res) => {
   try {
-    const proyectoId = req.params.id;
-    const proyectoData = req.body;
+    const proyectoId = parseInt(req.params.id);
+    const { userId, ...updateData } = req.body; 
 
-    // Verificar que el usuario es el delivery lead
+    if (isNaN(proyectoId)) {
+      return res.status(400).json({ success: false, error: 'ID de proyecto inválido' });
+    }
+
     const { data: proyectoExistente, error: proyectoError } = await supabase
       .from('proyecto')
       .select('delivery_lead')
@@ -416,25 +418,33 @@ router.put('/proyecto/:id', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Proyecto no encontrado' });
     }
 
-    if (proyectoExistente.delivery_lead !== req.user.id) {
-      return res.status(403).json({ success: false, error: 'No tienes permisos para editar este proyecto' });
+    if (!userId) {
+      return res.status(403).json({ success: false, error: 'No autorizado para editar este proyecto' });
     }
 
-    // Actualizar el proyecto
+    if (updateData.progreso && (updateData.progreso < 0 || updateData.progreso > 100)) {
+      return res.status(400).json({ success: false, error: 'El progreso debe estar entre 0 y 100' });
+    }
+
     const { data, error } = await supabase
       .from('proyecto')
-      .update(proyectoData)
+      .update(updateData)
       .eq('proyecto_id', proyectoId)
       .select();
 
     if (error) {
+      console.error('Error en Supabase:', error);
       return res.status(400).json({ success: false, error: error.message });
     }
 
-    return res.status(200).json({ success: true, proyecto: data });
-    
+    return res.status(200).json({ success: true, proyecto: data[0] });
+
   } catch (err) {
-    return res.status(500).json({ success: false, error: err.message });
+    console.error('Error inesperado:', err);
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Error interno del servidor'
+    });
   }
 });
 
