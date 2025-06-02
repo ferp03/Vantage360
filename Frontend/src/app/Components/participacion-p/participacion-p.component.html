@@ -125,48 +125,9 @@
                  </div>
                </div>
              </div>
-             <!-- Modal de Integrantes (vacío) -->
-              <div class="modal-overlay" *ngIf="showMemberModal" (click)="closeMemberModal()">
-              <div class="modal-container" (click)="$event.stopPropagation()">
-                <div class="modal-header">
-                  <h3>Integrantes del proyecto: {{ selectedProject?.nombre }}</h3>
-                </div>
-                
-                <div class="modal-content">
-                  <!-- Estado de carga -->
-                  <div *ngIf="loadingMembers" class="loading-members">
-                    Cargando miembros...
-                  </div>
-                  
-                  <!-- Estado de error -->
-                  <div *ngIf="errorLoadingMembers" class="error-members">
-                    {{ errorLoadingMembers }}
-                  </div>
-                  
-                  <!-- Lista de miembros -->
-                  <ul class="member-list" *ngIf="!loadingMembers && !errorLoadingMembers">
-                    <li *ngIf="selectedProject && selectedProject.members && selectedProject.members.length > 0; else noMembers">
-                      <div *ngFor="let grupo of getMembersGroupedAndSorted() | keyvalue: sortKeys">
-                        <h4>{{ grupo.key }}</h4>
-                        <ul>
-                          <li *ngFor="let member of grupo.value">
-                            <div class="member-info">
-                              <span class="member-name">{{ member.nombre }}</span>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                    </li>
-
-                    <ng-template #noMembers>
-                      <li class="no-members">No hay miembros asignados a este proyecto</li>
-                    </ng-template>
-                  </ul>
-                </div>
-                <div class="modal-actions">
-                  <button class="btn-cancel" (click)="closeMemberModal()">Cerrar</button>
-                  </div>
-                </div>
+             <!-- Modal de Integrantes  -->
+              <div *ngIf="showMemberModal" >
+                <ng-container *ngTemplateOutlet="integrantesModal"></ng-container>
               </div>
             </div>
           </div>
@@ -245,11 +206,15 @@
                     <span class="material-icons">group_add</span>
                     Información
                   </button>
-                  <button class="btn-details" >
+                  <button class="btn-details" (click)="openMemberModal(proyecto)" >
                     <span class="material-icons">visibility</span>
                     Integrantes
                   </button>
                 </div>
+              </div>
+            <!-- Modal de Integrantes-->
+              <div *ngIf="showMemberModal" >
+                <ng-container *ngTemplateOutlet="integrantesModal"></ng-container>
               </div>
             </div>
           </div>
@@ -299,3 +264,44 @@
   </main>
 </div>
 <!-- </body> -->
+
+<!-- Definición del template reutilizable -->
+<ng-template #integrantesModal>
+  <div class="modal-overlay" (click)="closeMemberModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Integrantes del proyecto: {{ selectedProject?.nombre }}</h3>
+      </div>
+      
+      <div class="modal-content">
+        <div *ngIf="loadingMembers" class="loading-members">
+          Cargando miembros...
+        </div>
+        <div *ngIf="errorLoadingMembers" class="error-members">
+          {{ errorLoadingMembers }}
+        </div>
+        <ul class="member-list" *ngIf="!loadingMembers && !errorLoadingMembers">
+          <li *ngIf="selectedProject && selectedProject.members && selectedProject.members.length > 0; else noMembers">
+            <div *ngFor="let grupo of getMembersGroupedAndSorted() | keyvalue: sortKeys">
+              <h4>{{ grupo.key }}</h4>
+              <ul>
+                <li *ngFor="let member of grupo.value">
+                  <div class="member-info">
+                    <span class="member-name">{{ member.nombre }}</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+
+          <ng-template #noMembers>
+            <li class="no-members">No hay miembros asignados a este proyecto</li>
+          </ng-template>
+        </ul>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="closeMemberModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
