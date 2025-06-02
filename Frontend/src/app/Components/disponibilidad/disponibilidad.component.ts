@@ -51,6 +51,7 @@ export class DisponibilidadComponent implements OnInit {
   nuevaCargabilidad: number | null = null;
   mostrarModalActualizar: boolean = false;
 
+  hayFiltrosAplicados: boolean = false;
 
   empleadoSeleccionadoComentarios: any = null; // Nueva variable para el modal de comentarios
   comentarioSeleccionado: any = null;
@@ -129,34 +130,29 @@ export class DisponibilidadComponent implements OnInit {
     this.capabilities = [...new Set(todasCapabilities)];
   }
 
+  
   aplicarFiltros(): void {
     this.empleadosFiltrados = this.empleados.filter(emp => {
-      // Filtro por disponibilidad
       if (this.filtros.soloDisponibles && !emp.disponible) {
         return false;
       }
 
-      // Filtro por nivel
       if (this.filtros.nivel && emp.nivel !== Number(this.filtros.nivel)) {
         return false;
       }
 
-      // Filtro por rol
       if (this.filtros.rol && !emp.roles.some((r: any) => r.nombre === this.filtros.rol)) {
         return false;
       }
 
-      // Filtro por capability
       if (this.filtros.capability && (emp.capability || 'Ninguna') !== this.filtros.capability) {
         return false;
       }
 
-      // Filtro por habilidad
       if (this.filtros.habilidad && !emp.habilidades.some((h: any) => h.nombre === this.filtros.habilidad)) {
         return false;
       }
 
-      // Filtro por texto de búsqueda (usuario, correo o nombre completo)
       if (this.searchText) {
         const searchLower = this.searchText.toLowerCase();
         const fullName = `${emp.nombre} ${emp.apellido_paterno} ${emp.apellido_materno}`.toLowerCase();
@@ -171,8 +167,18 @@ export class DisponibilidadComponent implements OnInit {
       return true;
     });
 
-    // Reiniciar paginación
+    this.actualizarEstadoFiltros();
     this.currentPage = 1;
+  }
+
+  actualizarEstadoFiltros(): void {
+    this.hayFiltrosAplicados = 
+      this.filtros.rol !== '' || 
+      this.filtros.habilidad !== '' || 
+      this.filtros.capability !== '' || 
+      this.filtros.nivel !== null || 
+      this.filtros.soloDisponibles || 
+      this.searchText !== '';
   }
 
   limpiarFiltros(): void {

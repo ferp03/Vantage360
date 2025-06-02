@@ -45,7 +45,7 @@
       </button>
     </form>
     <button class="btn-reporte" (click)="generarReporteCargabilidad()">
-      Generar reporte
+      {{ hayFiltrosAplicados ? 'Generar reporte con filtros' : 'Generar reporte' }}
     </button>
   </div>
     </div>
@@ -186,7 +186,7 @@
               <button class="btn-accion" (click)="seleccionarComentarios(empleado)"><mat-icon>chat</mat-icon></button>
               <button class="btn-accion" (click)="seleccionarEmpleado(empleado)"><mat-icon>edit</mat-icon></button>
             </td>
-          </tr>
+          </tr> 
         </tbody>
       </table>
       
