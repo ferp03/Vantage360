@@ -883,6 +883,8 @@ ngOnInit() {
     return;
   }
 
+  
+
   if (this.pieChart) {
     this.pieChart.data.datasets[0].data = [cantidadObligatorios, cantidadNoObligatorios];
     this.pieChart.update();
@@ -904,7 +906,10 @@ ngOnInit() {
             text: 'Cursos Obligatorios y No Obligatorios',
             color: '#0000000',
             font: { size: 20 }
-          }
+          },
+        subtitle: {
+          text: '(Todos los cursos)',
+        }
         }
       }
     });
@@ -917,6 +922,33 @@ async crearGraficaPie2(progresoPromedio: number , percent: number): Promise<void
     console.error('No se encontró el canvas con id pieChart2');
     return;
   }
+
+  const subtitlePlugin = {
+  id: 'subtitle',
+  afterDraw(chart: Chart, args: any, options: any) {
+    if (!options?.text) return;
+
+    const { ctx, chartArea: { top, left, right, bottom } } = chart;
+    ctx.save();
+    
+    ctx.font = options.font || '14px Arial';
+    ctx.fillStyle = options.color || 'gray';
+    ctx.textAlign = 'center';
+    
+    // Posición basada en la configuración
+    if (options.position === 'bottom') {
+      ctx.fillText(options.text, (left + right) / 2.4, bottom -175);
+    } else {
+      // Por defecto arriba
+      ctx.fillText(options.text, (left + right) / 2, top - 35);
+    }
+    
+    ctx.restore();
+  }
+};
+
+// Register the plugin
+Chart.register(subtitlePlugin);
 
   if (this.pieChart2) {
     this.pieChart2.data.datasets[0].data = [progresoPromedio, percent];
@@ -939,7 +971,10 @@ async crearGraficaPie2(progresoPromedio: number , percent: number): Promise<void
             text: 'Progreso Promedio de Cursos',
             color: '#0000000',
             font: { size: 20 }
-          }
+          },
+        subtitle: {
+          text: '(Todos los cursos)',
+        }
         }
       }
     });
@@ -970,24 +1005,6 @@ async crearGraficaPie2(progresoPromedio: number , percent: number): Promise<void
   // Extraer los datos filtrados
   const etiquetas = cursosFiltrados.map(c => etiquetasCompletas[c.indice]);
   const datos = cursosFiltrados.map(c => obtenerProgresoCursos[c.indice]);
-  // Define the plugin
-  const subtitlePlugin = {
-  id: 'subtitle',  // Note: This is the key identifier
-  afterDraw(chart: Chart, args: any, options: any) {
-    if (!options?.text) return;
-
-    const { ctx, chartArea: { top, left, right } } = chart;
-    ctx.save();
-    ctx.font = options.font || '14px Arial';
-    ctx.fillStyle = options.color || 'gray';
-    ctx.textAlign = 'center';
-    ctx.fillText(options.text, (left + right) / 2.2, top - 3);
-    ctx.restore();
-  }
-};
-
-// Register the plugin
-Chart.register(subtitlePlugin);
 
 if (this.barChart) {
   this.barChart.data.labels = etiquetas;
@@ -1016,6 +1033,7 @@ if (this.barChart) {
         },
         subtitle: {
           text: '(Últimos 6 meses)',
+          position: 'bottom', // Puedes cambiar a 'top' si prefieres
           // You can also add font and color here if needed
           // font: '12px Arial',
           // color: '#666'

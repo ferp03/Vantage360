@@ -29,7 +29,7 @@
 
 .caja-info-superior {
   display: flex;
-  gap: 2rem;
+  gap: 5px;
   /* background-color: #1C1C24; */
   color: black;
   flex-wrap: wrap;
@@ -168,7 +168,7 @@
 }
 
 .derecha {
-  flex: 1;
+  flex: 1; 
   width: 50%;
   box-shadow: 1px 2px 6px #B998F7;
   transition: transform 0.2s, box-shadow 0.2s;
