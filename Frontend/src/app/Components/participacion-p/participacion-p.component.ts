@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from 'src/app/auth/auth.service';
 import { ProyectosComponent } from '../proyectos/proyectos.component';
 import { ApiService } from 'src/app/services/api.service';
+import { HabilidadesPuestosModalComponent } from '../habilidades-puestos-modal/habilidades-puestos-modal.component';
 
 interface Capabilities {
   status: string;
@@ -11,7 +12,7 @@ interface Capabilities {
   };
 }
 
-interface Habilidad {
+export interface Habilidad {
   nombre: string;
   habilidad_id: number;
   nivel_esperado: string;
@@ -20,7 +21,7 @@ interface Habilidad {
 }
 
 
-interface Proyecto {
+export interface Proyecto {
   proyecto_id: number;
   nombre: string;
   descripcion: string;
@@ -36,6 +37,7 @@ interface Proyecto {
   };
   puedeEditar?: boolean;
   editando?: boolean;
+  puesto?: string; 
   datosTemporales?: {  
     nombre: string;
     descripcion: string;
@@ -197,7 +199,6 @@ cargarProyectosActuales(): void {
         const proyectos = response.proyectos || response || [];
         const { actuales, pasados } = this.filtrarProyectosPorFecha(proyectos);
         
-        // Verificar permisos para cada proyecto
         this.proyectosActuales = actuales.map(p => ({ 
           ...p, 
           selectedVista: 'puestos',
@@ -225,16 +226,13 @@ cargarProyectosActuales(): void {
 
 // Método para verificar permisos de edición
 verificarPermisoEdicion(proyecto: Proyecto): boolean {
-  // Verifica si el usuario es el delivery_lead del proyecto
   const esDeliveryLeadDelProyecto = proyecto.delivery_lead?.id === this.authService.userId;
-  
-  // Verifica si el usuario tiene rol de admin (opcional)
   const esAdmin = this.authService.roles.includes('admin');
+  
   
   return esDeliveryLeadDelProyecto || esAdmin;
 }
 // Modal
-// En tu ParticipacionPComponent
 showJoinModal: boolean = false;
 selectedProject: Proyecto | null = null;
 
@@ -351,5 +349,31 @@ guardarCambios(proyecto: Proyecto): void {
   });
 }
 
+abrirModalEdicionHabilidadesPuestos(proyecto: Proyecto, modo: 'puestos' | 'habilidades'): void {
+  if (!proyecto.puedeEditar) return;
+
+  const dialogRef = this.dialog.open(HabilidadesPuestosModalComponent, {
+    width: '800px',
+    data: { 
+      proyecto: {...proyecto}, 
+      modo,
+      userId: this.authService.userId // Pasamos el userId directamente
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      // Actualiza el proyecto localmente
+      const index = this.proyectosActuales.findIndex(p => p.proyecto_id === result.proyecto_id);
+      if (index !== -1) {
+        this.proyectosActuales[index] = {
+          ...this.proyectosActuales[index],
+          capabilities: result.capabilities,
+          habilidades: result.habilidades
+        };
+      }
+    }
+  });
+}
 
 }

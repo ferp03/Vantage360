@@ -279,12 +279,9 @@ export class ApiService {
   fecha_inicio?: string;
   fecha_fin?: string;
   progreso?: number;
-  // puesto?: string;
-  // habilidades?: string[];
-  userid?: string;
-}): Observable<any> {
-  return this.http.put(`${this.apiUrl}/proyecto/${proyecto.proyecto_id}`, {
-    ...proyecto
+  puesto?: string;
+  habilidades?: string[];
+  userId?: string; }): Observable<any> {return this.http.put(`${this.apiUrl}/proyecto/${proyecto.proyecto_id}`, {...proyecto
   }).pipe(
     catchError(error => {
       console.error('Error en la solicitud:', error);
