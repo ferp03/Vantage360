@@ -293,5 +293,17 @@ export class ApiService {
   );
 }
 
+actualizarHabilidadesProyecto(proyectoId: number, habilidades: any[]): Observable<any> {
+  return this.http.put(`${this.apiUrl}/proyecto/${proyectoId}/habilidades`, {
+    habilidades 
+  }).pipe(
+    catchError(error => {
+      console.error('Error al actualizar habilidades:', error);
+      return throwError(() => new Error('Error al actualizar habilidades del proyecto'));
+    })
+  );
+}
+
+
 
 } 

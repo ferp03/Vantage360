@@ -78,29 +78,65 @@
       </button>
     </div>
   </div>
-  
-  <!-- Sección de Habilidades -->
-<div *ngIf="modoEdicion === 'habilidades'" class="tab-content">
-  <h3>Habilidades actuales</h3>
-  
-  <!-- Verificación más robusta -->
-  <div class="chips-container" *ngIf="proyecto?.habilidades && proyecto.habilidades.length > 0">
-    <span class="custom-chip" *ngFor="let habilidad of proyecto.habilidades; let i = index">
-      {{habilidad.nombre || 'Habilidad sin nombre'}} ({{habilidad.nivel_esperado || 'N/A'}})
-      <mat-icon class="chip-remove" (click)="eliminarHabilidad(i)">cancel</mat-icon>
-    </span>
-  </div>
-  
-  <div *ngIf="!proyecto?.habilidades || proyecto.habilidades.length === 0">
-    <span>No hay habilidades agregadas.</span>
-  </div>
 
+  <!-- Sección de Habilidades -->
+  <div *ngIf="modoEdicion === 'habilidades'" class="tab-content">
+    <h3>Habilidades actuales</h3>
+    
+    <!-- Lista de habilidades -->
+    <div class="chips-container" *ngIf="proyecto && proyecto.habilidades && proyecto.habilidades.length > 0">
+      <ng-container *ngFor="let habilidad of proyecto.habilidades; let i = index">
+        <!-- Vista normal (no edición) -->
+        <div *ngIf="!habilidad.editando" class="custom-chip">
+          {{habilidad.nombre}} ({{habilidad.nivel_esperado}})
+          <mat-icon class="chip-remove" (click)="eliminarHabilidad(i)">cancel</mat-icon>
+          <mat-icon class="chip-edit" (click)="editarHabilidad(habilidad)">edit</mat-icon>
+        </div>
+        
+        <!-- Vista de edición -->
+        <div *ngIf="habilidad.editando" class="edicion-habilidad">
+          <mat-form-field appearance="outline">
+            <mat-label>Habilidad</mat-label>
+            <mat-select [(ngModel)]="habilidad.nombre" [ngModelOptions]="{standalone: true}">
+              <mat-option *ngFor="let habDisponible of habilidadesDisponibles" 
+                          [value]="habDisponible.nombre">
+                {{habDisponible.nombre}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Nivel</mat-label>
+            <mat-select [(ngModel)]="habilidad.nivel_esperado" [ngModelOptions]="{standalone: true}">
+              <mat-option value="Básico">Básico</mat-option>
+              <mat-option value="Intermedio">Intermedio</mat-option>
+              <mat-option value="Avanzado">Avanzado</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button mat-icon-button (click)="guardarEdicionHabilidad(habilidad)">
+            <mat-icon>check</mat-icon>
+          </button>
+          <button mat-icon-button (click)="cancelarEdicionHabilidad(habilidad)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </ng-container>
+    </div>
+
+    <div *ngIf="!proyecto.habilidades || proyecto.habilidades.length === 0">
+      <span>No hay habilidades agregadas.</span>
+    </div>
+
+    <!-- Formulario para agregar nuevas habilidades -->
     <form [formGroup]="form" class="nueva-habilidad">
       <mat-form-field appearance="outline">
         <mat-label>Seleccionar habilidad</mat-label>
         <mat-select formControlName="habilidadId" required>
-          <mat-option *ngFor="let habilidad of habilidadesDisponibles" [value]="habilidad.habilidad_id">
-            {{habilidad.nombre}}
+          <mat-option *ngFor="let habilidad of habilidadesDisponibles" 
+                     [value]="habilidad.habilidad_id">
+                     {{habilidad.nombre}}
+            <!-- {{habilidad.nombre}} ({{habilidad.nivel_esperado}}) -->
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -115,14 +151,16 @@
       </mat-form-field>
 
       <button mat-icon-button 
-            (click)="agregarHabilidad()" 
-            [disabled]="form.invalid">
+             (click)="agregarHabilidad()" 
+             [disabled]="form.invalid"
+             matTooltip="Añadir habilidad">
         <mat-icon>add_circle</mat-icon>
       </button>
     </form>
   </div>
 </mat-dialog-content>
 
+<!-- Botones de acción del diálogo -->
 <mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()">Cancelar</button>
   <button mat-raised-button color="primary" (click)="onSave()">Guardar Cambios</button>

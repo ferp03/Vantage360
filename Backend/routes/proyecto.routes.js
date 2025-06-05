@@ -448,4 +448,32 @@ router.put('/proyecto/:id', async (req, res) => {
   }
 });
 
+// Ruta para actualizar habilidades del proyecto
+router.put('/proyecto/:id/habilidades', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { habilidades } = req.body; 
+
+    await supabase
+      .from('proyecto_habilidad')
+      .delete()
+      .eq('proyecto_id', id);
+    const nuevasHabilidades = habilidades.map(h => ({
+      proyecto_id: id,
+      habilidad_id: h.habilidad_id,
+      nivel_esperado: h.nivel_esperado
+    }));
+
+    const { data, error } = await supabase
+      .from('proyecto_habilidad')
+      .insert(nuevasHabilidades);
+
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;

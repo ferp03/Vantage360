@@ -18,6 +18,11 @@ export interface Habilidad {
   nivel_esperado: string;
   editando?: boolean;
   puedeEditar?: boolean;
+  datosOriginales?: {        
+    habilidad_id: number;
+    nombre: string;
+    nivel_esperado: string;
+  };
 }
 
 

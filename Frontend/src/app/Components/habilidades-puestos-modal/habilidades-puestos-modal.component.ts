@@ -36,7 +36,7 @@ export class HabilidadesPuestosModalComponent implements OnInit {
     { habilidad_id: 3, nombre: 'SQL', nivel_esperado: 'Básico' }
   ];
   puestosEditables: Puesto[] = []; 
-
+  habilidadEditando: Habilidad | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -47,7 +47,7 @@ export class HabilidadesPuestosModalComponent implements OnInit {
   ) {
     this.formPuesto = this.fb.group({
       puestoId: [null, Validators.required],
-      cantidad: [1, [Validators.required, Validators.min(1)]]  // Agrega control para cantidad
+      cantidad: [1, [Validators.required, Validators.min(1)]] 
     });
     this.proyecto = JSON.parse(JSON.stringify(data.proyecto));
     this.proyecto.habilidades = this.proyecto.habilidades || [];
@@ -59,14 +59,12 @@ export class HabilidadesPuestosModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-  console.log('Datos del proyecto recibidos:', this.proyecto); // depuración
   this.cargarDatosDisponibles();
   this.form = this.fb.group({
     habilidadId: ['', Validators.required],
     nivel: ['Intermedio']
   });
   this.proyecto.habilidades = this.ensureHabilidadesArray(this.proyecto.habilidades);
-  console.log('Habilidades después de ensure:', this.proyecto.habilidades); // Depuración
   this.actualizarPuestosEditables();
   }
 
@@ -83,7 +81,6 @@ export class HabilidadesPuestosModalComponent implements OnInit {
           id: nombre,
           nombre: nombre
         }));
-        console.log('Puestos disponibles:', this.puestosDisponibles); // Depuración
       }
 
       // Procesar habilidades
@@ -91,26 +88,36 @@ export class HabilidadesPuestosModalComponent implements OnInit {
         this.habilidadesDisponibles = habilidades.map(h => ({
           habilidad_id: h.id || h.habilidad_id,
           nombre: h.nombre,
-          nivel_esperado: h.nivel_esperado || 'Intermedio'
+          nivel_esperado: h.nivel_esperado || 'Intermedio',
+          // Agrega cualquier otro campo necesario
+          descripcion: h.descripcion || `Habilidad de ${h.nombre}`
         }));
-        console.log('Habilidades disponibles:', this.habilidadesDisponibles); // Depuración
+        
+        // Ordenar alfabéticamente si es necesario
+        this.habilidadesDisponibles.sort((a, b) => a.nombre.localeCompare(b.nombre));
       }
 
-      // Si estamos en modo habilidades, seleccionar la primera opción por defecto
+      // Configurar el formulario si estamos en modo habilidades
       if (this.modoEdicion === 'habilidades' && this.habilidadesDisponibles.length > 0) {
-        this.form.patchValue({
-          habilidadId: this.habilidadesDisponibles[0].habilidad_id
-        });
+        this.configurarFormularioHabilidades();
       }
     },
     error: (error) => {
       console.error('Error al cargar datos disponibles', error);
-      // Inicializar arrays vacíos para evitar errores
       this.puestosDisponibles = [];
       this.habilidadesDisponibles = [];
     }
   });
-  }
+}
+
+private configurarFormularioHabilidades(): void {
+  // Establecer el primer valor por defecto
+  const primeraHabilidad = this.habilidadesDisponibles[0];
+  this.form.patchValue({
+    habilidadId: primeraHabilidad.habilidad_id,
+    nivel: primeraHabilidad.nivel_esperado
+  });
+}
 
 private ensureHabilidadesArray(habilidades: any): Habilidad[] {
   if (!habilidades) return [];
@@ -142,7 +149,6 @@ private ensureHabilidadesArray(habilidades: any): Habilidad[] {
   }
 
   actualizarPuestosEditables(): void {
-    // Mantener el estado de edición al actualizar
     const puestosActuales = this.puestos;
     this.puestosEditables = puestosActuales.map(puestoExistente => {
       const puestoEditado = this.puestosEditables.find(p => p.nombre === puestoExistente.nombre);
@@ -159,10 +165,7 @@ agregarPuesto(): void {
   if (!this.proyecto.capabilities) {
     this.proyecto.capabilities = { status: 'active', puestos: {} };
   }
-
   this.proyecto.capabilities.puestos[nombrePuesto] = cantidad;
-  
-  // Resetear el formulario
   this.formPuesto.reset({
     puestoId: null,
     cantidad: 1
@@ -208,34 +211,58 @@ eliminarPuesto(nombre: string): void {
   
 async onSave(): Promise<void> {
   try {
-    // Extract UUID from delivery_lead if it's an object
-    const deliveryLeadId = typeof this.proyecto.delivery_lead === 'object'
-      ? this.proyecto.delivery_lead.id
-      : this.proyecto.delivery_lead;
+    const proyectoResponse = await this.actualizarProyectoBasico();
+    try {
+      await this.actualizarHabilidadesProyecto();
+    } catch (errorHabilidades) {
+      console.warn('Advertencia: No se pudieron actualizar las habilidades', errorHabilidades);
+    }
 
-    const updateData = {
-      proyecto_id: this.proyecto.proyecto_id,
-      nombre: this.proyecto.nombre,
-      descripcion: this.proyecto.descripcion,
-      fecha_inicio: this.proyecto.fecha_inicio,
-      fecha_fin: this.proyecto.fecha_fin,
-      progreso: this.proyecto.progreso,
-      capabilities: this.proyecto.capabilities,
-      delivery_lead: deliveryLeadId, // Now sending just the UUID string
-      userId: String(this.authService.userId) // Required for auth
-    };
-
-    // console.log("Final Payload:", JSON.stringify(updateData, null, 2));
-
-    const response = await this.apiService.actualizarProyecto(updateData).toPromise();
-    this.dialogRef.close(response);
+    this.dialogRef.close(proyectoResponse);
   } catch (error) {
-    console.error("Full error:", error);
+    console.error("Error al guardar:", error);
+    alert('Error al guardar los cambios. Verifica la consola para más detalles.');
   }
 }
 
+private async actualizarProyectoBasico(): Promise<any> {
+  const deliveryLeadId = typeof this.proyecto.delivery_lead === 'object'
+    ? this.proyecto.delivery_lead?.id
+    : this.proyecto.delivery_lead;
+
+  const updateData = {
+    proyecto_id: this.proyecto.proyecto_id,
+    nombre: this.proyecto.nombre,
+    descripcion: this.proyecto.descripcion,
+    fecha_inicio: this.proyecto.fecha_inicio,
+    fecha_fin: this.proyecto.fecha_fin,
+    progreso: this.proyecto.progreso,
+    capabilities: this.proyecto.capabilities,
+    delivery_lead: deliveryLeadId,
+    userId: String(this.authService.userId)
+  };
+
+  return this.apiService.actualizarProyecto(updateData).toPromise();
+}
+
+private async actualizarHabilidadesProyecto(): Promise<void> {
+  if (!this.proyecto.habilidades || this.proyecto.habilidades.length === 0) {
+    return;
+  }
+
+  const habilidadesData = this.proyecto.habilidades.map(h => ({
+    proyecto_id: this.proyecto.proyecto_id,
+    habilidad_id: h.habilidad_id,
+    nivel_esperado: h.nivel_esperado
+  }));
+
+  await this.apiService.actualizarHabilidadesProyecto(
+    this.proyecto.proyecto_id,
+    habilidadesData,
+  ).toPromise();
+}
+
 private verificarPermisosEdicion(): boolean {
-  // Forzar ambos a string para evitar problemas de tipo
   const deliveryLeadId = typeof this.proyecto.delivery_lead === 'object'
     ? this.proyecto.delivery_lead?.id
     : this.proyecto.delivery_lead;
@@ -256,7 +283,6 @@ editarPuesto(puesto: Puesto): void {
 }
 
 guardarEdicionPuesto(puesto: Puesto): void {
-  // Validaciones básicas
   if (!puesto.nombre || puesto.nombre.trim() === '') {
     alert('Debe seleccionar un puesto');
     return;
@@ -267,28 +293,53 @@ guardarEdicionPuesto(puesto: Puesto): void {
     return;
   }
 
-  // Actualizar el objeto original en capabilities.puestos
   if (this.proyecto.capabilities?.puestos) {
-    // Primero eliminar el nombre antiguo si cambió
     if (puesto.nombreAntiguo && puesto.nombreAntiguo !== puesto.nombre) {
       delete this.proyecto.capabilities.puestos[puesto.nombreAntiguo];
     }
-    
-    // Actualizar/crear el puesto
     this.proyecto.capabilities.puestos[puesto.nombre] = puesto.cantidad;
   }
-
-  // Salir del modo edición
   puesto.editando = false;
   delete puesto.nombreAntiguo;
 }
 
 cancelarEdicion(puesto: Puesto): void {
-  // Si cancelamos, restaurar el nombre original si existe
   if (puesto.nombreAntiguo) {
     puesto.nombre = puesto.nombreAntiguo;
   }
   puesto.editando = false;
 }
+
+editarHabilidad(habilidad: Habilidad): void {
+  if (this.proyecto.habilidades) {
+    this.proyecto.habilidades.forEach(h => h.editando = false);
+  }
+  habilidad.datosOriginales = {...habilidad};
+  habilidad.editando = true;
+  this.habilidadEditando = habilidad;
+}
+
+guardarEdicionHabilidad(habilidad: Habilidad): void {
+  if (!habilidad.nombre || !habilidad.nivel_esperado) {
+    alert('Todos los campos son requeridos');
+    return;
+  }
+  habilidad.editando = false;
+  delete habilidad.datosOriginales;
+  this.habilidadEditando = null;
+}
+
+cancelarEdicionHabilidad(habilidad: Habilidad): void {
+  // Restaurar los valores originales si existen
+  if (habilidad.datosOriginales) {
+    Object.assign(habilidad, habilidad.datosOriginales);
+  }
+  
+  habilidad.editando = false;
+  delete habilidad.datosOriginales;
+  this.habilidadEditando = null;
+}
+
+
 
 }
