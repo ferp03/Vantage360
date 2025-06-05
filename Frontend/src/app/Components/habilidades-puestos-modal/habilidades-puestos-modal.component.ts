@@ -31,9 +31,8 @@ export class HabilidadesPuestosModalComponent implements OnInit {
     { id: 'Líder Técnico', nombre: 'Líder Técnico' }
   ];
   habilidadesDisponibles: any[] = [
-    { habilidad_id: 1, nombre: 'Python', nivel_esperado: 'Avanzado' },
-    { habilidad_id: 2, nombre: 'Angular', nivel_esperado: 'Intermedio' },
-    { habilidad_id: 3, nombre: 'SQL', nivel_esperado: 'Básico' }
+    { habilidad_id: 1, nombre: 'algorithms', nivel_esperado: 'Avanzado' },
+    { habilidad_id: 3, nombre: 'complexity', nivel_esperado: 'Básico' }
   ];
   puestosEditables: Puesto[] = []; 
   habilidadEditando: Habilidad | null = null;
