@@ -14,24 +14,37 @@
       Habilidades
     </button>
   </div>
-  <br>
+
   <!-- Sección de Puestos -->
   <div *ngIf="modoEdicion === 'puestos'" class="tab-content">
     <h3>Puestos actuales</h3>
     <div class="chips-container">
       <ng-container *ngFor="let puesto of puestosEditables">
+        <!-- Vista normal (no edición) -->
         <div *ngIf="!puesto.editando" class="custom-chip">
           {{puesto.nombre}} ({{puesto.cantidad}})
           <mat-icon class="chip-remove" (click)="eliminarPuesto(puesto.nombre)">cancel</mat-icon>
           <mat-icon class="chip-edit" (click)="editarPuesto(puesto)">edit</mat-icon>
         </div>
+
+        <!-- Vista de edición -->
         <div *ngIf="puesto.editando" class="edicion-puesto">
           <mat-form-field appearance="outline">
-            <input matInput [(ngModel)]="puesto.nombre" placeholder="Nombre">
+            <mat-label>Seleccionar puesto</mat-label>
+            <mat-select [(ngModel)]="puesto.nombre" [ngModelOptions]="{standalone: true}">
+              <mat-option *ngFor="let puestoDisponible of puestosDisponibles" 
+                          [value]="puestoDisponible.nombre">
+                {{puestoDisponible.nombre}}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
+
           <mat-form-field appearance="outline">
-            <input matInput type="number" [(ngModel)]="puesto.cantidad" min="1" placeholder="Cantidad">
+            <mat-label>Cantidad</mat-label>
+            <input matInput type="number" [(ngModel)]="puesto.cantidad" 
+                   min="1" [ngModelOptions]="{standalone: true}">
           </mat-form-field>
+
           <button mat-icon-button (click)="guardarEdicionPuesto(puesto)">
             <mat-icon>check</mat-icon>
           </button>
@@ -42,11 +55,12 @@
       </ng-container>
     </div>
 
+    <!-- Formulario para agregar nuevos puestos -->
     <div class="nuevo-puesto" [formGroup]="formPuesto">
       <mat-form-field appearance="outline" class="nombre-field">
         <mat-label>Seleccionar puesto</mat-label>
         <mat-select formControlName="puestoId" required>
-          <mat-option *ngFor="let puesto of puestosDisponibles" [value]="puesto.nombre">
+          <mat-option *ngFor="let puesto of puestosDisponibles" [value]="puesto.id">
             {{puesto.nombre}}
           </mat-option>
         </mat-select>
@@ -64,18 +78,22 @@
       </button>
     </div>
   </div>
+  
   <!-- Sección de Habilidades -->
-  <div *ngIf="modoEdicion === 'habilidades'" class="tab-content">
-    <h3>Habilidades actuales</h3>
-    <div class="chips-container" *ngIf="proyecto.habilidades && isArray(proyecto.habilidades) && proyecto.habilidades.length">
-      <span class="custom-chip" *ngFor="let habilidad of proyecto.habilidades; let i = index">
-        {{habilidad.nombre}} ({{habilidad.nivel_esperado}})
-        <mat-icon class="chip-remove" (click)="eliminarHabilidad(i)">cancel</mat-icon>
-      </span>
-    </div>
-    <div *ngIf="!proyecto.habilidades || !proyecto.habilidades.length">
-      <span>No hay habilidades agregadas.</span>
-    </div>
+<div *ngIf="modoEdicion === 'habilidades'" class="tab-content">
+  <h3>Habilidades actuales</h3>
+  
+  <!-- Verificación más robusta -->
+  <div class="chips-container" *ngIf="proyecto?.habilidades && proyecto.habilidades.length > 0">
+    <span class="custom-chip" *ngFor="let habilidad of proyecto.habilidades; let i = index">
+      {{habilidad.nombre || 'Habilidad sin nombre'}} ({{habilidad.nivel_esperado || 'N/A'}})
+      <mat-icon class="chip-remove" (click)="eliminarHabilidad(i)">cancel</mat-icon>
+    </span>
+  </div>
+  
+  <div *ngIf="!proyecto?.habilidades || proyecto.habilidades.length === 0">
+    <span>No hay habilidades agregadas.</span>
+  </div>
 
     <form [formGroup]="form" class="nueva-habilidad">
       <mat-form-field appearance="outline">
@@ -96,11 +114,11 @@
         </mat-select>
       </mat-form-field>
 
-    <button mat-icon-button 
-          (click)="agregarHabilidad()" 
-          [disabled]="form.invalid">
-      <mat-icon>add_circle</mat-icon>
-    </button>
+      <button mat-icon-button 
+            (click)="agregarHabilidad()" 
+            [disabled]="form.invalid">
+        <mat-icon>add_circle</mat-icon>
+      </button>
     </form>
   </div>
 </mat-dialog-content>

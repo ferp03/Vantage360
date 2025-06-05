@@ -26,17 +26,16 @@ export class HabilidadesPuestosModalComponent implements OnInit {
   puestoCantidad: number = 1;
   formPuesto: FormGroup;
   puestosDisponibles: any[] = [
-    { id: 'frontend', nombre: 'Desarrollador Frontend' },
-    { id: 'backend', nombre: 'Desarrollador Backend' },
-    { id: 'design', nombre: 'Diseñador UX/UI' }
+    { id: 'Programador UX/UI', nombre: 'Programador UX/UI' },
+    { id: 'Analista QA', nombre: 'Analista QA' },
+    { id: 'Líder Técnico', nombre: 'Líder Técnico' }
   ];
   habilidadesDisponibles: any[] = [
-    { id: 1, nombre: 'JavaScript' },
-    { id: 2, nombre: 'Angular' },
-    { id: 3, nombre: 'TypeScript' },
-    { id: 4, nombre: 'HTML/CSS' }
+    { habilidad_id: 1, nombre: 'Python', nivel_esperado: 'Avanzado' },
+    { habilidad_id: 2, nombre: 'Angular', nivel_esperado: 'Intermedio' },
+    { habilidad_id: 3, nombre: 'SQL', nivel_esperado: 'Básico' }
   ];
-  puestosEditables: Puesto[] = []; // Nueva propiedad para edición
+  puestosEditables: Puesto[] = []; 
 
 
   constructor(
@@ -47,10 +46,11 @@ export class HabilidadesPuestosModalComponent implements OnInit {
     private apiService: ApiService
   ) {
     this.formPuesto = this.fb.group({
-    puestoId: [null, Validators.required],
-    cantidad: [1, [Validators.required, Validators.min(1)]]  // Agrega control para cantidad
+      puestoId: [null, Validators.required],
+      cantidad: [1, [Validators.required, Validators.min(1)]]  // Agrega control para cantidad
     });
     this.proyecto = JSON.parse(JSON.stringify(data.proyecto));
+    this.proyecto.habilidades = this.proyecto.habilidades || [];
     this.modoEdicion = data.modo;
   }
 
@@ -59,59 +59,78 @@ export class HabilidadesPuestosModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  console.log('Datos del proyecto recibidos:', this.proyecto); // depuración
   this.cargarDatosDisponibles();
   this.form = this.fb.group({
     habilidadId: ['', Validators.required],
     nivel: ['Intermedio']
   });
-  
-  // Ensure habilidades is always an array
   this.proyecto.habilidades = this.ensureHabilidadesArray(this.proyecto.habilidades);
-  this.actualizarPuestosEditables(); // Inicializa puestos editables
-}
+  console.log('Habilidades después de ensure:', this.proyecto.habilidades); // Depuración
+  this.actualizarPuestosEditables();
+  }
 
 
   cargarDatosDisponibles(): void {
-    forkJoin([
-      this.apiService.getCapabilities(),
-      this.apiService.getHabilidades()
-    ]).subscribe({
-      next: ([capabilities, habilidades]) => {
-        // Procesar capabilities para extraer puestos
-        if (capabilities && capabilities.puestos) {
-          this.puestosDisponibles = Object.keys(capabilities.puestos).map(nombre => ({
-            nombre,
-            id: nombre // Usamos el nombre como ID si no hay otro identificador
-          }));
-        }
-        
-        this.habilidadesDisponibles = habilidades || [];
-      },
-      error: (error) => {
-        console.error('Error al cargar datos disponibles', error);
+  forkJoin([
+    this.apiService.getCapabilities(),
+    this.apiService.getHabilidades()
+  ]).subscribe({
+    next: ([capabilities, habilidades]) => {
+      // Procesar capabilities para extraer puestos
+      if (capabilities && capabilities.puestos) {
+        this.puestosDisponibles = Object.keys(capabilities.puestos).map(nombre => ({
+          id: nombre,
+          nombre: nombre
+        }));
+        console.log('Puestos disponibles:', this.puestosDisponibles); // Depuración
       }
-    });
+
+      // Procesar habilidades
+      if (Array.isArray(habilidades)) {
+        this.habilidadesDisponibles = habilidades.map(h => ({
+          habilidad_id: h.id || h.habilidad_id,
+          nombre: h.nombre,
+          nivel_esperado: h.nivel_esperado || 'Intermedio'
+        }));
+        console.log('Habilidades disponibles:', this.habilidadesDisponibles); // Depuración
+      }
+
+      // Si estamos en modo habilidades, seleccionar la primera opción por defecto
+      if (this.modoEdicion === 'habilidades' && this.habilidadesDisponibles.length > 0) {
+        this.form.patchValue({
+          habilidadId: this.habilidadesDisponibles[0].habilidad_id
+        });
+      }
+    },
+    error: (error) => {
+      console.error('Error al cargar datos disponibles', error);
+      // Inicializar arrays vacíos para evitar errores
+      this.puestosDisponibles = [];
+      this.habilidadesDisponibles = [];
+    }
+  });
   }
 
 private ensureHabilidadesArray(habilidades: any): Habilidad[] {
-  // If undefined or null, return empty array
   if (!habilidades) return [];
   
-  // If already an array, return it
-  if (Array.isArray(habilidades)) return habilidades;
-  
-  // If it's an object, convert to array
-  if (typeof habilidades === 'object') {
-    return Object.keys(habilidades).map(key => ({
-      ...habilidades[key],
-      // Ensure each item has required properties
-      habilidad_id: habilidades[key].habilidad_id || key,
-      nombre: habilidades[key].nombre || 'Sin nombre',
-      nivel_esperado: habilidades[key].nivel_esperado || 'Intermedio'
+  if (Array.isArray(habilidades)) {
+    return habilidades.map(h => ({
+      habilidad_id: h.habilidad_id || h.id,
+      nombre: h.nombre || 'Sin nombre',
+      nivel_esperado: h.nivel_esperado || 'Intermedio'
     }));
   }
   
-  // Fallback for any other case
+  if (typeof habilidades === 'object') {
+    return Object.values(habilidades).map((h: any) => ({
+      habilidad_id: h.habilidad_id || h.id,
+      nombre: h.nombre || 'Sin nombre',
+      nivel_esperado: h.nivel_esperado || 'Intermedio'
+    }));
+  }
+  
   return [];
 }
 
@@ -231,35 +250,20 @@ private verificarPermisosEdicion(): boolean {
 }
 
 editarPuesto(puesto: Puesto): void {
-  // Salir del modo edición de todos los puestos primero
   this.puestosEditables.forEach(p => p.editando = false);
-  
-  // Guardar el nombre original antes de editar
   puesto.nombreAntiguo = puesto.nombre;
-  
-  // Activar edición para este puesto
   puesto.editando = true;
 }
 
 guardarEdicionPuesto(puesto: Puesto): void {
   // Validaciones básicas
   if (!puesto.nombre || puesto.nombre.trim() === '') {
-    alert('El nombre del puesto no puede estar vacío');
+    alert('Debe seleccionar un puesto');
     return;
   }
 
   if (puesto.cantidad < 1) {
     alert('La cantidad debe ser al menos 1');
-    return;
-  }
-
-  // Buscar si ya existe un puesto con el nuevo nombre (excepto si es el mismo)
-  const puestoExistente = this.puestosEditables.find(p => 
-    p.nombre === puesto.nombre && p !== puesto
-  );
-
-  if (puestoExistente) {
-    alert('Ya existe un puesto con ese nombre');
     return;
   }
 
@@ -276,11 +280,15 @@ guardarEdicionPuesto(puesto: Puesto): void {
 
   // Salir del modo edición
   puesto.editando = false;
-  delete puesto.nombreAntiguo; // Limpiar el nombre antiguo
+  delete puesto.nombreAntiguo;
 }
+
 cancelarEdicion(puesto: Puesto): void {
+  // Si cancelamos, restaurar el nombre original si existe
+  if (puesto.nombreAntiguo) {
+    puesto.nombre = puesto.nombreAntiguo;
+  }
   puesto.editando = false;
-  this.actualizarPuestosEditables();
 }
 
 }
