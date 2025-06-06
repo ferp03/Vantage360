@@ -362,7 +362,7 @@ confirmJoin(): void {
         setTimeout(() => {
           this.cargarProyectosDisponibles();
           this.cargarProyectosActuales();
-        }, 100);
+        }, 1);
       },
       error: (error) => {
         console.error('Error detallado:', error);
@@ -373,7 +373,6 @@ confirmJoin(): void {
       }
     });
 }
-
 
 openTab(tabId: string) {
   this.activeTab = tabId;

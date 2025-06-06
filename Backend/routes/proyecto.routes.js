@@ -285,7 +285,6 @@ router.post('/proyecto/unirse', async (req, res) => {
       .insert({
         empleado_id: empleado_id,
         proyecto_id: proyecto_id,
-        fecha_union: new Date().toISOString() 
       })
       .select();
 
@@ -314,89 +313,7 @@ router.post('/proyecto/unirse', async (req, res) => {
   }
 });
 
-// Unirse a un proyecto
-router.post('/proyecto/unirse', async (req, res) => {
-  try {
-    const { empleado_id, proyecto_id } = req.body;
 
-    if (!empleado_id || !proyecto_id) {
-      return res.status(400).json({
-        success: false,
-        error: 'Los campos empleado_id (UUID) y proyecto_id (número) son obligatorios'
-      });
-    }
-
-    // Verificar que el proyecto existe primero
-    const { data: proyecto, error: proyectoError } = await supabase
-      .from('proyecto')
-      .select('proyecto_id')
-      .eq('proyecto_id', proyecto_id)
-      .single();
-
-    if (proyectoError || !proyecto) {
-      return res.status(404).json({
-        success: false,
-        error: 'El proyecto no existe'
-      });
-    }
-
-    // Verificar que el empleado no está ya en el proyecto
-    const { data: existente, error: existeError } = await supabase
-      .from('empleado_proyecto')
-      .select()
-      .eq('empleado_id', empleado_id)
-      .eq('proyecto_id', proyecto_id)
-      .maybeSingle();
-
-    if (existeError) {
-      console.error('Error verificando membresía:', existeError);
-      return res.status(500).json({
-        success: false,
-        error: 'Error al verificar membresía existente'
-      });
-    }
-
-    if (existente) {
-      return res.status(409).json({
-        success: false,
-        error: 'El empleado ya está asignado a este proyecto'
-      });
-    }
-
-    // Insertar la relación
-    const { data, error } = await supabase
-      .from('empleado_proyecto')
-      .insert({
-        empleado_id: empleado_id,
-        proyecto_id: proyecto_id,
-        fecha_union: new Date().toISOString()  // Campo adicional útil
-      })
-      .select();
-
-    if (error) {
-      console.error('Error en inserción:', error);
-      return res.status(400).json({
-        success: false,
-        error: 'Error al unirse al proyecto',
-        details: error.message
-      });
-    }
-
-    return res.status(201).json({
-      success: true,
-      message: 'Unido al proyecto exitosamente',
-      data: data
-    });
-
-  } catch (err) {
-    console.error('Error inesperado:', err);
-    return res.status(500).json({
-      success: false,
-      error: 'Error interno del servidor',
-      details: err.message
-    });
-  }
-});
 
 // Editar un proyecto
 router.put('/proyecto/:id', async (req, res) => {
