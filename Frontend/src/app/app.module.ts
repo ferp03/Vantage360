@@ -28,6 +28,7 @@ import { SignUpComponent } from './Components/sign-up/sign-up.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { RecomendacionesComponent } from './Components/recomendaciones/recomendaciones.component';
+import { HabilidadesPuestosModalComponent } from './Components/habilidades-puestos-modal/habilidades-puestos-modal.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { CrearLeadComponent } from './crear-lead/crear-lead.component';
 
@@ -49,6 +50,7 @@ import { CrearLeadComponent } from './crear-lead/crear-lead.component';
     ParticipacionPComponent,
     SignUpComponent,
     RecomendacionesComponent,
+    HabilidadesPuestosModalComponent,
     CrearLeadComponent
   ],
   imports: [
@@ -65,6 +67,9 @@ import { CrearLeadComponent } from './crear-lead/crear-lead.component';
     MatDialogModule,
     MatInputModule,
     MatCardModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatChipsModule,
     MatChipsModule
   ],
   providers: [],

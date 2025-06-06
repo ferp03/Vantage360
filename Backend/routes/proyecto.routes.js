@@ -280,13 +280,12 @@ router.post('/proyecto/unirse', async (req, res) => {
       });
     }
 
-    // Insertar la relación
     const { data, error } = await supabase
       .from('empleado_proyecto')
       .insert({
         empleado_id: empleado_id,
         proyecto_id: proyecto_id,
-        fecha_union: new Date().toISOString()  // Campo adicional útil
+        fecha_union: new Date().toISOString() 
       })
       .select();
 
@@ -396,6 +395,84 @@ router.post('/proyecto/unirse', async (req, res) => {
       error: 'Error interno del servidor',
       details: err.message
     });
+  }
+});
+
+// Editar un proyecto
+router.put('/proyecto/:id', async (req, res) => {
+  try {
+    const proyectoId = parseInt(req.params.id);
+    const { userId, ...updateData } = req.body; 
+
+    if (isNaN(proyectoId)) {
+      return res.status(400).json({ success: false, error: 'ID de proyecto inválido' });
+    }
+
+    const { data: proyectoExistente, error: proyectoError } = await supabase
+      .from('proyecto')
+      .select('delivery_lead')
+      .eq('proyecto_id', proyectoId)
+      .single();
+
+    if (proyectoError || !proyectoExistente) {
+      return res.status(404).json({ success: false, error: 'Proyecto no encontrado' });
+    }
+
+    if (!userId) {
+      return res.status(403).json({ success: false, error: 'No autorizado para editar este proyecto' });
+    }
+
+    if (updateData.progreso && (updateData.progreso < 0 || updateData.progreso > 100)) {
+      return res.status(400).json({ success: false, error: 'El progreso debe estar entre 0 y 100' });
+    }
+
+    const { data, error } = await supabase
+      .from('proyecto')
+      .update(updateData)
+      .eq('proyecto_id', proyectoId)
+      .select();
+
+    if (error) {
+      console.error('Error en Supabase:', error);
+      return res.status(400).json({ success: false, error: error.message });
+    }
+
+    return res.status(200).json({ success: true, proyecto: data[0] });
+
+  } catch (err) {
+    console.error('Error inesperado:', err);
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Error interno del servidor'
+    });
+  }
+});
+
+// Ruta para actualizar habilidades del proyecto
+router.put('/proyecto/:id/habilidades', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { habilidades } = req.body; 
+
+    await supabase
+      .from('proyecto_habilidad')
+      .delete()
+      .eq('proyecto_id', id);
+    const nuevasHabilidades = habilidades.map(h => ({
+      proyecto_id: id,
+      habilidad_id: h.habilidad_id,
+      nivel_esperado: h.nivel_esperado
+    }));
+
+    const { data, error } = await supabase
+      .from('proyecto_habilidad')
+      .insert(nuevasHabilidades);
+
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 

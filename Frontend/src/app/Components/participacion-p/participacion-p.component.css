@@ -492,8 +492,8 @@
 }
 
 .btn-confirm:hover {
-  background-color: #9F7AEA; /* Color hover que especificaste */
-  transform: translateY(-1px); /* Efecto sutil al hover */
+  background-color: #9F7AEA; 
+  transform: translateY(-1px);
 }
 
 .member-list {
@@ -520,4 +520,100 @@ h4 {
     opacity: 1; 
     transform: translateY(0); 
   }
+}
+
+/* Editar */
+.project-field {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.project-field input, 
+.project-field textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.project-field textarea {
+  min-height: 100px;
+}
+
+.project-field button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 8px;
+  color: #666;
+}
+
+.project-field button:hover {
+  color: #333;
+}
+
+.edit-input {
+  width: 100%;
+  padding: 8px;
+  font-size: 1.2em;
+  font-weight: bold;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.edit-date {
+  padding: 4px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.edit-textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.edit-range {
+  width: 100%;
+  margin: 8px 0;
+}
+
+.edit-buttons {
+  display: inline-flex;
+  margin-left: 10px;
+}
+
+.btn-edit, .btn-save, .btn-cancel {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 4px;
+  margin-left: 4px;
+}
+
+.btn-save {
+  color: #9F7AEA
+}
+
+.btn-cancel {
+  color: #9F7AEA
+}
+
+.btn-edit:hover, .btn-save:hover, .btn-cancel:hover {
+  opacity: 0.8;
+}
+
+/* Modal skills*/
+.edit-button {
+  margin-left: 10px;
+  transform: scale(0.8);
+}
+
+.skills-title {
+  display: flex;
+  align-items: center;
 }
