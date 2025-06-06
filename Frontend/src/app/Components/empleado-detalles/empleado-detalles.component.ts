@@ -385,6 +385,10 @@ ngOnInit() {
       error: (err) => console.error('Error al obtener trayectoria:', err)
     });
   }
+
+  irARecomendaciones() {
+    this.router.navigate(['/recomendaciones']); // Aquí pones la ruta que corresponda
+  }
   
   obtenerNombreCapability(id: number | undefined): string {
     if (!id) return '';
@@ -937,10 +941,10 @@ async crearGraficaPie2(progresoPromedio: number , percent: number): Promise<void
     
     // Posición basada en la configuración
     if (options.position === 'bottom') {
-      ctx.fillText(options.text, (left + right) / 2.4, bottom -175);
+      ctx.fillText(options.text, (left + right) / 2.2, top -3);
     } else {
       // Por defecto arriba
-      ctx.fillText(options.text, (left + right) / 2, top - 35);
+      ctx.fillText(options.text, (left + right) / 2.2, top -35 );
     }
     
     ctx.restore();

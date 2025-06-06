@@ -60,6 +60,8 @@
   column-gap: 50px;
   max-height: calc(7 * 60px); /* asume 40px por fila */
   padding-right: 15px;
+  white-space: normal;  /* Permite saltos de línea */
+  word-wrap: break-word;
 }
 
 .izquierda-habilidades {
@@ -319,6 +321,21 @@
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+.texto-ayuda {
+  display: flex;
+  width: auto;
+  background-color: #f3f0fc; /* Un tono suave para fondo */
+  border-left: 4px solid #9668e6; /* Llama la atención con un borde del color principal */
+  padding: 1rem;
+  margin: 1rem ;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #000000;
+  line-height: 1.5;
+  box-shadow: 0 2px 6px rgba(150, 104, 230, 0.15);
+  text-align: center;
 }
 
 
@@ -704,6 +721,7 @@ button .material-icons {
 
 #barChart {
   width: auto !important;
+  max-width: 430px !important;
   height: 300px !important;
   display: block;  
 }
