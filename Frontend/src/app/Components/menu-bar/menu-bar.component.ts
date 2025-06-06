@@ -198,4 +198,9 @@ export class MenuBarComponent implements OnInit {
     const roles = this.auth.roles;
     return roles.includes('delivery lead') || roles.includes('people lead');
   }
+
+  esSuperadmin(): boolean {
+    const roles = this.auth.roles;
+    return roles.includes('admin');
+  }
 }
