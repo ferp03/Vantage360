@@ -273,11 +273,14 @@
   </button>
   
   <!-- Botón Ver Integrantes -->
-  <button class="btn-details">
+  <button class="btn-details" (click)="openMemberModal(proyecto)">
     <span class="material-icons">visibility</span>
     Integrantes
   </button>
         </div>
+      </div>
+      <div *ngIf="showMemberModal" >
+                <ng-container *ngTemplateOutlet="integrantesModal"></ng-container>
       </div>
     </div>
   </div>
