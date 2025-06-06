@@ -529,3 +529,36 @@ input:not(:placeholder-shown) ~ .reset {
   max-width: 340px;
   padding-top: 10px;
 }
+
+
+/* Estilos para mensajes de error en el modal */
+.error-mensaje-comentario {
+  background-color: #ffebee;
+  color: #d32f2f;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-left: 4px solid #d32f2f;
+}
+
+.error-mensaje-comentario mat-icon {
+  color: #d32f2f;
+}
+
+/* Estilo para campos inválidos */
+.invalid {
+  border-color: #d32f2f !important;
+}
+
+.required {
+  color: #d32f2f;
+}
+
+.contador-caracteres {
+  font-size: 0.6em;
+  color: #666;
+  text-align: right;
+}

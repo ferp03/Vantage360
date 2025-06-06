@@ -254,6 +254,12 @@
           </button>
         </p>
 
+              <!-- Mensaje de error específico para comentarios -->
+      <div *ngIf="errorComentario" class="error-mensaje-comentario">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{errorComentario}}</span>
+      </div>
+
         <!-- Mostrar solo si se activa con el botón -->
         <div *ngIf="mostrarFormularioComentario">
           <label for="proyecto_id">Seleccionar proyecto: </label>

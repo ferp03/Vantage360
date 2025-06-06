@@ -66,6 +66,7 @@ export class DisponibilidadComponent implements OnInit {
   proyectoSeleccionado: any = null;
   proyectosEmpleado: any[] = [];
   mostrarFormularioComentario: boolean = false;
+  errorComentario: string = '';
   // comentariosPaginaActual: number = 1;
   // comentariosPorPagina: number = 6;
   // indicesPagina: number[] = [];
@@ -277,10 +278,18 @@ export class DisponibilidadComponent implements OnInit {
 }
 
   agregarComentarios(): void {
-    if (!this.empleadoSeleccionadoComentarios?.empleado_id || !this.comentarioTexto.trim()) {
-      this.error = 'El comentario es obligatorio';
-      return;
-    }
+
+    this.errorComentario = '';
+
+    if (!this.proyectoSeleccionado) {
+    this.errorComentario = 'Debes seleccionar un proyecto para el comentario';
+    return;
+  }
+
+  if (!this.comentarioTexto.trim()) {
+    this.errorComentario = 'El comentario no puede estar vacío';
+    return;
+  }
     
     const datos = {
       autor_id: this.authService.userId,
@@ -301,17 +310,15 @@ export class DisponibilidadComponent implements OnInit {
         
         this.comentarioTexto = '';
         this.proyectoSeleccionado = null;
-        this.error = '';
+        this.errorComentario = '';
+        this.seleccionarComentarios(this.empleadoSeleccionadoComentarios);
+
       },
       error: (err) => {
         console.error('Error al guardar comentario:', err);
         this.error = err.error?.message || 'Error al conectar con el servidor';
       }
-
     });
-
-    this.seleccionarComentarios(this.empleadoSeleccionadoComentarios);
-
   }
 
   cancelarComentario(): void {
@@ -319,7 +326,7 @@ export class DisponibilidadComponent implements OnInit {
     this.empleadoSeleccionado = null;
     this.comentarioTexto = '';
     this.proyectoSeleccionado = null;
-    this.error = '';
+    this.errorComentario = '';
   }
 
   cancelarComentarios(): void {
