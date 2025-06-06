@@ -29,7 +29,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { RecomendacionesComponent } from './Components/recomendaciones/recomendaciones.component';
 import { MatChipsModule } from '@angular/material/chips';
-
+import { CrearLeadComponent } from './crear-lead/crear-lead.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +48,8 @@ import { MatChipsModule } from '@angular/material/chips';
     ProyectosComponent,
     ParticipacionPComponent,
     SignUpComponent,
-    RecomendacionesComponent
+    RecomendacionesComponent,
+    CrearLeadComponent
   ],
   imports: [
     BrowserModule,
