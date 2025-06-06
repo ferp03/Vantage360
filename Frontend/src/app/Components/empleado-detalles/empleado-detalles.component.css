@@ -178,11 +178,11 @@
 }
 
 .boton-editar,
+.boton-recomendacion,
 .boton-guardar,
 .boton-cambiar-pass,
 .boton-agregar,
 .boton-editar-cuadro {
-  align-self: flex-end;
   background-color: #9668e6;
   color: white;
   padding: 0.5rem 1.2rem;
@@ -194,6 +194,7 @@
 }
 
 .boton-editar:hover,
+.boton-recomendacion:hover,
 .boton-guardar:hover,
 .boton-cambiar-pass:hover,
 .boton-agregar:hover,
@@ -325,17 +326,24 @@
 
 .texto-ayuda {
   display: flex;
-  width: auto;
-  background-color: #f3f0fc; /* Un tono suave para fondo */
-  border-left: 4px solid #9668e6; /* Llama la atención con un borde del color principal */
+  justify-content: center;
+  align-items: center;
+  background-color: #f3f0fc;
+  border-left: 4px solid #9668e6;
   padding: 1rem;
-  margin: 1rem ;
+  margin: 1rem;
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #000000;
-  line-height: 1.5;
-  box-shadow: 0 2px 6px rgba(150, 104, 230, 0.15);
   text-align: center;
+  box-shadow: 0 2px 6px rgba(150, 104, 230, 0.15);
+}
+
+.contenido-ayuda {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 

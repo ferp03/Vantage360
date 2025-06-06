@@ -207,17 +207,20 @@
       
       <!-- Mostrar mensaje si NO hay cursos -->
       <ng-container *ngIf="cursos.length === 0">
-        <p *ngIf="esMiPerfil" class="texto-ayuda">
-          No hay cursos registrados. <br/> 
-          Te ayudamos a encontrar un curso <br>
-          <button class="boton-editar" (click)="irARecomendaciones()">
-            <span class="material-icons">arrow_forward</span>
-          Recomendaciones</button>
-        </p>
+        <div *ngIf="esMiPerfil" class="texto-ayuda">
+          <div class="contenido-ayuda">
+            <p>No hay cursos registrados.<br>Te ayudamos a encontrar un curso</p>
+            <button class="boton-recomendacion" (click)="irARecomendaciones()">
+              <span class="material-icons">arrow_forward</span> Recomendaciones
+            </button>
+          </div>
+        </div>
+
         <p *ngIf="!esMiPerfil" class="texto-ayuda">
           Este usuario no tiene cursos registrados.
         </p>
       </ng-container>
+
       </div>
   </div>
 </div>
