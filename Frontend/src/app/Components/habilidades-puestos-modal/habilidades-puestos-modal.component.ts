@@ -7,6 +7,7 @@ import { forkJoin } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 
 interface Puesto {
+  id: number;
   nombre: string;
   cantidad: number;
   editando?: boolean;
@@ -25,15 +26,8 @@ export class HabilidadesPuestosModalComponent implements OnInit {
   nuevaEntrada: string = '';
   puestoCantidad: number = 1;
   formPuesto: FormGroup;
-  puestosDisponibles: any[] = [
-    { id: 'Programador UX/UI', nombre: 'Programador UX/UI' },
-    { id: 'Analista QA', nombre: 'Analista QA' },
-    { id: 'Líder Técnico', nombre: 'Líder Técnico' }
-  ];
-  habilidadesDisponibles: any[] = [
-    { habilidad_id: 1, nombre: 'algorithms', nivel_esperado: 'Avanzado' },
-    { habilidad_id: 3, nombre: 'complexity', nivel_esperado: 'Básico' }
-  ];
+  puestosDisponibles: any[] = [];
+  habilidadesDisponibles: any[] = [];
   puestosEditables: Puesto[] = []; 
   habilidadEditando: Habilidad | null = null;
 
@@ -67,38 +61,35 @@ export class HabilidadesPuestosModalComponent implements OnInit {
   this.actualizarPuestosEditables();
   }
 
-
-  cargarDatosDisponibles(): void {
+cargarDatosDisponibles(): void {
   forkJoin([
     this.apiService.getCapabilities(),
     this.apiService.getHabilidades()
   ]).subscribe({
-    next: ([capabilities, habilidades]) => {
-      // Procesar capabilities para extraer puestos
-      if (capabilities && capabilities.puestos) {
-        this.puestosDisponibles = Object.keys(capabilities.puestos).map(nombre => ({
-          id: nombre,
-          nombre: nombre
+    next: ([resCapabilities, resHabilidades]) => {
+      // Procesar capabilities
+      if (resCapabilities.success) {
+        this.puestosDisponibles = resCapabilities.data.map((cap: any) => ({
+          id: cap.id,
+          nombre: cap.nombre
         }));
       }
 
       // Procesar habilidades
-      if (Array.isArray(habilidades)) {
-        this.habilidadesDisponibles = habilidades.map(h => ({
-          habilidad_id: h.id || h.habilidad_id,
-          nombre: h.nombre,
-          nivel_esperado: h.nivel_esperado || 'Intermedio',
-          // Agrega cualquier otro campo necesario
-          descripcion: h.descripcion || `Habilidad de ${h.nombre}`
+      if (resHabilidades.success) {
+        this.habilidadesDisponibles = resHabilidades.data.map((hab: any) => ({
+          habilidad_id: hab.id || hab.habilidad_id,
+          nombre: hab.nombre,
+          nivel_esperado: hab.nivel_esperado || 'Intermedio'
         }));
-        
-        // Ordenar alfabéticamente si es necesario
-        this.habilidadesDisponibles.sort((a, b) => a.nombre.localeCompare(b.nombre));
       }
 
-      // Configurar el formulario si estamos en modo habilidades
+      // Configurar valores iniciales del formulario
       if (this.modoEdicion === 'habilidades' && this.habilidadesDisponibles.length > 0) {
-        this.configurarFormularioHabilidades();
+        this.form.patchValue({
+          habilidadId: this.habilidadesDisponibles[0].habilidad_id,
+          nivel: 'Intermedio'
+        });
       }
     },
     error: (error) => {
@@ -106,15 +97,6 @@ export class HabilidadesPuestosModalComponent implements OnInit {
       this.puestosDisponibles = [];
       this.habilidadesDisponibles = [];
     }
-  });
-}
-
-private configurarFormularioHabilidades(): void {
-  // Establecer el primer valor por defecto
-  const primeraHabilidad = this.habilidadesDisponibles[0];
-  this.form.patchValue({
-    habilidadId: primeraHabilidad.habilidad_id,
-    nivel: primeraHabilidad.nivel_esperado
   });
 }
 
@@ -141,11 +123,21 @@ private ensureHabilidadesArray(habilidades: any): Habilidad[] {
 }
 
   get puestos(): Puesto[] {
-    if (!this.proyecto.capabilities?.puestos) return [];
-    return Object.entries(this.proyecto.capabilities.puestos).map(
-      ([nombre, cantidad]) => ({ nombre, cantidad })
-    );
-  }
+  if (!this.proyecto.capabilities?.puestos) return [];
+  
+  return Object.entries(this.proyecto.capabilities.puestos).map(
+    ([nombre, cantidad]) => {
+      const puesto = this.puestosDisponibles.find(p => p.nombre === nombre);
+      return {
+        id: puesto?.id || 0,
+        nombre,
+        cantidad: cantidad as number,
+        editando: false
+      };
+    }
+  );
+}
+
 
   actualizarPuestosEditables(): void {
     const puestosActuales = this.puestos;
@@ -158,13 +150,21 @@ private ensureHabilidadesArray(habilidades: any): Habilidad[] {
 agregarPuesto(): void {
   if (this.formPuesto.invalid) return;
 
-  const nombrePuesto = this.formPuesto.value.puestoId;
+  const puestoSeleccionado = this.puestosDisponibles.find(
+    p => p.id === this.formPuesto.value.puestoId
+  );
+
+  if (!puestoSeleccionado) return;
+
+  const nombrePuesto = puestoSeleccionado.nombre;
   const cantidad = this.formPuesto.value.cantidad;
 
   if (!this.proyecto.capabilities) {
     this.proyecto.capabilities = { status: 'active', puestos: {} };
   }
+
   this.proyecto.capabilities.puestos[nombrePuesto] = cantidad;
+  
   this.formPuesto.reset({
     puestoId: null,
     cantidad: 1
@@ -293,11 +293,15 @@ guardarEdicionPuesto(puesto: Puesto): void {
   }
 
   if (this.proyecto.capabilities?.puestos) {
+    // Eliminar el puesto antiguo si el nombre cambió
     if (puesto.nombreAntiguo && puesto.nombreAntiguo !== puesto.nombre) {
       delete this.proyecto.capabilities.puestos[puesto.nombreAntiguo];
     }
+    
+    // Agregar/actualizar el puesto
     this.proyecto.capabilities.puestos[puesto.nombre] = puesto.cantidad;
   }
+  
   puesto.editando = false;
   delete puesto.nombreAntiguo;
 }
@@ -338,7 +342,6 @@ cancelarEdicionHabilidad(habilidad: Habilidad): void {
   delete habilidad.datosOriginales;
   this.habilidadEditando = null;
 }
-
 
 
 }

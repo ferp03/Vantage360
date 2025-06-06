@@ -29,15 +29,14 @@
 
         <!-- Vista de edición -->
         <div *ngIf="puesto.editando" class="edicion-puesto">
-          <mat-form-field appearance="outline">
-            <mat-label>Seleccionar puesto</mat-label>
-            <mat-select [(ngModel)]="puesto.nombre" [ngModelOptions]="{standalone: true}">
-              <mat-option *ngFor="let puestoDisponible of puestosDisponibles" 
-                          [value]="puestoDisponible.nombre">
-                {{puestoDisponible.nombre}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <mat-form-field appearance="fill">
+  <mat-label>Seleccionar puesto</mat-label>
+  <mat-select formControlName="puestoId">
+    <mat-option *ngFor="let puesto of puestosDisponibles" [value]="puesto.id">
+      {{ puesto.nombre }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Cantidad</mat-label>
@@ -130,16 +129,14 @@
 
     <!-- Formulario para agregar nuevas habilidades -->
     <form [formGroup]="form" class="nueva-habilidad">
-      <mat-form-field appearance="outline">
-        <mat-label>Seleccionar habilidad</mat-label>
-        <mat-select formControlName="habilidadId" required>
-          <mat-option *ngFor="let habilidad of habilidadesDisponibles" 
-                     [value]="habilidad.habilidad_id">
-                     {{habilidad.nombre}}
-            <!-- {{habilidad.nombre}} ({{habilidad.nivel_esperado}}) -->
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+<mat-form-field appearance="fill">
+  <mat-label>Seleccionar habilidad</mat-label>
+  <mat-select formControlName="habilidadId">
+    <mat-option *ngFor="let habilidad of habilidadesDisponibles" [value]="habilidad.habilidad_id">
+      {{ habilidad.nombre }} ({{ habilidad.nivel_esperado }})
+    </mat-option>
+  </mat-select>
+</mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Nivel esperado</mat-label>
