@@ -465,4 +465,29 @@ abrirModalEdicionHabilidadesPuestos(proyecto: Proyecto, modo: 'puestos' | 'habil
   });
 }
 
+async eliminarProyecto(proyecto: Proyecto): Promise<void> {
+  if (!proyecto.puedeEditar || !this.verificarPermisoEdicion(proyecto)) {
+    alert('No tienes permisos para eliminar este proyecto');
+    return;
+  }
+
+  const confirmacion = confirm(`¿Estás seguro que deseas eliminar el proyecto "${proyecto.nombre}"?`);
+  if (!confirmacion) return;
+
+  try {
+    await this.apiService.eliminarProyecto(proyecto.proyecto_id).toPromise();
+    
+    // Actualización optimizada del estado
+    this.proyectosActuales = this.proyectosActuales.filter(p => p.proyecto_id !== proyecto.proyecto_id);
+    this.proyectosDisponibles = this.proyectosDisponibles.filter(p => p.proyecto_id !== proyecto.proyecto_id);
+    this.proyectosPasados = this.proyectosPasados.filter(p => p.proyecto_id !== proyecto.proyecto_id);
+    
+    this.actualesCount = this.proyectosActuales.length;
+    this.disponiblesCount = this.proyectosDisponibles.length;
+    this.pasadosCount = this.proyectosPasados.length;
+  } catch (error) {
+    console.error('Error al eliminar proyecto:', error);
+  }
+}
+
 }

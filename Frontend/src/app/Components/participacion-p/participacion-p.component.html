@@ -256,6 +256,7 @@
     <span class="material-icons">edit</span>
     Editar
   </button>
+
   
   <!-- Botón Guardar -->
   <button *ngIf="proyecto.editando" 
@@ -272,6 +273,14 @@
     <span class="material-icons">cancel</span>
   </button>
   
+  <!-- Dentro de los botones de acciones del proyecto -->
+<button *ngIf="proyecto.editando" 
+        class="btn-delete" 
+        (click)="eliminarProyecto(proyecto)"
+        matTooltip="Eliminar proyecto">
+  <span class="material-icons">delete</span>
+</button>
+
   <!-- Botón Ver Integrantes -->
   <button class="btn-details" (click)="openMemberModal(proyecto)">
     <span class="material-icons">visibility</span>

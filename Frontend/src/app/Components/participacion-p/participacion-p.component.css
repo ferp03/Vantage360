@@ -617,3 +617,22 @@ h4 {
   display: flex;
   align-items: center;
 }
+
+/* boton borrar */
+.btn-delete {
+  background-color: #ffebee;
+  color: #c62828;
+  border: none;
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-delete:hover {
+  background-color: #ffcdd2;
+}
+
+.btn-delete .material-icons {
+  font-size: 20px;
+}

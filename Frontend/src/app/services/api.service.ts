@@ -308,4 +308,16 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/proyecto/${proyectoId}/integrantes`);
   }
 
+  // Eliminar proyecto
+  eliminarProyecto(proyectoId: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/proyecto/${proyectoId}`).pipe(
+    catchError(error => {
+      console.error('Error al eliminar proyecto:', error);
+      let errorMsg = 'Error al eliminar proyecto';
+      if (error.status === 404) errorMsg = 'Proyecto no encontrado';
+      return throwError(() => new Error(errorMsg));
+    })
+  );
+}
+
 } 
