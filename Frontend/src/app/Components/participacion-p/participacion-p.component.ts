@@ -12,6 +12,7 @@ interface Capabilities {
   };
 }
 
+
 interface Miembro {
   nombre: string;
   capability: string;
@@ -71,8 +72,8 @@ export class ParticipacionPComponent implements OnInit {
   selectedVista: 'puestos' | 'habilidades' = 'puestos';
   currentUserId: string = '';
   userId: string = '';
-
-
+  showDeleteModal: boolean = false;
+  projectToDelete: Proyecto | null = null;
   proyectosDisponibles: Proyecto[] = [];
   proyectosActuales: Proyecto[] = [];
   proyectosPasados: Proyecto[] = [];
@@ -465,28 +466,38 @@ abrirModalEdicionHabilidadesPuestos(proyecto: Proyecto, modo: 'puestos' | 'habil
   });
 }
 
-async eliminarProyecto(proyecto: Proyecto): Promise<void> {
-  if (!proyecto.puedeEditar || !this.verificarPermisoEdicion(proyecto)) {
-    alert('No tienes permisos para eliminar este proyecto');
-    return;
-  }
 
-  const confirmacion = confirm(`¿Estás seguro que deseas eliminar el proyecto "${proyecto.nombre}"?`);
-  if (!confirmacion) return;
+openDeleteModal(proyecto: Proyecto): void {
+  if (this.showDeleteModal) return;
+  this.projectToDelete = proyecto;
+  this.showDeleteModal = true;
+}
+
+closeDeleteModal(): void {
+  this.showDeleteModal = false;
+  this.projectToDelete = null;
+}
+
+async confirmDelete(): Promise<void> {
+  if (!this.projectToDelete) return;
 
   try {
-    await this.apiService.eliminarProyecto(proyecto.proyecto_id).toPromise();
+    await this.apiService.eliminarProyecto(this.projectToDelete.proyecto_id).toPromise();
     
-    // Actualización optimizada del estado
-    this.proyectosActuales = this.proyectosActuales.filter(p => p.proyecto_id !== proyecto.proyecto_id);
-    this.proyectosDisponibles = this.proyectosDisponibles.filter(p => p.proyecto_id !== proyecto.proyecto_id);
-    this.proyectosPasados = this.proyectosPasados.filter(p => p.proyecto_id !== proyecto.proyecto_id);
+    // Actualizar las listas
+    this.proyectosActuales = this.proyectosActuales.filter(p => p.proyecto_id !== this.projectToDelete?.proyecto_id);
+    this.proyectosDisponibles = this.proyectosDisponibles.filter(p => p.proyecto_id !== this.projectToDelete?.proyecto_id);
+    this.proyectosPasados = this.proyectosPasados.filter(p => p.proyecto_id !== this.projectToDelete?.proyecto_id);
     
+    // Actualizar contadores
     this.actualesCount = this.proyectosActuales.length;
     this.disponiblesCount = this.proyectosDisponibles.length;
     this.pasadosCount = this.proyectosPasados.length;
+    
+    this.closeDeleteModal();
   } catch (error) {
     console.error('Error al eliminar proyecto:', error);
+    this.closeDeleteModal();
   }
 }
 
