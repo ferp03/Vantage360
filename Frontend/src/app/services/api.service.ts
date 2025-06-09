@@ -9,6 +9,7 @@ import { map, catchError } from 'rxjs/operators';
 })
 export class ApiService {
   private apiUrl = environment.apiUrl;
+  authService: any;
 
   constructor(private http: HttpClient) { }
 
@@ -210,7 +211,7 @@ export class ApiService {
   // Eliminar certificado
   eliminarCertificado(certificacionId: number): Observable<any> {
   return this.http.delete(`${this.apiUrl}/certificado/${certificacionId}`);
-}
+  }
 
   // Editar Curso
   editarCurso(empleadoId: string, cursoId: string, formData: FormData): Observable<any> {
@@ -234,28 +235,28 @@ export class ApiService {
 
   // Obtener proyectos disponibles
   getProyectosActuales(userId: string): Observable<any> {
-  return this.http.get(`${this.apiUrl}/proyecto/actuales/${userId}`);
+    return this.http.get(`${this.apiUrl}/proyecto/actuales/${userId}`);
   }
 
   // Unirse a un proyecto
   unirseAProyecto(empleadoId: string, proyectoId: number): Observable<any> {
-  return this.http.post(`${this.apiUrl}/proyecto/unirse`, {
-    empleado_id: empleadoId,
-    proyecto_id: proyectoId
-  }).pipe(
-    catchError(error => {
-      console.error('Error en la solicitud:', error);
-      return throwError(() => error);
-    })
-  );
+    return this.http.post(`${this.apiUrl}/proyecto/unirse`, {
+      empleado_id: empleadoId,
+      proyecto_id: proyectoId
+    }).pipe(
+      catchError(error => {
+        console.error('Error en la solicitud:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   // Eliminar Habilidad
   deleteEmpleadoHabilidad(empleadoId: string, habilidadId: number) {
-  return this.http.delete<{ success: boolean; message: string }>(
-    `${this.apiUrl}/empleado/${empleadoId}/habilidad/${habilidadId}`
-  );
-}
+    return this.http.delete<{ success: boolean; message: string }>(
+      `${this.apiUrl}/empleado/${empleadoId}/habilidad/${habilidadId}`
+    );
+  }
 
   // Actualizar Habilidad
   updateEmpleadoHabilidad(empleadoId: string, habilidadId: number, datos: {nivel: string, descripcion: string}): Observable<any> {
@@ -268,6 +269,43 @@ export class ApiService {
 
   agregarComentario(empleadoId: string, datos: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/empleado/${empleadoId}/comentarios`, datos);
+  }
+
+
+  actualizarProyecto(proyecto: {
+    proyecto_id: number;
+    nombre?: string;
+    descripcion?: string;
+    fecha_inicio?: string;
+    fecha_fin?: string;
+    progreso?: number;
+    puesto?: string;
+    habilidades?: string[];
+    userId?: string; }): Observable<any> {return this.http.put(`${this.apiUrl}/proyecto/${proyecto.proyecto_id}`, {...proyecto
+    }).pipe(
+      catchError(error => {
+        console.error('Error en la solicitud:', error);
+        let errorMsg = 'Error al actualizar proyecto';
+        if (error.status === 403) errorMsg = 'No tienes permisos para editar';
+        if (error.status === 404) errorMsg = 'Proyecto no encontrado';
+        return throwError(() => new Error(errorMsg));
+      })
+    );
+  }
+
+  actualizarHabilidadesProyecto(proyectoId: number, habilidades: any[]): Observable<any> {
+    return this.http.put(`${this.apiUrl}/proyecto/${proyectoId}/habilidades`, {
+      habilidades 
+    }).pipe(
+      catchError(error => {
+        console.error('Error al actualizar habilidades:', error);
+        return throwError(() => new Error('Error al actualizar habilidades del proyecto'));
+      })
+    );
+  }
+
+  obtenerIntegrantesProyecto(proyectoId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/proyecto/${proyectoId}/integrantes`);
   }
 
 } 

@@ -52,14 +52,6 @@
             <mat-option *ngFor="let ciudad of ciudades" [value]="ciudad">{{ ciudad.nombre }}</mat-option>
           </mat-select>
         </mat-form-field>
-        
-        <!-- <button
-        *ngIf="editandoInfo && esMiPerfil"
-        class="boton-cambiar-pass"
-        (click)="mostrarModalContrasena = true"
-        >
-        <span class="material-icons">lock</span> Cambiar contraseña
-      </button> -->
     </div>
     
     <div class="izquierda-habilidades">
@@ -126,7 +118,7 @@
     </div>
   </div>
     </div>
-    <div class="derecha"></div> 
+    
   </div>
   <br/>
   <div class="botones"> 
@@ -193,7 +185,7 @@
           </button>
           <button 
             class="chart-chip" 
-            [ngClass]="{'active': activeChart === 'pie2'}" 
+            [ngClass]="{'active': activeChart === 'pie2'}"
             (click)="changeActiveChart('pie2')">
             <span class="material-icons">donut_large</span>
             Progreso Promedio
@@ -215,10 +207,16 @@
       
       <!-- Mostrar mensaje si NO hay cursos -->
       <ng-container *ngIf="cursos.length === 0">
-        <p *ngIf="esMiPerfil">
-          No hay cursos registrados. <br/> Te ayudamos a encontrar un curso →
-        </p>
-        <p *ngIf="!esMiPerfil">
+        <div *ngIf="esMiPerfil" class="texto-ayuda">
+          <div class="contenido-ayuda">
+            <p>No hay cursos registrados.<br>Te ayudamos a encontrar un curso</p>
+            <button class="boton-recomendacion" (click)="irARecomendaciones()">
+              <span class="material-icons">arrow_forward</span> Recomendaciones
+            </button>
+          </div>
+        </div>
+
+        <p *ngIf="!esMiPerfil" class="texto-ayuda">
           Este usuario no tiene cursos registrados.
         </p>
       </ng-container>
@@ -257,6 +255,11 @@
           <h4><span class="material-icons">device_hub</span> {{experiencia.titulo_proyecto}}, {{ experiencia.titulo }}</h4>
           <h4><span class="material-icons">business</span>{{ experiencia.empresa }}</h4>
           <p>{{ experiencia.descripcion }}</p>
+          <div class="chips-habilidades">
+            <div class="habilidad-row" *ngFor="let habilidad of experiencia.habilidades">
+              <mat-chip>{{habilidad.nombre}} ({{habilidad.nivel}})</mat-chip>
+            </div>
+          </div>
           <small>
             <span class="material-icons">calendar_today</span>
             {{ experiencia.inicio }} - {{ experiencia.fin }}
@@ -264,20 +267,6 @@
         </div>
 
         <div *ngIf="editandoIndice === i" class="modo-edicion experiencia-form">
-          <!-- <div class="campo-grupo">
-            <label>
-              <span class="material-icons">device_hub</span> Capability:
-            </label>
-            <select 
-              [(ngModel)]="experiencia.capability_id" 
-              [class.error-input]="errores[i].titulo"
-              (ngModelChange)="experiencia.titulo = obtenerNombreCapability(experiencia.capability_id)">
-              <option [ngValue]="undefined" disabled>{{ capabilities.length ? 'Selecciona una opción' : 'Cargando opciones...' }}</option>
-              <option *ngFor="let cap of capabilities" [ngValue]="cap.id">{{ cap.nombre }}</option>
-            </select>
-            <span class="error" *ngIf="errores[i].titulo">Campo requerido</span>
-            <span class="error" *ngIf="capabilities.length === 0">No se pudieron cargar las opciones. Intenta de nuevo.</span>
-          </div> -->
           <mat-form-field appearance="outline" class="campo-grupo">
             <mat-label>
               <mat-icon>device_hub</mat-icon> Capability
@@ -299,14 +288,13 @@
                 {{ cap.nombre }}
               </mat-option>
             </mat-select>
-
-            <!-- <mat-hint *ngIf="capabilities.length === 0" class="error">No se pudieron cargar las opciones. Intenta de nuevo.</mat-hint>
-            <mat-error *ngIf="errores[i].titulo">Campo requrido</mat-error> -->
           </mat-form-field>
 
 
           <div class="campo-grupo">
-            <label>Proyecto:</label>
+            <mat-label>
+              <mat-icon>device_hub</mat-icon>Proyecto:
+            </mat-label>
             <input [(ngModel)]="experiencia.titulo_proyecto" [class.error-input]="errores[i].titulo_proyecto" />
             <span class="error" *ngIf="errores[i].titulo_proyecto">Campo requerido</span>
           </div>
@@ -317,31 +305,39 @@
             <span class="error" *ngIf="errores[i].empresa">Campo requerido</span>
           </div>
 
-          <div class="campo-grupo">
-            <label><span class="material-icons">star</span> Habilidad:</label>
-            <select 
-              [(ngModel)]="experiencia.habilidad_id" 
-              (change)="onHabilidadSeleccionada(i)"
-              [class.error-input]="errores[i]?.habilidad">
-              <option [ngValue]="undefined">Ninguna</option>
-              <option *ngFor="let habilidad of habilidadesOptions" 
-                      [ngValue]="habilidad.id">
-                {{ habilidad.nombre }}
-                <span *ngIf="habilidad.categoria">({{ habilidad.categoria }})</span>
-              </option>
-            </select>
+          <!-- Selección de habilidades Trayectoria -->
+          <mat-form-field appearance="outline" class="campo-grupo">
+            <mat-label><mat-icon>star</mat-icon> Habilidades</mat-label>
+            <mat-select
+              multiple
+              [(ngModel)]="experiencia.habilidades"
+              [compareWith]="compararHabilidades"
+              (selectionChange)="abrirEditorHabilidadNivel(i)">
+              <mat-option *ngFor="let habilidad of habilidadesOptions" [value]="{ habilidad_id: habilidad.id, nivel: '' }">
+                {{ habilidad.nombre }} <span *ngIf="habilidad.categoria">({{ habilidad.categoria }})</span>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Chips compactas con nombre y nivel -->
+          <div class="chips-habilidades">
+            <mat-chip-set>
+              <div *ngFor="let h of experiencia.habilidades" class="habilidad-row">
+                <mat-chip>{{ obtenerNombreHabilidad(h.habilidad_id) }}</mat-chip>
+
+                <div class="iconos-nivel">
+                  <mat-icon
+                    *ngFor="let i of [1, 2, 3]"
+                    (click)="establecerNivel(h, i)"
+                    [ngClass]="{ 'activo': i <= nivelANumero(h.nivel) }"
+                  >
+                    star
+                  </mat-icon>
+                </div>
+              </div>
+            </mat-chip-set>
           </div>
 
-
-          <div class="campo-grupo">
-            <label><span class="material-icons">grade</span> Nivel:</label>
-            <select [(ngModel)]="experiencia.habilidad_nivel">
-              <option value="">Selecciona un nivel</option>
-              <option value="Básico">Básico</option>
-              <option value="Intermedio">Intermedio</option>
-              <option value="Avanzado">Avanzado</option>
-            </select>
-          </div>
 
           <div class="campo-checkbox">
             <input type="checkbox" id="puestoActual{{i}}" [ngModel]="experiencia.esPuestoActual" (ngModelChange)="experiencia.esPuestoActual = $event; togglePuestoActual(i)" />

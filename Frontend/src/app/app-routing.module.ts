@@ -4,6 +4,7 @@ import { LoginComponent } from './Components/login/login.component';
 import { LayoutComponent } from './layout/layout.component';
 import { AuthGuard } from './auth/auth.guard';
 import { UserGuard } from './auth/user.guard';
+import { AdminGuard } from './auth/admin.guard';
 import { ForgotPasswordComponent } from './Components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './Components/reset-password/reset-password.component';
 import { EmpleadoDetallesComponent } from './Components/empleado-detalles/empleado-detalles.component';
@@ -16,6 +17,7 @@ import { ProyectosComponent } from './Components/proyectos/proyectos.component';
 import { ParticipacionPComponent } from './Components/participacion-p/participacion-p.component';
 import { SignUpComponent } from './Components/sign-up/sign-up.component';
 import { RecomendacionesComponent } from './Components/recomendaciones/recomendaciones.component';
+import { CrearLeadComponent } from './crear-lead/crear-lead.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -37,6 +39,7 @@ const routes: Routes = [
       { path: 'cursos_certificados', component: MenucurycertComponent, canActivate: [AuthGuard] },
       { path: 'participacion_p',component: ParticipacionPComponent, canActivate: [AuthGuard] },
       { path: 'recomendaciones', component: RecomendacionesComponent, canActivate: [AuthGuard] },
+      { path: 'crear-lead', component: CrearLeadComponent, canActivate: [AdminGuard] },
     ]
   },
 

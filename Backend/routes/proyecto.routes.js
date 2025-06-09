@@ -280,13 +280,11 @@ router.post('/proyecto/unirse', async (req, res) => {
       });
     }
 
-    // Insertar la relación
     const { data, error } = await supabase
       .from('empleado_proyecto')
       .insert({
         empleado_id: empleado_id,
         proyecto_id: proyecto_id,
-        fecha_union: new Date().toISOString()  // Campo adicional útil
       })
       .select();
 
@@ -315,87 +313,101 @@ router.post('/proyecto/unirse', async (req, res) => {
   }
 });
 
-// Unirse a un proyecto
-router.post('/proyecto/unirse', async (req, res) => {
-  try {
-    const { empleado_id, proyecto_id } = req.body;
 
-    if (!empleado_id || !proyecto_id) {
-      return res.status(400).json({
-        success: false,
-        error: 'Los campos empleado_id (UUID) y proyecto_id (número) son obligatorios'
-      });
+
+// Editar un proyecto
+router.put('/proyecto/:id', async (req, res) => {
+  try {
+    const proyectoId = parseInt(req.params.id);
+    const { userId, ...updateData } = req.body; 
+
+    if (isNaN(proyectoId)) {
+      return res.status(400).json({ success: false, error: 'ID de proyecto inválido' });
     }
 
-    // Verificar que el proyecto existe primero
-    const { data: proyecto, error: proyectoError } = await supabase
+    const { data: proyectoExistente, error: proyectoError } = await supabase
       .from('proyecto')
-      .select('proyecto_id')
-      .eq('proyecto_id', proyecto_id)
+      .select('delivery_lead')
+      .eq('proyecto_id', proyectoId)
       .single();
 
-    if (proyectoError || !proyecto) {
-      return res.status(404).json({
-        success: false,
-        error: 'El proyecto no existe'
-      });
+    if (proyectoError || !proyectoExistente) {
+      return res.status(404).json({ success: false, error: 'Proyecto no encontrado' });
     }
 
-    // Verificar que el empleado no está ya en el proyecto
-    const { data: existente, error: existeError } = await supabase
-      .from('empleado_proyecto')
-      .select()
-      .eq('empleado_id', empleado_id)
-      .eq('proyecto_id', proyecto_id)
-      .maybeSingle();
-
-    if (existeError) {
-      console.error('Error verificando membresía:', existeError);
-      return res.status(500).json({
-        success: false,
-        error: 'Error al verificar membresía existente'
-      });
+    if (!userId) {
+      return res.status(403).json({ success: false, error: 'No autorizado para editar este proyecto' });
     }
 
-    if (existente) {
-      return res.status(409).json({
-        success: false,
-        error: 'El empleado ya está asignado a este proyecto'
-      });
+    if (updateData.progreso && (updateData.progreso < 0 || updateData.progreso > 100)) {
+      return res.status(400).json({ success: false, error: 'El progreso debe estar entre 0 y 100' });
     }
 
-    // Insertar la relación
     const { data, error } = await supabase
-      .from('empleado_proyecto')
-      .insert({
-        empleado_id: empleado_id,
-        proyecto_id: proyecto_id,
-        fecha_union: new Date().toISOString()  // Campo adicional útil
-      })
+      .from('proyecto')
+      .update(updateData)
+      .eq('proyecto_id', proyectoId)
       .select();
 
     if (error) {
-      console.error('Error en inserción:', error);
-      return res.status(400).json({
-        success: false,
-        error: 'Error al unirse al proyecto',
-        details: error.message
-      });
+      console.error('Error en Supabase:', error);
+      return res.status(400).json({ success: false, error: error.message });
     }
 
-    return res.status(201).json({
-      success: true,
-      message: 'Unido al proyecto exitosamente',
-      data: data
-    });
+    return res.status(200).json({ success: true, proyecto: data[0] });
 
   } catch (err) {
     console.error('Error inesperado:', err);
-    return res.status(500).json({
-      success: false,
-      error: 'Error interno del servidor',
-      details: err.message
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Error interno del servidor'
     });
+  }
+});
+
+// Ruta para actualizar habilidades del proyecto
+router.put('/proyecto/:id/habilidades', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { habilidades } = req.body; 
+
+    await supabase
+      .from('proyecto_habilidad')
+      .delete()
+      .eq('proyecto_id', id);
+    const nuevasHabilidades = habilidades.map(h => ({
+      proyecto_id: id,
+      habilidad_id: h.habilidad_id,
+      nivel_esperado: h.nivel_esperado
+    }));
+
+    const { data, error } = await supabase
+      .from('proyecto_habilidad')
+      .insert(nuevasHabilidades);
+
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/proyecto/:id/integrantes/', async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { data, error } = await supabase.rpc('get_integrantes_proyecto', {
+      _id: id 
+    });
+    
+    if (error) {
+      return res.status(400).json({ success: false, error: error.message });
+    }
+
+    return res.status(200).json({ success: true, data: data });
+
+  } catch (err) {
+    return res.status(400).json({ success: false, error: err.message });
   }
 });
 

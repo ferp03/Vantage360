@@ -45,7 +45,7 @@
       </button>
     </form>
     <button class="btn-reporte" (click)="generarReporteCargabilidad()">
-      Generar reporte
+      {{ hayFiltrosAplicados ? 'Generar reporte con filtros' : 'Generar reporte' }}
     </button>
   </div>
     </div>
@@ -181,12 +181,12 @@
                 {{ empleado.disponible ? 'Disponible' : empleado.razon }}
               </span>
             </td>
-            <td>
+            <td style="width: 100px; min-width: 100px; text-align: center;">
               <!-- Botón para abrir el modal de edición -->
               <button class="btn-accion" (click)="seleccionarComentarios(empleado)"><mat-icon>chat</mat-icon></button>
               <button class="btn-accion" (click)="seleccionarEmpleado(empleado)"><mat-icon>edit</mat-icon></button>
             </td>
-          </tr>
+          </tr> 
         </tbody>
       </table>
       
@@ -253,6 +253,12 @@
             <mat-icon class="icono-persona">add_circle</mat-icon>
           </button>
         </p>
+
+              <!-- Mensaje de error específico para comentarios -->
+      <div *ngIf="errorComentario" class="error-mensaje-comentario">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{errorComentario}}</span>
+      </div>
 
         <!-- Mostrar solo si se activa con el botón -->
         <div *ngIf="mostrarFormularioComentario">

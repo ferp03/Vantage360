@@ -55,6 +55,7 @@
                 <div class="dropdown-content" *ngIf="menuAbierto">
                     <a (click)="menuAbierto=false" routerLink="/empleado-detalles/{{empleadoId}}">Mi perfil</a>
                     <a *ngIf="esAdmin()" (click)="menuAbierto=false" routerLink="/crear-cuenta">Crear cuenta</a>
+                    <a *ngIf="esSuperadmin()" (click)="menuAbierto=false" routerLink="/crear-lead">Crear lead</a>
                     <hr>
                     <a (click)="logout()">Log out</a>
                 </div>
