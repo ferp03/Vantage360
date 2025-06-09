@@ -1,13 +1,13 @@
 .login-container {
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Alineación arriba */
-    min-height: 100vh;
-    width: 100%;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
     background: var(--accenture-gray-50);
-    padding: 50px; /* 80px arriba para la barra de menú */
-    box-sizing: border-box;
-    overflow-y: auto;
 }
 
 .box {
@@ -17,9 +17,6 @@
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     text-align: center;
-    margin-top: 15px; /* Espacio adicional */
-    position: relative;
-    top: 0;
 }
 
 .logo {
@@ -139,4 +136,12 @@ button:hover {
 
 .toast.error-toast {
     background-color: #FF4F5E; 
+}
+
+.capability-wrapper {
+    width: 100%;
+}
+
+.full-width {
+    width: 100%;
 }
