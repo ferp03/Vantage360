@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
+import { NgxFileDropEntry, FileSystemFileEntry } from 'ngx-file-drop';
 
 interface Comentarios {
   comentario_id: number;
@@ -70,6 +71,10 @@ export class DisponibilidadComponent implements OnInit {
   // comentariosPaginaActual: number = 1;
   // comentariosPorPagina: number = 6;
   // indicesPagina: number[] = [];
+
+  mostrarModalExcel: boolean = false;
+  archivoExcel: File | null = null;
+  errorExcel: string = '';
 
   
   constructor(
@@ -368,6 +373,60 @@ export class DisponibilidadComponent implements OnInit {
       this.currentPage--;
     }
   }
+
+  // Método para abrir el modal de Excel
+  abrirModalExcel(): void {
+    this.mostrarModalExcel = true;
+    this.archivoExcel = null; // Reiniciar el archivo seleccionado
+    this.errorExcel = ''; // Reiniciar el mensaje de error
+  }
+
+  cerrarModalExcel(): void {
+    this.mostrarModalExcel = false;
+    this.archivoExcel = null; // Reiniciar el archivo seleccionado
+    this.errorExcel = ''; // Reiniciar el mensaje de error
+  }
+
+  // Para el input tradicional
+onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    const file = input.files[0];
+    this.validarArchivo(file);
+  }
+}
+
+// Para el drag-and-drop
+onFileDrop(files: NgxFileDropEntry[]): void {
+  if (files.length === 0) return;
+
+  const droppedFile = files[0];
+
+  if (droppedFile.fileEntry.isFile) {
+    const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
+    fileEntry.file((file: File) => this.validarArchivo(file));
+  } else {
+    this.errorExcel = 'El archivo no es válido';
+  }
+}
+
+// Método común de validación
+private validarArchivo(file: File): void {
+  const validExtensions = ['.xls', '.xlsx'];
+  const fileName = file.name.toLowerCase();
+  const isValid = validExtensions.some(ext => fileName.endsWith(ext));
+
+  if (isValid) {
+    this.archivoExcel = file;
+    this.errorExcel = '';
+  } else {
+    this.archivoExcel = null;
+    this.errorExcel = 'Formato de archivo no válido. Solo se permiten archivos .xls o .xlsx';
+  }
+}
+
+
+
 
    // Paginación COMENTARIOS
 //   get comentariosPaginados(): Comentarios[] {
