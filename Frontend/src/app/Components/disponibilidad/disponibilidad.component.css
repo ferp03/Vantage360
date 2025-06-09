@@ -239,7 +239,6 @@ button mat-icon.icono-persona {
   transition: all 0.2s ease; /* Transición suave para efectos */
 }
 
-
 /* Paginación */
 .pagination {
   display: flex;
@@ -324,7 +323,6 @@ button mat-icon.icono-persona {
 .modal-content {
   padding: 20px;
   color: var(--foreground);
-  /* overflow-y: auto; */
 }
 
 /* Botones */
@@ -366,10 +364,6 @@ button mat-icon.icono-persona {
   background-color: var(--accenture-gray-500);
   color: hsl(var(--muted-foreground));
 }
-
-
-
-
 
 .modal-footer {
   display: flex;

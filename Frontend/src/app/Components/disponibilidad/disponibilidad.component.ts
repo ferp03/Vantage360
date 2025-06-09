@@ -3,6 +3,7 @@ import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
 import { NgxFileDropEntry, FileSystemFileEntry } from 'ngx-file-drop';
+import { ReporteService } from 'src/app/services/reporte.service';
 
 interface Comentarios {
   comentario_id: number;
@@ -14,19 +15,17 @@ interface Comentarios {
   autor_nombre?: string;
   proyecto_nombre?: string;
 }
-import { ReporteService } from 'src/app/services/reporte.service';
 
 @Component({
   selector: 'app-disponibilidad',
   templateUrl: './disponibilidad.component.html',
-  styleUrls: ['./disponibilidad.component.css']
+  styleUrls: ['./disponibilidad.component.css'] 
 })
 export class DisponibilidadComponent implements OnInit {
   empleados: any[] = [];
   comentarios: any[] = [];
   empleadosFiltrados: any[] = [];
 
-  // Ahora incluimos habilidad en los filtros
   filtros = {
     rol: '',
     habilidad: '',
@@ -164,7 +163,7 @@ export class DisponibilidadComponent implements OnInit {
         const fullName = `${emp.nombre} ${emp.apellido_paterno} ${emp.apellido_materno}`.toLowerCase();
 
         return (
-          emp.usuario.toLowerCase().includes(searchLower) ||
+          emp.nombre.toLowerCase().includes(searchLower) ||
           emp.email.toLowerCase().includes(searchLower) ||
           fullName.includes(searchLower)
         );
