@@ -61,21 +61,21 @@ router.put('/update-excel', upload.single('archivo'), async (req, res) => {
 					apellido_paterno: celda[1],
 					apellido_materno: celda[2],
 					usuario: celda[3],
-					correo: (celda[0] + celda[1] + '@gmail.com')
+					correo: celda[4] || (celda[0] + celda[1] + '@gmail.com')
 						.normalize('NFD')
 						.replace(/[\u0300-\u036f]/g, '')
 						.toLowerCase(),
-					ciudad: celda[4],
-					capability: celda[5],
-					people_lead: celda[6],
-					nivel: celda[7],
-					nivel_grupo: celda[8],
-					staff_days: celda[9],
-					estado_laboral: celda[10],
-					nivel_ingles: celda[11],
-					bd: Math.round(celda[12]*100), // excel lo guarda en %, por lo que 4% -> 0.04
-					ytd_unassigned: Math.round(celda[13]*100), // excel lo guarda en %, por lo que 4% -> 0.04
-					ytd_recovery: Math.round(celda[14]*100) // excel lo guarda en %, por lo que 4% -> 0.04
+					ciudad: celda[5],
+					capability: celda[6],
+					people_lead: celda[7],
+					nivel: celda[8],	
+					nivel_grupo: celda[9],
+					staff_days: celda[10],
+					estado_laboral: celda[11],
+					nivel_ingles: celda[12],
+					bd: Math.round(celda[13]*100), // excel lo guarda en %, por lo que 4% -> 0.04
+					ytd_unassigned: Math.round(celda[14]*100), // excel lo guarda en %, por lo que 4% -> 0.04
+					ytd_recovery: Math.round(celda[15]*100) // excel lo guarda en %, por lo que 4% -> 0.04
 				}
 				datos.push(empleado);
 			});

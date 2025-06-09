@@ -308,16 +308,8 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/proyecto/${proyectoId}/integrantes`);
   }
 
-  subirArchivoExcel( formData: FormData): Observable<any> {
-    return this.http.post(`${this.apiUrl}/update-excel`, formData, {
-      headers: new HttpHeaders({
-        'enctype': 'multipart/form-data'
-      })
-    }).pipe(
-      catchError(error => {
-        console.error('Error al subir archivo Excel:', error);
-        return throwError(() => new Error('Error al subir archivo Excel'));
-      })
-    );
+  subirArchivoExcel(formData: FormData): Observable<any> {
+    const headers = new HttpHeaders(); // No se establece Content-Type; Angular lo hace automáticamente
+    return this.http.put(`${this.apiUrl}/update-excel`, formData, { headers });
   }
 } 

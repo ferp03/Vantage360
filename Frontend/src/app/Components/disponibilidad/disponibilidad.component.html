@@ -303,11 +303,31 @@
     </div>
 
     <div class="modal-footer">
-      <button class="btn-enviar" (click)="actualizarDisponibilidad()" [disabled]="!archivoExcel">
+      <button class="btn-enviar" (click)="subirArchivoExcel()" [disabled]="!archivoExcel">
         <span class="material-icons">send</span>
         Enviar Información
       </button>
     </div>
+
+    <!-- Mensaje de éxito -->
+<div *ngIf="mensajeExito" class="success-message">
+  <span class="material-icons success-icon">check_circle</span>
+  {{ mensajeExito }}
+</div>
+
+<!-- Mensaje de error -->
+<div *ngIf="errorExcel" class="error-message">
+  <span class="material-icons error-icon">error</span>
+  {{ errorExcel }}
+</div>
+
+<!-- Spinner de carga -->
+<div *ngIf="cargando" class="loading-overlay">
+  <div class="loading-spinner">
+    <span class="material-icons spin-icon">autorenew</span>
+    <p>Procesando archivo, por favor espera...</p>
+  </div>
+</div>
 
   </div>
 </div>

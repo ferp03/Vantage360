@@ -74,6 +74,7 @@ export class DisponibilidadComponent implements OnInit {
   mostrarModalExcel: boolean = false;
   archivoExcel: File | null = null;
   errorExcel: string = '';
+  mensajeExito: string = '';
 
   
   constructor(
@@ -424,38 +425,47 @@ private validarArchivo(file: File): void {
   }
 }
 
+  // Método para subir el archivo Excel
+  subirArchivoExcel(): void {
+    if (!this.archivoExcel) {
+      this.errorExcel = 'Por favor, selecciona un archivo Excel antes de continuar';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('archivo', this.archivoExcel);
+
+    // Mostrar mensaje de carga
+    this.mensajeExito = '';
+    this.errorExcel = '';
+    this.cargando = true; // Variable para mostrar spinner/loader
+
+    this.apiService.subirArchivoExcel(formData).subscribe({
+      next: (res: any) => {
+        this.cargando = false;
+        if (res.success) {
+          this.mensajeExito = '¡Archivo subido con éxito! La información se ha actualizado correctamente.';
+          this.cargarEmpleados(); // Recargar empleados después de la carga
+          
+          // Limpiar mensaje después de 5 segundos
+          setTimeout(() => {
+            this.mensajeExito = '';
+            this.cerrarModalExcel();
+          }, 5000);
+        } else {
+          this.errorExcel = res.message || 'Hubo un problema al procesar el archivo. Por favor, verifica el formato e intenta nuevamente.';
+        }
+      },
+      error: (err) => {
+        this.cargando = false;
+        console.error('Error al subir archivo:', err);
+        this.errorExcel = err.error?.error || 
+          'No se pudo conectar con el servidor. Por favor, verifica tu conexión e intenta nuevamente.';
+      }
+    });
+  }
   esSuperadmin(): boolean {
       const roles = this.authService.roles;
       return roles.includes('admin');
     }
-
-
-
-
-   // Paginación COMENTARIOS
-//   get comentariosPaginados(): Comentarios[] {
-//     const inicio = (this.comentariosPaginaActual - 1) * this.comentariosPorPagina;
-//     const fin = inicio + this.comentariosPorPagina;
-//     return this.comentariosPasados.slice(inicio, fin);
-//   }
-
-//   get totalPagesComment(): number {
-//   return Math.ceil(this.comentariosPasados.length / this.comentariosPorPagina);
-// }
-
-
-//   siguientePaginaComentarios(): void {
-//   const totalPaginas = Math.ceil(this.comentariosPasados.length / this.comentariosPorPagina);
-//   if (this.comentariosPaginaActual < totalPaginas) {
-//     this.comentariosPaginaActual++;
-//   }
-// }
-
-// paginaAnteriorComentarios(): void {
-//   if (this.comentariosPaginaActual > 1) {
-//     this.comentariosPaginaActual--;
-//   }
-// }
-
-
 }
