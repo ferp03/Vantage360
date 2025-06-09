@@ -424,6 +424,11 @@ private validarArchivo(file: File): void {
   }
 }
 
+  esSuperadmin(): boolean {
+      const roles = this.authService.roles;
+      return roles.includes('admin');
+    }
+
 
 
 

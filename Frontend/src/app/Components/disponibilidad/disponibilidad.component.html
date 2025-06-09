@@ -44,7 +44,13 @@
         </svg>
       </button>
     </form>
-    <button class="btn-reporte" (click)="abrirModalExcel()">Actualizar información</button>
+    <button 
+      *ngIf="esSuperadmin()"
+      class="btn-reporte" 
+      (click)="abrirModalExcel()"
+    >
+      Actualizar información
+    </button>
     <button class="btn-reporte" (click)="generarReporteCargabilidad()">
       {{ hayFiltrosAplicados ? 'Generar reporte con filtros' : 'Generar reporte' }}
     </button>
