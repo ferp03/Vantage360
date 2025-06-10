@@ -424,7 +424,7 @@ router.delete('/empleado/experiencia/:historial_id', async (req, res) => {
     }
 
     // borrar habilidades ligadas al proyecto
-    const { errorBorrar } = supabase.from('historial_habilidad').delete('*').eq('historial_id',historial_id);
+    const { errorBorrar } = await supabase.from('historial_habilidad').delete('*').eq('historial_id',historial_id);
     if (errorBorrar){
       return res.status(400).json({success: false, error: 'Error al borrar habilidades'});
     }
