@@ -11,7 +11,7 @@ export class UserGuard  {
 
   canActivate(): boolean{
     const roles = this.auth.roles;
-    const rolesPremitidos = ['delivery lead', 'people lead'];
+    const rolesPremitidos = ['delivery lead', 'people lead', 'admin'];
 
     if(this.auth.estaAutenticado() && roles.some(role => rolesPremitidos.includes(role))){
       return true;

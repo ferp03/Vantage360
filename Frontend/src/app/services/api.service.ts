@@ -303,6 +303,10 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/proyecto/${proyectoId}/integrantes`);
   }
 
+  subirArchivoExcel(formData: FormData): Observable<any> {
+    const headers = new HttpHeaders(); // No se establece Content-Type; Angular lo hace automáticamente
+    return this.http.put(`${this.apiUrl}/update-excel`, formData, { headers });
+  }
   // Eliminar proyecto
   eliminarProyecto(proyectoId: number): Observable<any> {
   return this.http.delete(`${this.apiUrl}/proyecto/${proyectoId}`).pipe(

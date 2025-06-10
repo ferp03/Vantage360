@@ -31,6 +31,7 @@ import { RecomendacionesComponent } from './Components/recomendaciones/recomenda
 import { HabilidadesPuestosModalComponent } from './Components/habilidades-puestos-modal/habilidades-puestos-modal.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { CrearLeadComponent } from './crear-lead/crear-lead.component';
+import { NgxFileDropModule } from 'ngx-file-drop';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { CrearLeadComponent } from './crear-lead/crear-lead.component';
     MatIconModule,
     MatFormFieldModule,
     MatChipsModule,
-    MatChipsModule
+    MatChipsModule,
+    NgxFileDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]

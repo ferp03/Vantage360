@@ -44,9 +44,17 @@
         </svg>
       </button>
     </form>
+    <button 
+      *ngIf="esSuperadmin()"
+      class="btn-reporte" 
+      (click)="abrirModalExcel()"
+    >
+      Actualizar información
+    </button>
     <button class="btn-reporte" (click)="generarReporteCargabilidad()">
       {{ hayFiltrosAplicados ? 'Generar reporte con filtros' : 'Generar reporte' }}
     </button>
+    
   </div>
     </div>
     <!-- Filtros avanzados -->
@@ -232,6 +240,99 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal de Excel -->
+    <div class="modal-overlay edit-modal" *ngIf="mostrarModalExcel">
+  <div class="modal edit-modalExcel">
+    
+    <div class="modal-header">
+      <h3>Actualizar Información</h3>
+      <button class="btn-cerrar" (click)="cerrarModalExcel()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <div class="archivo">
+      <ngx-file-drop (onFileDrop)="onFileDrop($event)" dropZoneLabel=" ">
+        <ng-template ngx-file-drop-content-tmp>
+          <div class="drop-zone" (click)="fileInput.click()">
+            <div class="drop-content">
+              <span class="material-icons icono-excel">description</span>
+
+              <div *ngIf="!archivoExcel" class="drop-text">
+                <p class="drop-title">Sube tu archivo Excel</p>
+                <p class="drop-instructions">
+                  <strong>Arrastra y suelta</strong> tu archivo aquí o <strong>haz clic</strong> para buscarlo
+                </p>
+                <div class="file-types">
+                  <span class="file-type-badge">.xls</span>
+                  <span class="file-type-badge">.xlsx</span>
+                </div>
+              </div>
+
+              <div *ngIf="archivoExcel" class="archivo-cargado">
+                <div class="file-info">
+                  <span class="material-icons success-icon">check_circle</span>
+                  <div>
+                    <p class="file-name">{{ archivoExcel.name }}</p>
+                    <p class="file-size">{{ (archivoExcel.size / 1024).toFixed(2) }} KB</p>
+                  </div>
+                </div>
+                <button class="btn-change" (click)="fileInput.click(); $event.stopPropagation()">
+                  Cambiar archivo
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ngx-file-drop>
+
+      <input
+        #fileInput
+        type="file"
+        id="archivoExcel"
+        (change)="onFileSelected($event)"
+        accept=".xlsx, .xls"
+        hidden
+      />
+
+      <div *ngIf="errorExcel" class="error">
+        <span class="material-icons">error</span>
+        {{ errorExcel }}
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-enviar" (click)="subirArchivoExcel()" [disabled]="!archivoExcel">
+        <span class="material-icons">send</span>
+        Enviar Información
+      </button>
+    </div>
+
+    <!-- Mensaje de éxito -->
+<div *ngIf="mensajeExito" class="success-message">
+  <span class="material-icons success-icon">check_circle</span>
+  {{ mensajeExito }}
+</div>
+
+<!-- Mensaje de error -->
+<div *ngIf="errorExcel" class="error-message">
+  <span class="material-icons error-icon">error</span>
+  {{ errorExcel }}
+</div>
+
+<!-- Spinner de carga -->
+<div *ngIf="cargando" class="loading-overlay">
+  <div class="loading-spinner">
+    <span class="material-icons spin-icon">autorenew</span>
+    <p>Procesando archivo, por favor espera...</p>
+  </div>
+</div>
+
+  </div>
+</div>
+
+
 
     <!-- Modal de comentarios -->
 <div class="modal-overlay comment-modal" *ngIf="mostrarModalComentarios">
