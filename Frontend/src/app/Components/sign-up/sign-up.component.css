@@ -135,3 +135,12 @@ button:hover {
 .toast.error-toast {
     background-color: #FF4F5E; 
 }
+
+.capability-wrapper {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.full-width {
+    width: 100%;
+}

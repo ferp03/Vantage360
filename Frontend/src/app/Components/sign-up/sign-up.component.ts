@@ -8,6 +8,11 @@ interface PeopleLead {
   rol: string;
   nombre_completo: string;
 };
+
+interface Capability {
+  id: string;
+  nombre: string;
+};
  
 @Component({
   selector: 'app-sign-up',
@@ -28,12 +33,15 @@ export class SignUpComponent {
   matlastname = '';
   peopleLead: PeopleLead[] = [];
   selectedPeopleLead: PeopleLead | null = null;
+  capabilities: Capability[] = [];
+  selectedCapability: Capability | null = null;
   rol: string[] = [];
 
   constructor(private auth: AuthService, private router: Router, private api: ApiService) {}
   
   ngOnInit(){
     this.getLeads();
+    this.getCapabilities();
   }
  
   removeSpaces(email: string): string {
@@ -121,4 +129,20 @@ export class SignUpComponent {
       }
     });
   };
+
+  getCapabilities() {
+    this.api.getCapabilities().subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.capabilities = res.data;
+        } else {
+          console.error('Error al cargar capabilities:', res.error);
+        }
+      },
+      error: (err: any) => {
+        console.error('Error al obtener capabilities:', err);
+      }
+    });
+  }
+
 }
