@@ -162,28 +162,31 @@ export class ParticipacionPComponent implements OnInit {
 }
 
   cargarProyectosDisponibles(): void {
-    if (!this.authService.userId) {
-      console.error('User ID is not available');
-      this.proyectosDisponibles = [];
-      this.disponiblesCount = 0;
-      return;
-    }
-
-    this.apiService.getProyectosDisponibles(this.authService.userId)
-      .subscribe({
-        next: (response: any) => {
-          console.log(response);
-          this.proyectosDisponibles = response.proyectos || response || [];
-          this.proyectosDisponibles.forEach(p => (p as any).selectedVista = 'puestos');
-          this.disponiblesCount = this.proyectosDisponibles.length;
-        },
-        error: (error) => {
-          console.error('Error al cargar proyectos disponibles:', error);
-          this.proyectosDisponibles = [];
-          this.disponiblesCount = 0;
-        }
-      });
+  if (!this.authService.userId) {
+    console.error('User ID is not available');
+    this.proyectosDisponibles = [];
+    this.disponiblesCount = 0;
+    return;
   }
+
+  this.apiService.getProyectosDisponibles(this.authService.userId)
+    .subscribe({
+      next: (response: any) => {
+        console.log(response);
+        const todosProyectos = response.proyectos || response || [];
+        const { actuales } = this.filtrarProyectosPorFecha(todosProyectos);
+        
+        this.proyectosDisponibles = actuales;
+        this.proyectosDisponibles.forEach(p => (p as any).selectedVista = 'puestos');
+        this.disponiblesCount = this.proyectosDisponibles.length;
+      },
+      error: (error) => {
+        console.error('Error al cargar proyectos disponibles:', error);
+        this.proyectosDisponibles = [];
+        this.disponiblesCount = 0;
+      }
+    });
+}
 
   getPuestos(capabilities: Capabilities): string[] {
     if (!capabilities || !capabilities.puestos) return [];
@@ -285,18 +288,19 @@ openJoinModal(proyecto: Proyecto): void {
 }
 
 openMemberModal(proyecto: Proyecto): void {
-  if (this.showMemberModal || !proyecto.proyecto_id) return;
+  if (this.showMemberModal || !proyecto?.proyecto_id) return;
 
-  // Inicializa con copia del proyecto y members vacío si no existe
-  this.selectedProject = {
-    ...proyecto,
-    members: proyecto.members || [] // Asegura array vacío si es undefined/null
-  };
-  
+  // Resetear estados previos
   this.showMemberModal = true;
   this.loadingMembers = true;
   this.loadingRequests = true;
   this.errorLoadingMembers = null;
+  
+  // Inicializar con copia segura del proyecto
+  this.selectedProject = {
+    ...proyecto,
+    members: [] // Inicializar siempre con array vacío
+  };
 
   this.apiService.obtenerIntegrantesProyecto(proyecto.proyecto_id).subscribe({
     next: (response: any) => {
@@ -403,12 +407,11 @@ closeJoinModal(event?: Event): void {
   this.selectedProject = null;
 }
 
-closeMemberModal(event?: Event): void {
-  // if (event) {
-  //   event.preventDefault();
-  //   event.stopPropagation();
-  // }
+closeMemberModal(): void {
+  // Resetear todos los estados relacionados
   this.showMemberModal = false;
+  this.loadingMembers = false;
+  this.errorLoadingMembers = null;
   this.selectedProject = null;
 }
 

@@ -1,14 +1,16 @@
 .login-container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; 
     position: absolute;
     top: 0;
     left: 0;
     height: 100vh;
     width: 100vw;
     background: var(--accenture-gray-50);
+    padding-top: 50px; 
 }
+
 
 .box {
     background: var(--accenture-white);
@@ -134,4 +136,13 @@ button:hover {
 
 .toast.error-toast {
     background-color: #FF4F5E; 
+}
+
+.capability-wrapper {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.full-width {
+    width: 100%;
 }

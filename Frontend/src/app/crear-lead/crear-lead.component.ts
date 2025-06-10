@@ -5,6 +5,11 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 
+interface Capability {
+  id: string;
+  nombre: string;
+};
+
 @Component({
   selector: 'app-crear-lead',
   templateUrl: './crear-lead.component.html',
@@ -19,6 +24,8 @@ export class CrearLeadComponent implements OnInit {
   password2: string = '';
   selectedLeadType: string = 'people_lead'; // Valor por defecto
   selectedPeopleLead: number | null = null;
+  capabilities: Capability[] = [];
+  selectedCapability: Capability | null = null;
   availableLeads: any[] = [];
   mensaje: string = '';
   mensajeError: boolean = false;
@@ -36,6 +43,7 @@ export class CrearLeadComponent implements OnInit {
 
   ngOnInit(): void {
     this.getLeads();
+    this.getCapabilities();
   }
 
   getLeads() {
@@ -155,5 +163,20 @@ export class CrearLeadComponent implements OnInit {
     this.password2 = '';
     this.selectedLeadType = 'people_lead';
     this.selectedPeopleLead = null;
+  }
+
+  getCapabilities() {
+    this.api.getCapabilities().subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.capabilities = res.data;
+        } else {
+          console.error('Error al cargar capabilities:', res.error);
+        }
+      },
+      error: (err: any) => {
+        console.error('Error al obtener capabilities:', err);
+      }
+    });
   }
 }

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Router } from '@angular/router';
+import { NgxFileDropEntry, FileSystemFileEntry } from 'ngx-file-drop';
+import { ReporteService } from 'src/app/services/reporte.service';
 
 interface Comentarios {
   comentario_id: number;
@@ -13,19 +15,17 @@ interface Comentarios {
   autor_nombre?: string;
   proyecto_nombre?: string;
 }
-import { ReporteService } from 'src/app/services/reporte.service';
 
 @Component({
   selector: 'app-disponibilidad',
   templateUrl: './disponibilidad.component.html',
-  styleUrls: ['./disponibilidad.component.css']
+  styleUrls: ['./disponibilidad.component.css'] 
 })
 export class DisponibilidadComponent implements OnInit {
   empleados: any[] = [];
   comentarios: any[] = [];
   empleadosFiltrados: any[] = [];
 
-  // Ahora incluimos habilidad en los filtros
   filtros = {
     rol: '',
     habilidad: '',
@@ -70,6 +70,11 @@ export class DisponibilidadComponent implements OnInit {
   // comentariosPaginaActual: number = 1;
   // comentariosPorPagina: number = 6;
   // indicesPagina: number[] = [];
+
+  mostrarModalExcel: boolean = false;
+  archivoExcel: File | null = null;
+  errorExcel: string = '';
+  mensajeExito: string = '';
 
   
   constructor(
@@ -159,7 +164,7 @@ export class DisponibilidadComponent implements OnInit {
         const fullName = `${emp.nombre} ${emp.apellido_paterno} ${emp.apellido_materno}`.toLowerCase();
 
         return (
-          emp.usuario.toLowerCase().includes(searchLower) ||
+          emp.nombre.toLowerCase().includes(searchLower) ||
           emp.email.toLowerCase().includes(searchLower) ||
           fullName.includes(searchLower)
         );
@@ -369,30 +374,98 @@ export class DisponibilidadComponent implements OnInit {
     }
   }
 
-   // Paginación COMENTARIOS
-//   get comentariosPaginados(): Comentarios[] {
-//     const inicio = (this.comentariosPaginaActual - 1) * this.comentariosPorPagina;
-//     const fin = inicio + this.comentariosPorPagina;
-//     return this.comentariosPasados.slice(inicio, fin);
-//   }
+  // Método para abrir el modal de Excel
+  abrirModalExcel(): void {
+    this.mostrarModalExcel = true;
+    this.archivoExcel = null; // Reiniciar el archivo seleccionado
+    this.errorExcel = ''; // Reiniciar el mensaje de error
+  }
 
-//   get totalPagesComment(): number {
-//   return Math.ceil(this.comentariosPasados.length / this.comentariosPorPagina);
-// }
+  cerrarModalExcel(): void {
+    this.mostrarModalExcel = false;
+    this.archivoExcel = null; // Reiniciar el archivo seleccionado
+    this.errorExcel = ''; // Reiniciar el mensaje de error
+  }
 
+  // Para el input tradicional
+onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    const file = input.files[0];
+    this.validarArchivo(file);
+  }
+}
 
-//   siguientePaginaComentarios(): void {
-//   const totalPaginas = Math.ceil(this.comentariosPasados.length / this.comentariosPorPagina);
-//   if (this.comentariosPaginaActual < totalPaginas) {
-//     this.comentariosPaginaActual++;
-//   }
-// }
+// Para el drag-and-drop
+onFileDrop(files: NgxFileDropEntry[]): void {
+  if (files.length === 0) return;
 
-// paginaAnteriorComentarios(): void {
-//   if (this.comentariosPaginaActual > 1) {
-//     this.comentariosPaginaActual--;
-//   }
-// }
+  const droppedFile = files[0];
 
+  if (droppedFile.fileEntry.isFile) {
+    const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
+    fileEntry.file((file: File) => this.validarArchivo(file));
+  } else {
+    this.errorExcel = 'El archivo no es válido';
+  }
+}
 
+// Método común de validación
+private validarArchivo(file: File): void {
+  const validExtensions = ['.xls', '.xlsx'];
+  const fileName = file.name.toLowerCase();
+  const isValid = validExtensions.some(ext => fileName.endsWith(ext));
+
+  if (isValid) {
+    this.archivoExcel = file;
+    this.errorExcel = '';
+  } else {
+    this.archivoExcel = null;
+    this.errorExcel = 'Formato de archivo no válido. Solo se permiten archivos .xls o .xlsx';
+  }
+}
+
+  // Método para subir el archivo Excel
+  subirArchivoExcel(): void {
+    if (!this.archivoExcel) {
+      this.errorExcel = 'Por favor, selecciona un archivo Excel antes de continuar';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('archivo', this.archivoExcel);
+
+    // Mostrar mensaje de carga
+    this.mensajeExito = '';
+    this.errorExcel = '';
+    this.cargando = true; // Variable para mostrar spinner/loader
+
+    this.apiService.subirArchivoExcel(formData).subscribe({
+      next: (res: any) => {
+        this.cargando = false;
+        if (res.success) {
+          this.mensajeExito = '¡Archivo subido con éxito! La información se ha actualizado correctamente.';
+          this.cargarEmpleados(); // Recargar empleados después de la carga
+          
+          // Limpiar mensaje después de 5 segundos
+          setTimeout(() => {
+            this.mensajeExito = '';
+            this.cerrarModalExcel();
+          }, 5000);
+        } else {
+          this.errorExcel = res.message || 'Hubo un problema al procesar el archivo. Por favor, verifica el formato e intenta nuevamente.';
+        }
+      },
+      error: (err) => {
+        this.cargando = false;
+        console.error('Error al subir archivo:', err);
+        this.errorExcel = err.error?.error || 
+          'No se pudo conectar con el servidor. Por favor, verifica tu conexión e intenta nuevamente.';
+      }
+    });
+  }
+  esSuperadmin(): boolean {
+      const roles = this.authService.roles;
+      return roles.includes('admin');
+    }
 }

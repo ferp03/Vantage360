@@ -88,11 +88,6 @@
   cursor: pointer;
 }
 
-.btn-limpiar:hover {
-  background-color: hsl(var(--primary-foreground));
-  color: hsl(var(--primary));
-}
-
 /* Tabla de empleados */
 .tabla-container {
   margin-top: 20px;
@@ -221,11 +216,6 @@
   margin-right: 10px;
 }
 
-.btn-accion:hover {
-  background-color: hsl(var(--primary-foreground));
-  color: hsl(var(--primary));
-}
-
 .boton-comentario{
   background: none;          /* Elimina el fondo */
   border: none;              /* Elimina el borde */
@@ -248,7 +238,6 @@ button mat-icon.icono-persona {
   color: #333;               /* Color del icono */
   transition: all 0.2s ease; /* Transición suave para efectos */
 }
-
 
 /* Paginación */
 .pagination {
@@ -274,9 +263,6 @@ button mat-icon.icono-persona {
   height: 20px;
 }
 
-.pagination button:hover:not(:disabled) {
-  background-color: #8452d8;
-}
 
 .pagination button:disabled {
   background-color: rgba(138, 86, 232, 0.3);
@@ -337,7 +323,6 @@ button mat-icon.icono-persona {
 .modal-content {
   padding: 20px;
   color: var(--foreground);
-  /* overflow-y: auto; */
 }
 
 /* Botones */
@@ -355,7 +340,22 @@ button mat-icon.icono-persona {
   gap: 5px;
 }
 
-.btn-guardar {
+.btn-enviar{
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 200px;
+}
+
+.btn-guardar, .btn-enviar {
   background-color: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
 }
@@ -363,16 +363,6 @@ button mat-icon.icono-persona {
 .btn-cancelar {
   background-color: var(--accenture-gray-500);
   color: hsl(var(--muted-foreground));
-}
-
-.btn-guardar:hover {
-  background-color: #8050d0;
-  transform: translateY(-2px);
-}
-
-.btn-cancelar:hover {
-  background-color: var(--accenture-gray-600);
-  transform: translateY(-2px);
 }
 
 .modal-footer {
@@ -420,6 +410,11 @@ textarea:focus,
 .edit-modal.modal {
   width: 400px;
   max-height: 90vh;
+}
+
+.edit-modalExcel.modal {
+  width: 500px;
+  height: 700px;
 }
 
 /* Estilo del modal de comentarios */
@@ -561,4 +556,219 @@ input:not(:placeholder-shown) ~ .reset {
   font-size: 0.6em;
   color: #666;
   text-align: right;
+}
+
+/* Zona principal de arrastrar y soltar */
+.drop-zone {
+  border: 3px dashed #4caf50;
+  border-radius: 12px;
+  background-color: #f8f9fa;
+  padding: 40px 20px;
+  margin: 170px auto 15px;
+  width: 400px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  margin-top: 200px;
+}
+
+.drop-zone:hover {
+  background-color: #e8f5e9;
+  border-color: #388e3c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.1);
+}
+
+/* Contenido interno del dropzone */
+.drop-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+}
+
+/* Icono de archivo */
+.icono-excel {
+  font-size: 48px;
+  color: #2e7d32;
+  margin-bottom: 15px;
+}
+
+/* Texto principal e instrucciones */
+.drop-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 8px;
+}
+
+.drop-instructions {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+/* Badges de tipos de archivo */
+.file-types {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.file-type-badge {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Área para mostrar archivo cargado */
+.archivo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.archivo-cargado {
+  width: 100%;
+  text-align: center;
+}
+
+.file-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.success-icon {
+  color: #4caf50;
+  font-size: 24px;
+}
+
+.file-name {
+  font-weight: 600;
+  color: #333;
+  max-width: 440px;
+  white-space: normal;
+  word-wrap: break-word;
+  text-align: left;
+  margin-bottom: 4px;
+}
+
+.file-size {
+  color: #777;
+  font-size: 12px;
+  text-align: left;
+}
+
+/* Botón para cambiar archivo */
+.btn-change {
+  background: none;
+  border: 1px solid #4caf50;
+  color: #4caf50;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.btn-change:hover {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Mensaje de error */
+.error {
+  color: #d32f2f;
+  background-color: #fde7e7;
+  padding: 10px 15px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* Botón de guardar */
+.btn-guardar {
+  transition: all 0.2s;
+}
+
+.btn-guardar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Mensajes de éxito y error */
+.success-message {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-left: 4px solid #2e7d32;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-left: 4px solid #c62828;
+}
+
+.success-icon {
+  color: #2e7d32;
+}
+
+.error-icon {
+  color: #c62828;
+}
+
+/* Spinner de carga */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+  font-size: 40px;
+  color: #3f51b5;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
