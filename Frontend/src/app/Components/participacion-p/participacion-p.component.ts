@@ -12,6 +12,7 @@ interface Capabilities {
   };
 }
 
+
 interface Miembro {
   nombre: string;
   capability: string;
@@ -71,8 +72,8 @@ export class ParticipacionPComponent implements OnInit {
   selectedVista: 'puestos' | 'habilidades' = 'puestos';
   currentUserId: string = '';
   userId: string = '';
-
-
+  showDeleteModal: boolean = false;
+  projectToDelete: Proyecto | null = null;
   proyectosDisponibles: Proyecto[] = [];
   proyectosActuales: Proyecto[] = [];
   proyectosPasados: Proyecto[] = [];
@@ -463,6 +464,41 @@ abrirModalEdicionHabilidadesPuestos(proyecto: Proyecto, modo: 'puestos' | 'habil
       }
     }
   });
+}
+
+
+openDeleteModal(proyecto: Proyecto): void {
+  if (this.showDeleteModal) return;
+  this.projectToDelete = proyecto;
+  this.showDeleteModal = true;
+}
+
+closeDeleteModal(): void {
+  this.showDeleteModal = false;
+  this.projectToDelete = null;
+}
+
+async confirmDelete(): Promise<void> {
+  if (!this.projectToDelete) return;
+
+  try {
+    await this.apiService.eliminarProyecto(this.projectToDelete.proyecto_id).toPromise();
+    
+    // Actualizar las listas
+    this.proyectosActuales = this.proyectosActuales.filter(p => p.proyecto_id !== this.projectToDelete?.proyecto_id);
+    this.proyectosDisponibles = this.proyectosDisponibles.filter(p => p.proyecto_id !== this.projectToDelete?.proyecto_id);
+    this.proyectosPasados = this.proyectosPasados.filter(p => p.proyecto_id !== this.projectToDelete?.proyecto_id);
+    
+    // Actualizar contadores
+    this.actualesCount = this.proyectosActuales.length;
+    this.disponiblesCount = this.proyectosDisponibles.length;
+    this.pasadosCount = this.proyectosPasados.length;
+    
+    this.closeDeleteModal();
+  } catch (error) {
+    console.error('Error al eliminar proyecto:', error);
+    this.closeDeleteModal();
+  }
 }
 
 }

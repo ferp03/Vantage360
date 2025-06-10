@@ -441,7 +441,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);  
+  background-color: rgba(52, 52, 52, 0.575);  
   display: flex;
   justify-content: center;
   align-items: center;
@@ -483,7 +483,7 @@
 
 .btn-confirm {
   padding: 10px 20px;
-  background-color: #9668E6; /* Color morado que especificaste */
+  background-color: #9668E6; 
   color: white;
   border: none;
   border-radius: 6px;
@@ -616,4 +616,33 @@ h4 {
 .skills-title {
   display: flex;
   align-items: center;
+}
+
+/* boton borrar */
+.btn-delete {
+  background-color: #ffebee;
+  color: #c62828;
+  border: none;
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-delete:hover {
+  background-color: #ffcdd2;
+}
+
+.btn-delete .material-icons {
+  font-size: 20px;
+}
+
+.btn-delete-confirm{
+  padding: 10px 20px;
+  background-color: #9668E6; 
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }

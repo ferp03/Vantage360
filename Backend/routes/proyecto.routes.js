@@ -411,4 +411,46 @@ router.get('/proyecto/:id/integrantes/', async (req, res) => {
   }
 });
 
+// Ruta para eliminar un proyecto
+router.delete('/proyecto/:id', async (req, res) => {
+  try {
+    const proyectoId = parseInt(req.params.id);
+    
+    if (isNaN(proyectoId)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'ID de proyecto inválido' 
+      });
+    }
+
+    // Eliminar en cascada sin verificar permisos (el frontend ya lo hace)
+    const { error } = await supabase.rpc('delete_project_cascade', { 
+      project_id: proyectoId 
+    });
+
+    if (error) {
+      console.error('Error al eliminar proyecto:', error);
+      return res.status(500).json({
+        success: false,
+        error: 'Error al eliminar el proyecto',
+        details: error.message
+      });
+    }
+
+    return res.json({ 
+      success: true, 
+      message: 'Proyecto eliminado correctamente' 
+    });
+
+  } catch (err) {
+    console.error('Error inesperado:', err);
+    return res.status(500).json({
+      success: false,
+      error: 'Error interno del servidor',
+      details: err.message
+    });
+  }
+});
+
+
 export default router;

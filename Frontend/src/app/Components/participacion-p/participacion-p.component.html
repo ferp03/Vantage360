@@ -256,6 +256,7 @@
     <span class="material-icons">edit</span>
     Editar
   </button>
+
   
   <!-- Botón Guardar -->
   <button *ngIf="proyecto.editando" 
@@ -272,6 +273,15 @@
     <span class="material-icons">cancel</span>
   </button>
   
+  <!-- Boton borrar -->
+<button *ngIf="proyecto.editando" 
+        class="btn-delete" 
+        (click)="openDeleteModal(proyecto)"
+        matTooltip="Eliminar proyecto">
+  <span class="material-icons">delete</span>
+</button>
+
+
   <!-- Botón Ver Integrantes -->
   <button class="btn-details" (click)="openMemberModal(proyecto)">
     <span class="material-icons">visibility</span>
@@ -329,6 +339,18 @@
   </main>
 </div>
 <!-- </body> -->
+
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <h3>Confirmar eliminación</h3>
+    <p>¿Estás seguro que deseas eliminar el proyecto "{{projectToDelete?.nombre}}"?</p>
+    <p class="warning-text">Esta acción no se puede deshacer.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="closeDeleteModal()">Cancelar</button>
+      <button class="btn-delete-confirm" (click)="confirmDelete()">Eliminar</button>
+    </div>
+  </div>
+</div>
 
 <!-- Definición del template reutilizable -->
 <ng-template #integrantesModal>
