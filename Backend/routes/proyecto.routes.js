@@ -266,10 +266,9 @@ router.post('/proyecto/unirse', async (req, res) => {
       .maybeSingle();
 
     if (existeError) {
-      console.error('Error verificando membresía:', existeError);
       return res.status(500).json({
         success: false,
-        error: 'Error al verificar membresía existente'
+        error: 'No se pudo verificar que el empelado no esté registrado en el proyecto'
       });
     }
 
@@ -280,27 +279,23 @@ router.post('/proyecto/unirse', async (req, res) => {
       });
     }
 
-    const { data, error } = await supabase
-      .from('empleado_proyecto')
-      .insert({
-        empleado_id: empleado_id,
-        proyecto_id: proyecto_id,
-      })
-      .select();
-
-    if (error) {
-      console.error('Error en inserción:', error);
-      return res.status(400).json({
-        success: false,
-        error: 'Error al unirse al proyecto',
-        details: error.message
-      });
+    // Insertar solicitud del empleado
+    const { data: dataSolicitud, error: errorSolicitud } = await supabase.from('proyecto_solicitud').insert({
+      proyecto_id,
+      solicitante_id: empleado_id,
+      fecha_emision: new Date().toISOString().split('T')[0],
+      status: 'Pendiente'
+    });
+    if(errorSolicitud) {
+      if(errorSolicitud.message === 'duplicate key value violates unique constraint "proyecto_solicitud_solicitante_id_proyecto_id_key"'){
+        return res.status(400).json({ success: false, error: 'Ya tienes una solicitud pendiente de revisión.' });
+      }
+      return res.status(400).json({ success: false, error: errorSolicitud.message  });
     }
 
     return res.status(201).json({
       success: true,
-      message: 'Unido al proyecto exitosamente',
-      data: data
+      message: 'Solicitud enviada correctamente',
     });
 
   } catch (err) {
@@ -408,6 +403,149 @@ router.get('/proyecto/:id/integrantes/', async (req, res) => {
 
   } catch (err) {
     return res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+router.get('/proyecto/:id/solicitudes', async (req, res) => {
+  try{
+    const id = Number(req.params.id);
+    const { data, error } = await supabase.rpc('get_solicitudes', {_id: id});
+    console.log(error);
+    if(error) return res.status(400).json({ success: false, error: 'No se pudieron obtener las solicitudes' });
+
+    return res.status(200).json({ success: true, data: data })
+
+  } catch (err) {
+    return res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+router.put('/proyecto/:id/rechazar-solicitud', async (req, res) => {
+  try{
+    const id = Number(req.params.id);
+    const { solicitante_id } = req.body;
+    const { error } = await supabase
+      .from('proyecto_solicitud')
+      .update({
+      status: 'Rechazado',
+      fecha_emision: new Date().toISOString().split('T')[0]
+      })
+      .eq('proyecto_id', id)
+      .eq('solicitante_id', solicitante_id);
+
+    if(error) return res.status(400).json({ success: false, error: error.message });
+
+    return res.status(200).json({ success: true, message: 'Empleado rechazado en el proyecto.' });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: `Error de servidor. ${err.message}`});
+  }
+});
+
+router.put('/proyecto/:id/aceptar-solicitud', async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { solicitante_id, capability } = req.body;
+    console.log(solicitante_id, capability);
+
+    // Obtener el JSON actual de capabilities
+    const { data: proyecto, error: capabilitiesError } = await supabase
+      .from('proyecto')
+      .select('capabilities')
+      .eq('proyecto_id', id)
+      .single();
+
+    if (capabilitiesError || !proyecto) {
+      return res.status(400).json({ success: false, error: 'No se pudo obtener el proyecto o capabilities.' });
+    }
+
+    const capabilitiesWrapper = proyecto.capabilities;
+
+    let actualizarJSON = false;
+
+    // Si la capability existe en el JSON y tiene al menos 1 cupo, restamos 1
+    if (
+      capabilitiesWrapper &&
+      capabilitiesWrapper.capabilities &&
+      capabilitiesWrapper.capabilities.puestos &&
+      capabilitiesWrapper.capabilities.puestos[capability] !== undefined &&
+      capabilitiesWrapper.capabilities.puestos[capability] > 0
+    ) {
+      capabilitiesWrapper.capabilities.puestos[capability] -= 1;
+      actualizarJSON = true;
+    }
+
+    // Insertar al empleado en el proyecto
+    const { error: errorInsert } = await supabase.from('empleado_proyecto').insert({
+      empleado_id: solicitante_id,
+      proyecto_id: id
+    });
+
+    if (errorInsert) {
+      return res.status(400).json({ success: false, error: errorInsert.message });
+    }
+
+    // Actualizar el estado de la solicitud a 'Aceptado'
+    const { error: errorSolicitud } = await supabase
+      .from('proyecto_solicitud')
+      .update({
+        status: 'Aceptado',
+        fecha_emision: new Date().toISOString().split('T')[0]
+      })
+      .eq('proyecto_id', id)
+      .eq('solicitante_id', solicitante_id);
+
+    if (errorSolicitud) {
+      return res.status(400).json({ success: false, error: errorSolicitud.message });
+    }
+
+    // Solo si hay cambios en el JSON, actualízalo en la base de datos
+    if (actualizarJSON) {
+      const { error: updateError } = await supabase
+        .from('proyecto')
+        .update({ capabilities: capabilitiesWrapper })
+        .eq('proyecto_id', id);
+
+      if (updateError) {
+        return res.status(400).json({ success: false, error: updateError.message });
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: actualizarJSON
+        ? 'Empleado aceptado y capabilities actualizadas.'
+        : 'Empleado aceptado, las capabilities no fueron modificadas.'
+    });
+
+  } catch (err) {
+    return res.status(500).json({ success: false, error: `Error de servidor. ${err.message}` });
+  }
+});
+
+
+router.delete('/proyecto/eliminar-solicitud/:solicitudId', async (req, res) => {
+  try {
+    const id = Number(req.params.solicitudId);
+
+    console.log('Solicitud a eliminar:', id);
+
+    if (!id) {
+      return res.status(400).json({ success: false, error: 'El campo empleado_id es obligatorio' });
+    }
+
+    const { error } = await supabase
+      .from('proyecto_solicitud')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      return res.status(400).json({ success: false, error: error.message });
+    }
+
+    return res.status(200).json({ success: true, message: 'Solicitud eliminada correctamente' });
+
+  } catch (err) {
+    return res.status(500).json({ success: false, error: `Error de servidor. ${err.message}` });
   }
 });
 

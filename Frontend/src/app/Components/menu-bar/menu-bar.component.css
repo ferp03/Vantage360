@@ -163,7 +163,7 @@ nav {
   position: absolute;
   right: 0;
   top: 100%;
-  width: 350px;
+  width: 450px;
   max-height: 400px;
   overflow-y: auto;
   background-color: white;
@@ -225,6 +225,8 @@ nav {
   color: #666;
   margin-left: 10px;
   white-space: nowrap;
+  display: flex;
+  flex-direction: column;
 }
 
 .empty-notifications {

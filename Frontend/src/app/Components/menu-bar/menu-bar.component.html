@@ -40,7 +40,12 @@
                         </div>
                         <div class="notification-time">
                             {{notification.date | date:'short'}}
-                        </div>
+                            <button 
+                            *ngIf="notification.solicitudStatus === 'Aceptado' || notification.solicitudStatus === 'Rechazado'" 
+                            (click)="borrarSolicitud(notification)">
+                            OK
+                            </button>
+                    </div>
                     </div>
                     <div *ngIf="notifications.length === 0" class="empty-notifications">
                         No hay notificaciones

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from 'src/app/auth/auth.service';
 import { ProyectosComponent } from '../proyectos/proyectos.component';
@@ -15,6 +15,13 @@ interface Capabilities {
 interface Miembro {
   nombre: string;
   capability: string;
+}
+
+interface Solicitud {
+  solicitante_id: string;
+  solicitante_nombre: string;
+  capability: string;
+  fecha_emision: string;
 }
 
 
@@ -47,6 +54,7 @@ export interface Proyecto {
     nombre: string;
   };
   members: Miembro[];
+  solicitudes: Solicitud[];
   puedeEditar?: boolean;
   editando?: boolean;
   puesto?: string; 
@@ -66,6 +74,8 @@ export interface Proyecto {
   styleUrls: ['./participacion-p.component.css']
 })
 export class ParticipacionPComponent implements OnInit {
+
+  @ViewChild('toast') toast!: ElementRef;
   activeTab: string = 'disponibles';
   esDeliveryLead: boolean = false;
   selectedVista: 'puestos' | 'habilidades' = 'puestos';
@@ -83,7 +93,10 @@ export class ParticipacionPComponent implements OnInit {
 
   members: Miembro[] = []; 
   loadingMembers: boolean = false;
+  loadingRequests: boolean = false;
   errorLoadingMembers: string | null = null;
+  errorLoadingRequests: string | null = null;
+
 
   constructor(
     public authService: AuthService,
@@ -229,6 +242,17 @@ cargarProyectosActuales(): void {
         
         this.actualesCount = this.proyectosActuales.length;
         this.pasadosCount = this.proyectosPasados.length;
+
+        this.proyectosActuales.forEach((proyecto, idx) => {
+          this.apiService.obtenerSolicitudesProyecto(proyecto.proyecto_id).subscribe({
+            next: (resp: any) => {
+              this.proyectosActuales[idx].solicitudes = resp.data || [];
+            },
+            error: () => {
+              this.proyectosActuales[idx].solicitudes = [];
+            }
+          });
+        });
       },
       error: (error) => {
         console.error('Error al cargar proyectos actuales:', error);
@@ -244,8 +268,6 @@ cargarProyectosActuales(): void {
 verificarPermisoEdicion(proyecto: Proyecto): boolean {
   const esDeliveryLeadDelProyecto = proyecto.delivery_lead?.id === this.authService.userId;
   const esAdmin = this.authService.roles.includes('admin');
-  
-  
   return esDeliveryLeadDelProyecto || esAdmin;
 }
 // Modal
@@ -272,34 +294,61 @@ openMemberModal(proyecto: Proyecto): void {
   
   this.showMemberModal = true;
   this.loadingMembers = true;
+  this.loadingRequests = true;
   this.errorLoadingMembers = null;
 
   this.apiService.obtenerIntegrantesProyecto(proyecto.proyecto_id).subscribe({
-  next: (response: any) => {
-  if (this.selectedProject) {
-    this.selectedProject = {
-      ...this.selectedProject,
-      members: response.data || []
-    };
-    console.log('Project members:', this.selectedProject.members);
-  }
-
-  this.loadingMembers = false;
-
-  },
-  error: (error) => {
-    console.error('Error loading members:', error);
-    this.errorLoadingMembers = 'Error al cargar los miembros';
-    this.loadingMembers = false;
+    next: (response: any) => {
     if (this.selectedProject) {
-      // También aquí se puede asignar un nuevo objeto o un nuevo array vacío.
       this.selectedProject = {
         ...this.selectedProject,
-        members: []
+        members: response.data || []
       };
+      console.log('Project members:', this.selectedProject.members);
     }
-  }
-});
+
+    this.loadingMembers = false;
+
+    },
+    error: (error) => {
+      console.error('Error loading members:', error);
+      this.errorLoadingMembers = 'Error al cargar los miembros';
+      this.loadingMembers = false;
+      if (this.selectedProject) {
+        // También aquí se puede asignar un nuevo objeto o un nuevo array vacío.
+        this.selectedProject = {
+          ...this.selectedProject,
+          members: []
+        };
+      }
+    }
+  });
+
+  this.apiService.obtenerSolicitudesProyecto(proyecto.proyecto_id).subscribe({
+    next: (response: any) => {
+      if(this.selectedProject){
+        this.selectedProject = {
+          ...this.selectedProject,
+          solicitudes: response.data || []
+        };
+        console.log('Project requests:', this.selectedProject.solicitudes);
+      }
+
+      this.loadingRequests = false;
+    },
+      error: (error) => {
+        console.error('Error loading requests:', error);
+        this.errorLoadingRequests = 'Error al cargar las solicitudes';
+        this.loadingRequests = false;
+        if (this.selectedProject) {
+          // También aquí se puede asignar un nuevo objeto o un nuevo array vacío.
+          this.selectedProject = {
+            ...this.selectedProject,
+            solicitudes: []
+          };
+        }
+      }
+    });
 }
 
 sortKeys = (a: any, b: any): number => a.key.localeCompare(b.key);
@@ -324,6 +373,25 @@ getMembersGroupedAndSorted() {
   return grouped;
 }
 
+getRequestsGroupedAndSorted() {
+  if (!this.selectedProject?.solicitudes) return {};
+
+  const grouped: { [key: string]: Solicitud[] } = {};
+
+  for (const solicitud of this.selectedProject.solicitudes) {
+    const capability = solicitud.capability || 'Sin categoría';
+    if (!grouped[capability]) {
+      grouped[capability] = [];
+    }
+    grouped[capability].push(solicitud);
+  }
+
+  for (const cap in grouped) {
+    grouped[cap].sort((a, b) => a.solicitante_nombre.localeCompare(b.solicitante_nombre));
+  }
+
+  return grouped;
+}
 
 closeJoinModal(event?: Event): void {
   // if (event) {
@@ -343,35 +411,154 @@ closeMemberModal(event?: Event): void {
   this.selectedProject = null;
 }
 
+private showToast(message: string, isError: boolean = false): void {
+  const toast = this.toast.nativeElement;
+  toast.textContent = message;
+
+  // Reset classes
+  toast.classList.remove('success-toast', 'error-toast');
+
+  // Add appropriate class
+  if (isError) {
+    toast.classList.add('error-toast');
+  } else {
+    toast.classList.add('success-toast');
+  }
+
+  // Show toast
+  toast.classList.add('show');
+
+  // Hide after 3 seconds
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
 confirmJoin(): void {
   if (!this.selectedProject) return;
 
   const userId = this.authService.userId;
   const proyectoId = this.selectedProject.proyecto_id;
 
-  if (!userId) {
-    return;
-  }
+  if (!userId) return;
 
-  this.apiService.unirseAProyecto(userId, proyectoId)
-    .subscribe({
-      next: (response) => {
+  console.log('Enviando solicitud de unión al proyecto');
+
+  this.apiService.unirseAProyecto(userId, proyectoId).subscribe({
+    next: (response) => {
+      console.log(response);
+      const status = response?.success ?? false;
+      let mensaje = status 
+        ? response?.message || 'Solicitud enviada' 
+        : response?.error || 'Solicitud fallida';
+
+      console.log('Estado:', status);
+      console.log('Mensaje:', mensaje);
+
+      if (status) {
         this.showJoinModal = false;
         this.selectedProject = null;
-        
+        this.showToast(mensaje, false);
+
         setTimeout(() => {
           this.cargarProyectosDisponibles();
           this.cargarProyectosActuales();
         }, 1);
-      },
-      error: (error) => {
-        console.error('Error detallado:', error);
-        
-        const errorMsg = error.error?.error || 
-                        error.error?.message || 
-                        'Error al unirse al proyecto';
+      } else {
+        this.showToast(mensaje, true);
       }
-    });
+    },
+    error: (error) => {
+      console.error('Error detallado:', error);
+
+      const mensaje = error.error?.error || 
+                      error.error?.message || 
+                      'Error al enviar la solicitud de unión';
+
+      this.showToast(mensaje, true);
+    }
+  });
+}
+
+aceptarSolicitud(solicitud: Solicitud) {
+  if(!this.selectedProject) return;
+
+  const proyectoId = this.selectedProject.proyecto_id;
+  const solicitanteId = solicitud.solicitante_id;
+  console.log('Aceptar', proyectoId, solicitanteId);
+
+  this.apiService.acetparSolicitud(proyectoId, solicitanteId, solicitud.capability).subscribe({
+    next: (response) => {
+      const status = response?.success ?? false;
+      let mensaje = status
+        ? response?.message || 'Solicitud Aceptada'
+        : response?.error || 'No se pudo aceptar la solicitud';
+
+      this.showToast(mensaje, !status);
+
+      if (status) {
+        // Recargar la lista de solicitudes después de rechazar
+        if (this.selectedProject) {
+          this.apiService.obtenerSolicitudesProyecto(proyectoId).subscribe({
+            next: (resp: any) => {
+              this.selectedProject!.solicitudes = resp.data || [];
+            },
+            error: () => {
+              this.selectedProject!.solicitudes = [];
+            }
+          });
+          this.cargarProyectosDisponibles();
+          this.cargarProyectosActuales();
+        }
+      }
+    },
+    error: (error) => {
+      const mensaje = error.error?.error ||
+                      error.error?.message ||
+                      'Error al aceptar la solicitud';
+      this.showToast(mensaje, true);
+    }
+  });
+}
+
+rechazarSolicitud(solicitud: Solicitud) {
+  if(!this.selectedProject) return;
+  const proyectoId = this.selectedProject.proyecto_id;
+  const solicitanteId = solicitud.solicitante_id;
+  console.log('Rechazar', proyectoId, solicitanteId);
+
+  this.apiService.rechazarSolicitud(proyectoId, solicitanteId).subscribe({
+    next: (response) => {
+      const status = response?.success ?? false;
+      let mensaje = status
+        ? response?.message || 'Solicitud rechazada'
+        : response?.error || 'No se pudo rechazar la solicitud';
+
+      this.showToast(mensaje, !status);
+
+      if (status) {
+        // Recargar la lista de solicitudes después de rechazar
+        if (this.selectedProject) {
+          this.apiService.obtenerSolicitudesProyecto(proyectoId).subscribe({
+            next: (resp: any) => {
+              this.selectedProject!.solicitudes = resp.data || [];
+            },
+            error: () => {
+              this.selectedProject!.solicitudes = [];
+            }
+          });
+          this.cargarProyectosDisponibles();
+          this.cargarProyectosActuales();
+        }
+      }
+    },
+    error: (error) => {
+      const mensaje = error.error?.error ||
+                      error.error?.message ||
+                      'Error al rechazar la solicitud';
+      this.showToast(mensaje, true);
+    }
+  });
 }
 
 openTab(tabId: string) {
