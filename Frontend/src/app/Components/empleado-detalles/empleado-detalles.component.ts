@@ -105,9 +105,11 @@ export class EmpleadoDetallesComponent implements OnInit {
     lead_usuario: ' ',
     lead_id: ' ',
     ubicacion: ' ',
-    titulo_proyecto: ' ',
-    fecha_inicio: ' ',
-    capability_proyecto: ' '
+    proyectos_actuales: [] as Array<{
+      fecha: string;
+      nombre: string;
+      capability: string;
+    }>,
   };
 
   habilidadesOptions: HabilidadOption[] = []; // Lista de habilidades disponibles
@@ -161,8 +163,6 @@ export class EmpleadoDetallesComponent implements OnInit {
     confirmar: false,
     mensajeError: ""
   };
-
-  
 
   nuevoEstado: string = '';
   nuevoUsuario: string = '';
@@ -285,16 +285,13 @@ ngOnInit() {
             lead_usuario: res.data.lead_usuario,
             lead_id: res.data.lead_id,
             ubicacion: res.data.ubicacion,
-            titulo_proyecto: res.data.titulo_proyecto ? res.data.titulo_proyecto : "No hay proyecto actual",
-            fecha_inicio: res.data.fecha_inicio ? res.data.fecha_inicio : "Fecha no disponible",
-            capability_proyecto: res.data.capability_proyecto ? res.data.capability_proyecto : "No hay puesto actual",
+            proyectos_actuales: res.data.proyectos_actuales || []
 
           };
         this.nuevoEstado = this.info.estado_laboral;
         this.nuevoUsuario = this.info.usuario;
         const ciudadEncontrada = this.ciudades.find(c => c.nombre === this.info.ubicacion);
         this.nuevaCiudad = ciudadEncontrada || { id: '', nombre: this.info.ubicacion };
-
         }
       },
       error: (err) => console.error('Error al obtener info:', err)
