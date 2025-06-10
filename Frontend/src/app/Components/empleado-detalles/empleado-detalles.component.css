@@ -1104,3 +1104,61 @@ font-size: 14px;
 .iconos-nivel mat-icon.activo {
   color: #f5b301;
 }
+
+.contenedor-scroll-proyectos {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, auto);
+  gap: 0.6rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 65%;
+  padding: 0.5rem 0;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+.contenedor-scroll-proyectos::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.tarjeta-proyecto {
+  background-color: #ffffff;
+  border-left: 5px solid #9668e6;
+  border-radius: 8px;
+  padding: .3rem 1.25rem;
+  margin: .3rem 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s ease-in-out;
+  width: 230px;
+  min-width: 230px;
+  box-sizing: border-box;
+}
+
+.tarjeta-proyecto:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.tarjeta-proyecto h4 {
+  margin: 0.4rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.tarjeta-proyecto p {
+  margin: 0.4rem 0;
+  font-size: 1rem;
+  color: #555;
+  display: flex;
+  align-items: center;
+}
+
+.tarjeta-proyecto .material-icons {
+  font-size: .8rem;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
