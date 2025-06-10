@@ -555,4 +555,42 @@ router.delete('/empleado/:id/habilidad/:habilidad_id', async (req, res) => {
   }
 });
 
+router.get('/empleado/:id/solicitudes', async (req, res) => {
+ try {
+  const _id = req.params.id;
+  const { data, error } = await supabase.rpc('get_solicitudes_empleado', {_id});
+
+  if(error) return res.status(400).json({ success: false, error: error.message});
+
+  if(!data) {
+    return res.status(404).json({ success: false, message: 'No se encontraron solicitudes para este empleado' });
+  }
+
+  console.log('Solicitudes obtenidas:', data);
+  return res.status(200).json({ success: true, data });
+
+ } catch (err) {
+  return res.status(500).json({ success: false, error: 'Error del servidor al obtener solicitudes' });
+ }
+});
+
+router.get('/lead/:id/solicitudes', async (req, res) => {
+ try {
+  const _id = req.params.id;
+  const { data, error } = await supabase.rpc('get_solicitudes_proyectos_delivery_lead', {_id});
+
+  if(error) return res.status(400).json({ success: false, error: error.message});
+
+  if(!data) {
+    return res.status(404).json({ success: false, message: 'No se encontraron solicitudes para este empleado' });
+  }
+
+  console.log('Solicitudes obtenidas:', data);
+  return res.status(200).json({ success: true, data });
+
+ } catch (err) {
+  return res.status(500).json({ success: false, error: 'Error del servidor al obtener solicitudes' });
+ }
+});
+
 export default router;

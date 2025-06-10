@@ -163,7 +163,7 @@ nav {
   position: absolute;
   right: 0;
   top: 100%;
-  width: 350px;
+  width: 450px;
   max-height: 400px;
   overflow-y: auto;
   background-color: white;
@@ -225,6 +225,8 @@ nav {
   color: #666;
   margin-left: 10px;
   white-space: nowrap;
+  display: flex;
+  flex-direction: column;
 }
 
 .empty-notifications {
@@ -232,4 +234,27 @@ nav {
   text-align: center;
   color: #666;
   font-size: 14px;
+}
+
+.delete-button {
+  background-color: #9668e6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 6px;
+  align-self: flex-end;
+  transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+  background-color: #8050d0;
+}
+
+.delete-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.3);
 }
