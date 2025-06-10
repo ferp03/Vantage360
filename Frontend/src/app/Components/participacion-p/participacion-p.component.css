@@ -618,6 +618,101 @@ h4 {
   align-items: center;
 }
 
+.member-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.member-name {
+  flex-grow: 1;
+  font-size: 0.95rem;
+}
+
+.btn-accept,
+.btn-reject {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-accept {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn-accept:hover {
+  background-color: #45a047;
+}
+
+.btn-reject {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn-reject:hover {
+  background-color: #e53935;
+}
+
+.material-icons {
+  font-size: 1.1rem;
+  vertical-align: middle;
+}
+
+
+
+/* mensaje de error o exito */
+.toast {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1000;
+  right: 30px;
+  top: 30px;
+  font-size: 17px;
+  opacity: 0;
+  transition: opacity 0.5s, visibility 0.5s;
+}
+
+.toast.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.toast.success-toast {
+  background-color: #4caf50;
+}
+
+.toast.error-toast {
+  background-color: #f44336;
+}
+
+.badge-solicitudes {
+  background: #d32f2f;
+  color: #fff;
+  border-radius: 50%;
+  padding: 0.2em 0.6em;
+  font-size: 0.85em;
+  margin-left: 0.5em;
+  vertical-align: middle;
+  font-weight: bold;
+}
+
 /* boton borrar */
 .btn-delete {
   background-color: #ffebee;

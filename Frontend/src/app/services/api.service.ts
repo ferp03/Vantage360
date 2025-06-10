@@ -243,12 +243,7 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/proyecto/unirse`, {
       empleado_id: empleadoId,
       proyecto_id: proyectoId
-    }).pipe(
-      catchError(error => {
-        console.error('Error en la solicitud:', error);
-        return throwError(() => error);
-      })
-    );
+    });
   }
 
   // Eliminar Habilidad
@@ -314,4 +309,28 @@ export class ApiService {
   );
 }
 
+  obtenerSolicitudesProyecto(proyectoId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/proyecto/${proyectoId}/solicitudes`);
+  }
+
+  acetparSolicitud(proyectoId: number, solicitante_id: string, capability: string): Observable<any> {
+    console.log(`Aceptando solicitud del solicitante ${solicitante_id} para el proyecto ${proyectoId}`);
+    return this.http.put(`${this.apiUrl}/proyecto/${proyectoId}/aceptar-solicitud`, {solicitante_id, capability});
+  }
+
+  rechazarSolicitud(proyectoId: number, solicitante_id: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/proyecto/${proyectoId}/rechazar-solicitud`, {solicitante_id});
+  }
+
+  getSolicitudesEmnpleado(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/empleado/${id}/solicitudes`);
+  }
+
+  getSolicitudesLead(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/lead/${id}/solicitudes`);
+  }
+
+  deleteSolicitud(solicitudId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/proyecto/eliminar-solicitud/${solicitudId}`);
+  }
 } 

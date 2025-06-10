@@ -2,13 +2,23 @@ import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular
 import { AuthService } from 'src/app/auth/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/envs/environment';
+import { ApiService } from 'src/app/services/api.service';
 
 interface Notification {
   id: number;
   message: string;
   date: Date;
   read: boolean;
-  certificateId: number;
+  certificateId?: number; // Para certificados
+  solicitudStatus?: string; // Para solicitudes
+}
+
+interface Solicitud {
+  id: number;
+  proyecto_nombre: string;
+  capability: string;
+  fecha_emision: Date;
+  status: string;
 }
 
 @Component({
@@ -21,13 +31,16 @@ export class MenuBarComponent implements OnInit {
   menuAbierto = false;
   notificationMenuAbierto = false;
   notifications: Notification[] = [];
+  Soliticitudes: Solicitud[] = [];
+  SoliticitudesLead: Solicitud[] = [];
   unreadNotificationsCount = 0;
   private notificationCheckInterval: any;
   hasUnreadNotifications = false;
 
   constructor(
     private auth: AuthService,
-    private http: HttpClient
+    private http: HttpClient,
+    private apiService: ApiService
   ) {}
 
   empleadoId = this.auth.userId;
@@ -52,6 +65,22 @@ export class MenuBarComponent implements OnInit {
         this.setupNotificationInterval();
       } else {
         this.clearNotificationInterval();
+      }
+    });
+  }
+
+  borrarSolicitud(n: Notification) {
+    this.notifications = this.notifications.filter(notif => notif.id !== n.id);
+    this.updateUnreadCount();
+    this.saveNotificationsToLocalStorage();
+
+    // deleteSolicitud
+    this.apiService.deleteSolicitud(n.id).subscribe({
+      next: () => {
+        console.log(`Solicitud ${n.id} eliminada correctamente.`);
+      }
+      , error: (error) => {
+        console.error(`Error al eliminar la solicitud ${n.id}:`, error);
       }
     });
   }
@@ -92,6 +121,51 @@ export class MenuBarComponent implements OnInit {
               certificateId: certificado.certificacion_id
             });
           }
+        }
+      });
+
+      // solicitudes del empleado
+      const solicitudesResponse: any = await this.http.get(
+        `${environment.apiUrl}/empleado/${this.empleadoId}/solicitudes`
+      ).toPromise();
+      this.Soliticitudes = solicitudesResponse.data || [];
+      console.log('Solicitudes:', this.Soliticitudes);
+      this.Soliticitudes.forEach((solicitud: any) => {
+        if (solicitud.status === 'Pendiente') {
+          nuevasNotificaciones.push({
+            id: solicitud.id,
+            message: `Tienes una solicitud ${solicitud.status} en el proyecto "${solicitud.proyecto_nombre}" (${solicitud.capability})`,
+            date: new Date(solicitud.fecha_emision),
+            read: false,
+            solicitudStatus: solicitud.status
+          });
+        }
+        if (solicitud.status === 'Aceptado' || solicitud.status === 'Rechazado') {
+          nuevasNotificaciones.push({
+            id: solicitud.id,
+            message: `Tu solicitud fue ${solicitud.status} en el proyecto "${solicitud.proyecto_nombre}" (${solicitud.capability})`,
+            date: new Date(solicitud.fecha_emision),
+            read: false,
+            solicitudStatus: solicitud.status
+          });
+        }
+      });
+
+      // Solicitudes del delivery lead
+      const solicitudesDeliveryResponse: any = await this.http.get(
+        `${environment.apiUrl}/lead/${this.empleadoId}/solicitudes`
+      ).toPromise();
+      this.SoliticitudesLead = solicitudesDeliveryResponse.data || [];
+      console.log('Solicitudes:', this.SoliticitudesLead);
+      this.SoliticitudesLead.forEach((solicitud: any) => {
+        if (solicitud.status === 'Pendiente') {
+          nuevasNotificaciones.push({
+            id: solicitud.id,
+            message: `Tienes una solicitud pendiente de checar del proyecto "${solicitud.proyecto_nombre}" (${solicitud.capability})`,
+            date: new Date(solicitud.fecha_emision),
+            read: false,
+            solicitudStatus: solicitud.status
+          });
         }
       });
 
