@@ -49,7 +49,7 @@ export class LoginComponent {
         this.mensaje = err.error?.error || 'Ingresar correctamente el correo y contraseña';
         console.log(this.mensaje);
         if (err.error?.error === 'Invalid login credentials') {
-          this.mensaje = 'Credenciales de inicio de sesión inválidas';
+          this.mensaje = 'Informacion Incorrecta';
         } else {
           this.mensaje = err.error?.error || 'Ingresar correctamente el correo y contraseña';
         }
