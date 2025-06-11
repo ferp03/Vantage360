@@ -45,7 +45,7 @@
 .izquierda {
   display: flex;
   flex-direction: row;
-  gap: 550px;
+  gap: -100px;
   align-items: flex-start;
   min-width: 0;
   max-width: 100%;
@@ -71,17 +71,15 @@
   margin-top: -60px;
 }
 
-/* Opcional: mejora el ancho del contenedor de habilidades */
 .habilidades {
   width: 100%;
-  min-width: 200px;
-  max-width: 350px;
-  margin-left: 0;
-  margin-right: 0;
-  padding: 1.5rem;
+  min-width: 800px;      /* Más ancho mínimo */
+  max-width: 900px;      /* Más ancho máximo */
+  margin-left: -100px;     /* Centrado horizontal */
+  margin-right: auto;    /* Centrado horizontal */
+  padding: 1.5rem 2.5rem;/* Más espacio interno a los lados */
   box-sizing: border-box;
 }
-
 
 .people_lead {
   flex: 1 1 45%;
