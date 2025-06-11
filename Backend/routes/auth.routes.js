@@ -65,7 +65,7 @@ router.post('/login', async (req, res) => {
   });
   
   router.post('/signup', async (req, res) => {
-    const { name, patlastname, matlastname, email, password } = req.body;
+    const { name, patlastname, matlastname, email, password, rol } = req.body;
     if (!name || !patlastname || !email || !password) {
       return res.status(400).json({success: false, error: 'Faltan campos requeridos' });
     }
@@ -122,7 +122,7 @@ router.post('/login', async (req, res) => {
       .from('empleado_rol')
       .insert({
         empleado_id: user.id,
-        rol_id: 3
+        rol_id: rol? rol : 3
       });
 
     if (rolError){

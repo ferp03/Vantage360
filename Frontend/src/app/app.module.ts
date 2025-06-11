@@ -28,6 +28,10 @@ import { SignUpComponent } from './Components/sign-up/sign-up.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { RecomendacionesComponent } from './Components/recomendaciones/recomendaciones.component';
+import { HabilidadesPuestosModalComponent } from './Components/habilidades-puestos-modal/habilidades-puestos-modal.component';
+import { MatChipsModule } from '@angular/material/chips';
+import { CrearLeadComponent } from './crear-lead/crear-lead.component';
+import { NgxFileDropModule } from 'ngx-file-drop';
 
 @NgModule({
   declarations: [
@@ -46,7 +50,9 @@ import { RecomendacionesComponent } from './Components/recomendaciones/recomenda
     ProyectosComponent,
     ParticipacionPComponent,
     SignUpComponent,
-    RecomendacionesComponent
+    RecomendacionesComponent,
+    HabilidadesPuestosModalComponent,
+    CrearLeadComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +67,12 @@ import { RecomendacionesComponent } from './Components/recomendaciones/recomenda
     MatButtonModule,
     MatDialogModule,
     MatInputModule,
-    MatCardModule
+    MatCardModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatChipsModule,
+    MatChipsModule,
+    NgxFileDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -5,7 +5,7 @@ import { supabaseAdmin } from '../api/supabase.js';
 const router = express.Router();
 const supabase = supabaseAdmin;
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({ storage, limits: {fileSize: 8000000} });
 
 
 

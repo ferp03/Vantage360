@@ -16,7 +16,6 @@ import {
   Title
 } from 'chart.js';
 
-
 interface ExperienciaLaboral {
   historial_id?: number;
   titulo: string;
@@ -27,12 +26,25 @@ interface ExperienciaLaboral {
   descripcion: string;
   esNueva?: boolean;
   esPuestoActual?: boolean;
-  capability_id?: number; 
+  capability_id?: number;
+  habilidad_id?: number;
+  habilidad_nombre?: string; 
+  habilidad_nivel?: string;
+  habilidades: { 
+    nombre: string;
+    nivel: string;
+    habilidad_id: number
+  }[];
 }
 
 interface Capability {
   id: number;
   nombre: string;
+}
+interface HabilidadOption {
+  id: number;
+  nombre: string;
+  categoria?: string;
 }
 
 interface Ciudades {
@@ -48,6 +60,7 @@ interface ErroresExperiencia {
   fin?: boolean;
   descripcion?: boolean;
   fechaInvalida?: boolean;
+  habilidad?: boolean;
 }
 
 interface Ceritifcado {
@@ -92,10 +105,20 @@ export class EmpleadoDetallesComponent implements OnInit {
     lead_usuario: ' ',
     lead_id: ' ',
     ubicacion: ' ',
-    titulo_proyecto: ' ',
-    fecha_inicio: ' ',
-    capability_proyecto: ' '
+    proyectos_actuales: [] as Array<{
+      fecha: string;
+      nombre: string;
+      capability: string;
+    }>,
   };
+
+  habilidadesOptions: HabilidadOption[] = []; // Lista de habilidades disponibles
+  nivelesHabilidad = [
+    { value: 'Básico', display: 'Básico' },
+    { value: 'Intermedio', display: 'Intermedio' },
+    { value: 'Avanzado', display: 'Avanzado' }
+  ];
+
 
   pieChart: Chart | null = null;
   pieChart2: Chart | null = null;
@@ -120,9 +143,9 @@ export class EmpleadoDetallesComponent implements OnInit {
   experiencias: ExperienciaLaboral[] = [];
   capabilities: Capability[] = [];
   ciudades: Ciudades[] = [];
+  indiceEditandoHabilidad: number | null = null;
 
   experienciasOriginales: { [key: number]: ExperienciaLaboral } = {};
-  private trayectoriaOriginal: ExperienciaLaboral[] = [];
 
   editandoInfo = false;
   editandoTrayectoria = false;
@@ -148,6 +171,14 @@ export class EmpleadoDetallesComponent implements OnInit {
   private empleadoId: string | null = null;
   esMiPerfil: boolean = false; 
 
+  habilidadEditando: Habilidad | null = null;
+  nivelSeleccionado: string = '';
+  habilidadSeleccionada: Habilidad | null = null;
+  descripcionEditada: string = '';
+
+  // Definir opciones de los niveles
+  nivelHabilidad = ['Básico', 'Intermedio', 'Avanzado'];
+
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
@@ -157,25 +188,23 @@ export class EmpleadoDetallesComponent implements OnInit {
     private location: Location
   ) {}
 
-  ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.empleadoId = params.get('id');
-      const idUsuarioLogueado = this.authService.userId;
-      this.esMiPerfil = (idUsuarioLogueado == this.empleadoId);
+ngOnInit() {
+  this.route.paramMap.subscribe(params => {
+    this.empleadoId = params.get('id');
+    const idUsuarioLogueado = this.authService.userId;
+    this.esMiPerfil = (idUsuarioLogueado == this.empleadoId);
 
-      // Asegurar que solamente perfiles de admin o el propio usario pueda acceder a esta pagina
-      const roles = this.authService.roles;
-      const rolesPremitidos = ['delivery lead', 'people lead'];
-      if(!this.esMiPerfil && !roles.some(rol => rolesPremitidos.includes(rol))){
-        this.location.back();
-      }
-    });
-    
+    // Asegurar que solamente perfiles de admin o el propio usario pueda acceder a esta pagina
+    const roles = this.authService.roles;
+    const rolesPremitidos = ['delivery lead', 'people lead', 'admin'];
+    if(!this.esMiPerfil && !roles.some(rol => rolesPremitidos.includes(rol))){
+      this.location.back();
+    }
+
     this.cargarCiudades().then(() => {
       this.cargarInfoBasica();
     });
     this.cargarHabilidades();
-      // Primero cargamos las capabilities, y después la trayectoria
     this.cargarCapabilities().then(() => {
       this.cargarTrayectoria(); 
     });
@@ -184,9 +213,37 @@ export class EmpleadoDetallesComponent implements OnInit {
     Chart.register(BarElement, BarController, ArcElement, Tooltip, Legend, Title, CategoryScale, LinearScale);
     this.obtenerCurso().then(() => {
       this.activeChart = "pie2"
-      setTimeout(() => this.renderizarGraficas(), 50); // Aquí va la función que quieres ejecutar después
+      setTimeout(() => this.renderizarGraficas(), 50);
+    });
+    this.cargarOpcionesHabilidades();
+  });
+}
+
+  cargarOpcionesHabilidades(): void {
+    this.apiService.getHabilidades().subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.habilidadesOptions = res.data.map((h: any) => ({
+            id: h.habilidad_id || h.id,
+            nombre: h.nombre,
+            categoria: h.categoria
+          }));
+        }
+      },
+      error: (err) => console.error('Error al cargar habilidades:', err)
     });
   }
+
+  onHabilidadSeleccionada(index: number): void {
+  const exp = this.experiencias[index];
+  if (exp.habilidad_id) {
+    const habilidadSeleccionada = this.habilidadesOptions.find(h => h.id === exp.habilidad_id);
+    exp.habilidad_nombre = habilidadSeleccionada?.nombre || '';
+  } else {
+    exp.habilidad_nombre = '';
+    exp.habilidad_nivel = '';
+  }
+}
   
   cargarCapabilities(): Promise<void> {
     return new Promise<void>((resolve) => {
@@ -228,16 +285,13 @@ export class EmpleadoDetallesComponent implements OnInit {
             lead_usuario: res.data.lead_usuario,
             lead_id: res.data.lead_id,
             ubicacion: res.data.ubicacion,
-            titulo_proyecto: res.data.titulo_proyecto ? res.data.titulo_proyecto : "No hay proyecto actual",
-            fecha_inicio: res.data.fecha_inicio ? res.data.fecha_inicio : "Fecha no disponible",
-            capability_proyecto: res.data.capability_proyecto ? res.data.capability_proyecto : "No hay puesto actual",
+            proyectos_actuales: res.data.proyectos_actuales || []
 
           };
         this.nuevoEstado = this.info.estado_laboral;
         this.nuevoUsuario = this.info.usuario;
         const ciudadEncontrada = this.ciudades.find(c => c.nombre === this.info.ubicacion);
         this.nuevaCiudad = ciudadEncontrada || { id: '', nombre: this.info.ubicacion };
-
         }
       },
       error: (err) => console.error('Error al obtener info:', err)
@@ -328,6 +382,10 @@ export class EmpleadoDetallesComponent implements OnInit {
       error: (err) => console.error('Error al obtener trayectoria:', err)
     });
   }
+
+  irARecomendaciones() {
+    this.router.navigate(['/recomendaciones']); // Aquí pones la ruta que corresponda
+  }
   
   obtenerNombreCapability(id: number | undefined): string {
     if (!id) return '';
@@ -376,79 +434,6 @@ export class EmpleadoDetallesComponent implements OnInit {
     this.experienciasOriginales[index] = { ...this.experiencias[index] };
   }
 
-
-  guardarExperiencia(index: number) {
-    if (!this.esMiPerfil || !this.editandoTrayectoria) return;
-    
-    const exp = this.experiencias[index];
-    
-    this.errores[index] = {
-      titulo: !exp.titulo?.trim(),
-      titulo_proyecto: !exp.titulo_proyecto?.trim(),
-      empresa: !exp.empresa?.trim(),
-      inicio: !exp.inicio?.trim(),
-      fin: !exp.esPuestoActual && !exp.fin?.trim(),
-      descripcion: !exp.descripcion?.trim(),
-      fechaInvalida: false
-    };
-
-    this.validarFechas(index);
-
-    if (Object.values(this.errores[index]).some(e => e)) {
-      return;
-    }
-
-    const esNueva = exp.esNueva;
-    const huboModificaciones = this.detectarCambiosEnExperiencia(index);
-
-    if (!esNueva && !huboModificaciones) {
-      console.log('No se detectaron cambios, cerrando edición');
-      this.editandoIndice = null;
-      return;
-    }
-
-    const payload = {
-      titulo_puesto: exp.titulo,
-      titulo_proyecto: exp.titulo_proyecto,
-      empresa: exp.empresa,
-      descripcion: exp.descripcion,
-      fecha_inicio: exp.inicio,
-      fecha_fin: exp.esPuestoActual ? null : exp.fin,
-      es_puesto_actual: exp.esPuestoActual,
-      capability_id: exp.capability_id
-    };
-
-    if (esNueva) {
-      if (!this.empleadoId) return;
-      this.apiService.createExperiencia(this.empleadoId, payload).subscribe({
-        next: (res) => {
-          console.log('Experiencia creada:', res);
-          if (res && res.data) {
-            exp.historial_id = res.data.historial_id;
-            delete exp.esNueva;
-            this.ordenarExp();
-          }
-          this.editandoIndice = null;
-          this.cargarTrayectoria();
-        },
-        error: (err) => {
-          console.error('Error al crear experiencia:', err);
-        }
-      });
-    } 
-    else if (exp.historial_id) {
-      this.apiService.updateExperiencia(exp.historial_id, payload).subscribe({
-        next: () => {
-          console.log('Experiencia actualizada.');
-          this.ordenarExp();
-          this.editandoIndice = null;
-          this.cargarTrayectoria();
-        },
-        error: (err) => console.error('Error al actualizar experiencia:', err)
-      });
-    }
-  }
-
   detectarCambiosEnExperiencia(index: number): boolean {
     const original = this.experienciasOriginales[index];
     const actual = this.experiencias[index];
@@ -480,29 +465,32 @@ export class EmpleadoDetallesComponent implements OnInit {
 
   guardarExperienciaForzado(index: number) {
     if (!this.esMiPerfil || !this.editandoTrayectoria) return;
-    
+  
     console.log('Guardando experiencia forzadamente:', index);
-    
+  
     const exp = this.experiencias[index];
-    
-    this.errores[index] = {
+
+    // Validaciones
+    const errores: ErroresExperiencia = {
       titulo: !exp.titulo?.trim(),
       titulo_proyecto: !exp.titulo_proyecto?.trim(),
       empresa: !exp.empresa?.trim(),
       inicio: !exp.inicio?.trim(),
       fin: !exp.esPuestoActual && !exp.fin?.trim(),
       descripcion: !exp.descripcion?.trim(),
-      fechaInvalida: false
+      fechaInvalida: false,
+      habilidad: exp.habilidad_id ? !exp.habilidad_nivel : false
     };
 
     this.validarFechas(index);
+    this.errores[index] = errores;
 
-    if (Object.values(this.errores[index]).some(e => e)) {
-      console.log('Hay errores de validación, no se puede guardar');
+    if (Object.values(errores).some(e => e)) {
+      console.log('Errores de validación:', errores);
       return;
     }
-    
-    const payload = {
+  
+    const payload: any = {
       titulo_puesto: exp.titulo,
       titulo_proyecto: exp.titulo_proyecto,
       empresa: exp.empresa,
@@ -513,8 +501,16 @@ export class EmpleadoDetallesComponent implements OnInit {
       capability_id: exp.capability_id
     };
 
-    console.log('Payload a guardar:', payload);
-    
+    // Agregar campos de habilidad solo si existen
+    if (exp.habilidades && exp.habilidades.length > 0) {
+      payload.habilidades = exp.habilidades.map(h => ({
+        habilidad_id: h.habilidad_id,
+        nivel: h.nivel || 'Básico'
+      }));
+    }
+
+    console.log('Payload completo:', payload);
+  
     if (exp.esNueva) {
       if (!this.empleadoId) return;
       this.apiService.createExperiencia(this.empleadoId, payload).subscribe({
@@ -541,7 +537,7 @@ export class EmpleadoDetallesComponent implements OnInit {
           console.error('Error al actualizar experiencia:', err);
         }
       });
-    }
+    } 
   }
 
   cancelarEdicionExperiencia(index: number) {
@@ -609,7 +605,8 @@ export class EmpleadoDetallesComponent implements OnInit {
       descripcion: '',
       esNueva: true,
       esPuestoActual: false,
-      capability_id: undefined
+      capability_id: undefined,
+      habilidades: [],
     };
     
     this.experiencias.unshift(nueva);
@@ -876,6 +873,9 @@ export class EmpleadoDetallesComponent implements OnInit {
     return this.cursos.map(curso => Number(curso.progreso));
   }
 
+  obtenerFechasCursos(): string[] {
+    return this.cursos.map(curso => curso.fecha_emision);
+  }
 
   async crearGraficaPie(cantidadObligatorios: number, cantidadNoObligatorios: number): Promise<void> {
   const canvas = document.getElementById('pieChart') as HTMLCanvasElement;
@@ -883,6 +883,8 @@ export class EmpleadoDetallesComponent implements OnInit {
     console.error('No se encontró el canvas con id pieChart');
     return;
   }
+
+  
 
   if (this.pieChart) {
     this.pieChart.data.datasets[0].data = [cantidadObligatorios, cantidadNoObligatorios];
@@ -905,7 +907,10 @@ export class EmpleadoDetallesComponent implements OnInit {
             text: 'Cursos Obligatorios y No Obligatorios',
             color: '#0000000',
             font: { size: 20 }
-          }
+          },
+        subtitle: {
+          text: '(Todos los cursos)',
+        }
         }
       }
     });
@@ -918,6 +923,33 @@ async crearGraficaPie2(progresoPromedio: number , percent: number): Promise<void
     console.error('No se encontró el canvas con id pieChart2');
     return;
   }
+
+  const subtitlePlugin = {
+  id: 'subtitle',
+  afterDraw(chart: Chart, args: any, options: any) {
+    if (!options?.text) return;
+
+    const { ctx, chartArea: { top, left, right, bottom } } = chart;
+    ctx.save();
+    
+    ctx.font = options.font || '14px Arial';
+    ctx.fillStyle = options.color || 'gray';
+    ctx.textAlign = 'center';
+    
+    // Posición basada en la configuración
+    if (options.position === 'bottom') {
+      ctx.fillText(options.text, (left + right) / 2.2, top -3);
+    } else {
+      // Por defecto arriba
+      ctx.fillText(options.text, (left + right) / 2.2, top -35 );
+    }
+    
+    ctx.restore();
+  }
+};
+
+// Register the plugin
+Chart.register(subtitlePlugin);
 
   if (this.pieChart2) {
     this.pieChart2.data.datasets[0].data = [progresoPromedio, percent];
@@ -940,53 +972,81 @@ async crearGraficaPie2(progresoPromedio: number , percent: number): Promise<void
             text: 'Progreso Promedio de Cursos',
             color: '#0000000',
             font: { size: 20 }
-          }
+          },
+        subtitle: {
+          text: '(Todos los cursos)',
+        }
         }
       }
     });
   }
 }
 
-  async crearGraficaBarra(obtenerProgresoCursos: Array<number>): Promise<void> {
+  async crearGraficaBarra(obtenerProgresoCursos: Array<number>, fechasCursos: Array<string>): Promise<void> {
   const canvas = document.getElementById('barChart') as HTMLCanvasElement;
   if (!canvas) {
     console.error('No se encontró el canvas con id barChart');
     return;
   }
 
-  const etiquetas = this.obtenerNombresCursos();
+  const etiquetasCompletas = this.obtenerNombresCursos();
 
-  if (this.barChart) {
-    this.barChart.data.labels = etiquetas;
-    this.barChart.data.datasets[0].data = obtenerProgresoCursos;
-    this.barChart.update();
-  } else {
-    this.barChart = new Chart(canvas, {
-      type: 'bar',
-      data: {
-        labels: etiquetas,
-        datasets: [{
-          label: 'Cursos',
-          data: obtenerProgresoCursos,
-          backgroundColor: ['#9668e6', '#818181']
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false },
-          title: {
-            display: true,
-            text: 'Progreso de Cursos (%)',
-            color: '#0000000',
-            font: { size: 20 },
-            
-          }
+  // Filtrar por los últimos 6 meses
+  const hoy = new Date();
+  const seisMesesAtras = new Date(hoy.getFullYear(), hoy.getMonth() - 6, hoy.getDate());
+
+  const cursosFiltrados = fechasCursos
+    .map((fechaStr, i) => ({
+      indice: i,
+      fecha: new Date(fechaStr)
+    }))
+    .filter(curso => curso.fecha >= seisMesesAtras)
+    .slice(0, 5); // máximo 5 cursos
+
+  // Extraer los datos filtrados
+  const etiquetas = cursosFiltrados.map(c => etiquetasCompletas[c.indice]);
+  const datos = cursosFiltrados.map(c => obtenerProgresoCursos[c.indice]);
+
+if (this.barChart) {
+  this.barChart.data.labels = etiquetas;
+  this.barChart.data.datasets[0].data = datos;
+  this.barChart.update();
+} else {
+  this.barChart = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: etiquetas,
+      datasets: [{
+        label: 'Cursos',
+        data: datos,
+        backgroundColor: ['#9668e6', '#818181']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'Progreso de Cursos (%)',
+          color: '#000000',
+          font: { size: 20 }
+        },
+        subtitle: {
+          text: '(Últimos 6 meses)',
+          position: 'bottom', // Puedes cambiar a 'top' si prefieres
+          // You can also add font and color here if needed
+          // font: '12px Arial',
+          // color: '#666'
         }
       }
-    });
+    }
+  });
+
   }
 }
+
+
 
   async renderizarGraficas() {
   // Clear any existing charts first
@@ -1005,7 +1065,7 @@ async crearGraficaPie2(progresoPromedio: number , percent: number): Promise<void
   } else if (this.activeChart === "pie2") {
     await this.crearGraficaPie2(this.progresoPromedio, 100 - this.progresoPromedio)
   } else if (this.activeChart === "bar") {
-    await this.crearGraficaBarra(this.obtenerProgresoCursos())
+    await this.crearGraficaBarra(this.obtenerProgresoCursos(), this.obtenerFechasCursos())
   }
   }
 
@@ -1067,6 +1127,7 @@ confirmarEliminarHabilidad(): void {
 
   if (!this.empleadoId || hab?.id === undefined) {
     this.habilidadPendiente = null;
+    this.habilidadSeleccionada = null;
     return;                   
   }
 
@@ -1076,12 +1137,121 @@ confirmarEliminarHabilidad(): void {
         next: () => {
           this.habilidades = this.habilidades.filter(h => h.id !== hab.id);
           this.habilidadPendiente = null;
+          this.habilidadSeleccionada = null;
         },
         error: err => {
           console.error('Error al borrar', err);
           alert('No se pudo eliminar la habilidad');
           this.habilidadPendiente = null;
+          this.habilidadSeleccionada = null;
         }
       });
 }
+
+
+  // Método para abrir modal de edición de habilidad
+  abrirModalEditar(hab: Habilidad): void {
+    this.habilidadEditando = { ...hab };
+    this.nivelSeleccionado = hab.nivel;
+    this.descripcionEditada = hab.descripcion;
+  }
+
+  // Método para cancelar la edición
+  cancelarEdicionHabilidad(): void {
+    this.habilidadEditando = null;
+    this.nivelSeleccionado = '';
+    this.descripcionEditada = '';
+  }
+
+  guardarCambiosHabilidad(): void {
+    if (!this.empleadoId || !this.habilidadEditando || this.habilidadEditando.id === undefined) {
+      this.habilidadEditando = null;
+      return;
+    }
+
+    const datos = {
+      nivel: this.nivelSeleccionado,
+      descripcion: this.descripcionEditada
+    };
+
+    this.apiService.updateEmpleadoHabilidad(this.empleadoId, this.habilidadEditando.id, datos)
+      .subscribe({
+        next: (res) => {
+          if (res.success) {
+            const index = this.habilidades.findIndex(h => h.id === this.habilidadEditando!.id);
+            if (index !== -1) {
+              this.habilidades[index].nivel = this.nivelSeleccionado;
+              this.habilidades[index].descripcion = this.descripcionEditada;
+            }
+            
+            this.mensajeExito = 'Habilidad actualizada correctamente';
+            this.mostrarMensajeExito = true;
+            
+            setTimeout(() => {
+              this.mensajeDesvanecido = true;
+            }, 1000); 
+            
+            setTimeout(() => {
+              this.mostrarMensajeExito = false;
+              this.mensajeDesvanecido = false;
+            }, 3000);
+            
+            this.habilidadEditando = null;
+          } else {
+            console.error('Error al actualizar habilidad:', res.error);
+            alert('No se pudo actualizar la habilidad');
+          }
+        },
+        error: (err) => {
+          console.error('Error al actualizar habilidad:', err);
+          this.habilidadEditando = null;
+        }
+      });
+    }
+  
+  abrirMenuHabilidad(habilidad: Habilidad): void {
+    this.habilidadSeleccionada = habilidad;
+  }
+
+  editarHabilidad(habilidad: Habilidad): void {
+    this.habilidadSeleccionada = null; 
+    this.abrirModalEditar(habilidad); 
+  }
+
+  compararHabilidades = (a: any, b: any) => a?.habilidad_id === b?.habilidad_id;
+
+  obtenerNombreHabilidad(id: number): string {
+    const h = this.habilidadesOptions.find(h => h.id === id);
+    return h ? h.nombre : '—';
+  }
+
+  abrirEditorHabilidadNivel(index: number) {
+    this.indiceEditandoHabilidad = index;
+  }
+
+  removerHabilidad(index: number, habilidad: any) {
+    const habilidades = this.experiencias[index].habilidades;
+    this.experiencias[index].habilidades = habilidades.filter(
+      h => h.habilidad_id !== habilidad.habilidad_id
+    );
+  }
+
+  nivelANumero(nivel: string): number {
+    switch (nivel) {
+      case 'Básico': return 1;
+      case 'Intermedio': return 2;
+      case 'Avanzado': return 3;
+      default: return 1;
+    }
+  }
+
+  numeroANivel(num: number): string {
+    return ['Básico', 'Intermedio', 'Avanzado'][num-1] || 'Básico';
+  }
+
+  establecerNivel(habilidad: any, num: number) {
+    habilidad.nivel = this.numeroANivel(num);
+  }
+
 }
+

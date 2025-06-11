@@ -17,8 +17,18 @@
 
   <div *ngIf="error" class="error fade-slide">{{ error }}</div>
 
+  <div class="fade-slide" *ngIf="estado === 'listo' && recomendacionesProyectos.length">
+      <h3 class="categoria-titulo">Proyectos</h3>
+      <div class="tarjetas">
+        <div class="tarjeta" *ngFor="let item of recomendacionesProyectos">
+          <h4>{{ item.titulo }}</h4>
+          <p>{{ item.descripcion }}</p>
+        </div>
+      </div>
+    </div>
+
   <div class="fade-slide" *ngIf="estado === 'listo' && recomendacionesCursos.length">
-    <h3 class="categoria-titulo">Cursos</h3>
+    <h3 class="categoria-titulo cursos-titulo">Cursos</h3>
     <div class="tarjetas">
       <div class="tarjeta" *ngFor="let item of recomendacionesCursos">
         <h4>{{ item.titulo }}</h4>

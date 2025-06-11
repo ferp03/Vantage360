@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Configuración de Multer
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({ storage, limits: {fileSize: 8000000} });
 
 // Ruta para obtener todos los certificados de un empleado
 router.get('/empleado/api/:empleado_id', async (req, res) => {
@@ -149,9 +149,16 @@ router.get('/empleado/:empleado_id/certificados', async (req, res) => {
       });
     }
 
+    // Formatear fechas para asegurar consistencia
+    const certificadosFormateados = data.map(cert => ({
+      ...cert,
+      fecha_emision: cert.fecha_emision ? new Date(cert.fecha_emision).toISOString() : null,
+      fecha_vencimiento: cert.fecha_vencimiento ? new Date(cert.fecha_vencimiento).toISOString() : null
+    }));
+
     return res.status(200).json({ 
       success: true,
-      data 
+      data: certificadosFormateados
     });
 
   } catch (err) {

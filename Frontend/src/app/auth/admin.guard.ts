@@ -6,14 +6,14 @@ import { AuthService } from './auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class UserGuard  {
+export class AdminGuard  {
   constructor(private auth: AuthService, private router: Router, private location: Location) {}
 
   canActivate(): boolean{
     const roles = this.auth.roles;
-    const rolesPremitidos = ['delivery lead', 'people lead', 'admin'];
+    const rolesPremitidos = ['admin'];
 
-    if(this.auth.estaAutenticado() && roles.some(role => rolesPremitidos.includes(role))){
+    if(this.auth.estaAutenticado() && roles.includes('admin')){
       return true;
     }else{
       this.location.back();

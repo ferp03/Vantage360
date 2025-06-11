@@ -47,8 +47,9 @@
                     <span class="chip-activo">Disponible</span>
                   </div>
                 </div>
-                
+                <!-- Nombre del autor -->
                 <div class="project-dates">
+                  <span> <strong>Delivery lead: </strong> {{proyecto.delivery_lead?.nombre || 'No asignado'}}</span>
                   <div class="date-label">
                     <strong>Inicio:</strong> {{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}
                   </div>
@@ -64,6 +65,7 @@
                   <div>{{proyecto.descripcion || 'Sin descripción'}}</div>
                 </div>
 
+                <!-- Skills -->
                 <div class="project-skills" *ngIf="proyecto.capabilities">
                   <div class="skills-title">
                     <span 
@@ -95,109 +97,214 @@
                     </span>
                   </div>
                 </div>
-
-                <div class="project-progress">
-                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
-                  <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
-                </div>
-                <div class="project-actions">
-                  <button class="btn-participate">
+                <!-- Botones -->
+                 <div class="project-actions">
+                  <button class="btn-participate" (click)="openJoinModal(proyecto)">
                     <span class="material-icons">group_add</span>
                     Participar
                   </button>
-                  <button class="btn-details">
+                  <button class="btn-details" (click)="openMemberModal(proyecto)">
                     <span class="material-icons">visibility</span>
                     Integrantes
+                    <span 
+                      *ngIf="proyecto.solicitudes && proyecto.solicitudes.length > 0" 
+                      class="badge badge-solicitudes">
+                      {{ proyecto.solicitudes.length }}
+                    </span>
                   </button>
                 </div>
+              </div>
+              
+              <!-- Modal -->
+              <div class="modal-overlay" *ngIf="showJoinModal" (click)="closeJoinModal()">
+               <div class="modal-container" (click)="$event.stopPropagation()">
+                 <h3>Confirmar participación</h3>
+                 <p>¿Estás seguro que deseas enviar una solicitud para unirte al proyecto "<strong style="text-decoration: underline;">{{selectedProject?.nombre}}</strong>"?</p>
+                 <div class="modal-actions">
+                   <button class="btn-cancel" (click)="closeJoinModal()">Cancelar</button>
+                   <button class="btn-confirm" (click)="confirmJoin()">Confirmar</button>
+                 </div>
+               </div>
+             </div>
+             <!-- Modal de Integrantes  -->
+              <div *ngIf="showMemberModal" >
+                <ng-container *ngTemplateOutlet="integrantesModal"></ng-container>
               </div>
             </div>
           </div>
         </div>
-        
-        <!-- Pestaña Actuales -->
-        <div class="tab-pane" [class.active]="activeTab === 'actuales'">
-          <div class="projects-container">
-            <div *ngIf="proyectosActuales.length === 0" class="empty-message">
-              No tienes proyectos actuales
-            </div>
-            <div class="projects-grid">
-              <div class="project-card" *ngFor="let proyecto of proyectosActuales">
-                <div class="project-header">
-                  <h3>{{proyecto.nombre}}</h3>
-                  <div class="project-status">
-                    <span class="chip-activo">Activo</span>
-                  </div>
-                </div>
-                
-                <div class="project-dates">
-                  <div class="date-label">
-                    <strong>Inicio:</strong> {{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}
-                  </div>
-                  <div class="date-label">
-                    <strong>Fin:</strong> {{proyecto.fecha_fin | date:'dd/MM/yyyy'}}
-                  </div>
-                </div>
-                
-                <div class="project-description">
-                  <div class="description-title">
-                    <span class="material-icons">info</span> Descripción:
-                  </div>
-                  <div>{{proyecto.descripcion || 'Sin descripción'}}</div>
-                </div>
-                
-                <div class="project-skills" *ngIf="proyecto.capabilities">
-                  <div class="skills-title">
-                    <span 
-                      class="toggle-title" 
-                      [class.active]="proyecto.selectedVista === 'puestos'" 
-                      (click)="setVistaProyecto(proyecto, 'puestos')"
-                      style="cursor:pointer"
-                    >
-                      <span class="material-icons">construction</span> Puestos
-                    </span>
-                    <span> | </span>
-                    <span 
-                      class="toggle-title" 
-                      [class.active]="proyecto.selectedVista === 'habilidades'" 
-                      (click)="setVistaProyecto(proyecto, 'habilidades')"
-                      style="cursor:pointer"
-                    >
-                      <span class="material-icons">psychology</span> Habilidades
-                    </span>
-                  </div>
-                  <div class="skills-tags" *ngIf="proyecto.selectedVista === 'puestos'">
-                    <span class="skill-tag" *ngFor="let puesto of getPuestos(proyecto.capabilities)">
-                      {{puesto}}
-                    </span>
-                  </div>
-                  <div class="skills-tags" *ngIf="proyecto.selectedVista === 'habilidades'">
-                    <span class="skill-tag" *ngFor="let habilidad of proyecto.habilidades">
-                      {{habilidad.nombre}} ({{habilidad.nivel_esperado}})
-                    </span>
-                  </div>
-                </div>
 
-                <div class="project-progress">
-                  <div class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
-                  <span class="progress-text">{{proyecto.progreso | number:'1.0-0'}}%</span>
-                </div>
-
-                <div class="project-actions">
-                  <button class="btn-participate">
-                    <span class="material-icons">group_add</span>
-                    Información
-                  </button>
-                  <button class="btn-details">
-                    <span class="material-icons">visibility</span>
-                    Integrantes
-                  </button>
-                </div>
-              </div>
-            </div>
+        <!---->
+<!-- Pestaña Actuales -->
+<div class="tab-pane" [class.active]="activeTab === 'actuales'">
+  <div class="projects-container">
+    <div *ngIf="proyectosActuales.length === 0" class="empty-message">
+      No tienes proyectos actuales
+    </div>
+    <div class="projects-grid">
+      <div class="project-card" *ngFor="let proyecto of proyectosActuales">
+        <div class="project-header">
+          <!-- Campo nombre editable -->
+          <div *ngIf="!proyecto.editando; else editNombre">
+            <h3>{{proyecto.nombre}}</h3>
+          </div>
+          <ng-template #editNombre>
+            <input type="text" 
+                   [ngModel]="proyecto.datosTemporales?.nombre || ''" 
+                   (ngModelChange)="proyecto.datosTemporales && (proyecto.datosTemporales.nombre = $event)"
+                   class="edit-input">
+          </ng-template>
+          
+          <div class="project-status">
+            <span class="chip-activo">Activo</span>
           </div>
         </div>
         
+        <div class="project-dates">
+          <span><strong>Delivery lead:</strong> {{proyecto.delivery_lead?.nombre || 'No asignado'}}</span>
+          
+          <!-- Fecha inicio editable -->
+          <div class="date-label">
+            <strong>Inicio:</strong>
+            <span *ngIf="!proyecto.editando">{{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}</span>
+            <input *ngIf="proyecto.editando" 
+                   type="date" 
+                   [ngModel]="proyecto.datosTemporales?.fecha_inicio || ''"
+                   (ngModelChange)="proyecto.datosTemporales && (proyecto.datosTemporales.fecha_inicio = $event)"
+                   class="edit-date">
+          </div>
+          
+          <!-- Fecha fin  -->
+          <div class="date-label">
+            <strong>Fin:</strong>
+            <span *ngIf="!proyecto.editando">{{proyecto.fecha_fin | date:'dd/MM/yyyy'}}</span>
+            <input *ngIf="proyecto.editando" 
+                   type="date" 
+                   [ngModel]="proyecto.datosTemporales?.fecha_fin || ''"
+                   (ngModelChange)="proyecto.datosTemporales && (proyecto.datosTemporales.fecha_fin = $event)"
+                   class="edit-date">
+          </div>
+        </div>
+        
+        <!-- Descripción -->
+        <div class="project-description">
+          <div class="description-title">
+            <span class="material-icons">info</span> Descripción:
+          </div>
+          <div *ngIf="!proyecto.editando">{{proyecto.descripcion || 'Sin descripción'}}</div>
+          <textarea *ngIf="proyecto.editando" 
+                    [ngModel]="proyecto.datosTemporales?.descripcion || ''"
+                    (ngModelChange)="proyecto.datosTemporales && (proyecto.datosTemporales.descripcion = $event)"
+                    class="edit-textarea"></textarea>
+        </div>
+
+        <!-- Skills actuales -->
+        <div class="project-skills" *ngIf="proyecto.capabilities">
+          <div class="skills-title">
+            <span 
+              class="toggle-title" 
+              [class.active]="proyecto.selectedVista === 'puestos'" 
+              (click)="setVistaProyecto(proyecto, 'puestos')"
+              style="cursor:pointer"
+            >
+              <span class="material-icons">construction</span> Puestos
+            </span>
+            <span> | </span>
+            <span 
+              class="toggle-title" 
+              [class.active]="proyecto.selectedVista === 'habilidades'" 
+              (click)="setVistaProyecto(proyecto, 'habilidades')"
+              style="cursor:pointer"
+            >
+              <span class="material-icons">psychology</span> Habilidades
+            </span>
+            <!-- Botón editar habilidades/puestos -->
+            <button *ngIf="proyecto.puedeEditar && proyecto.editando" 
+                    mat-icon-button 
+                    (click)="abrirModalEdicionHabilidadesPuestos(proyecto, proyecto.selectedVista === 'puestos' ? 'puestos' : 'habilidades')"
+                    class="edit-button">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </div>
+          <div class="skills-tags" *ngIf="proyecto.selectedVista === 'puestos'">
+            <span class="skill-tag" *ngFor="let puesto of getPuestos(proyecto.capabilities)">
+              {{puesto}}
+            </span>
+          </div>
+          <div class="skills-tags" *ngIf="proyecto.selectedVista === 'habilidades'">
+            <span class="skill-tag" *ngFor="let habilidad of proyecto.habilidades">
+              {{habilidad.nombre}} ({{habilidad.nivel_esperado}})
+            </span>
+          </div>
+        </div>
+
+        <!-- Progress editable -->
+        <div class="project-progress">
+          <div *ngIf="!proyecto.editando" class="progress-bar" [style.width]="proyecto.progreso + '%'"></div>
+          <input *ngIf="proyecto.editando" 
+                 type="range" 
+                 min="0" 
+                 max="100" 
+                 [ngModel]="proyecto.datosTemporales?.progreso || 0"
+                 (ngModelChange)="proyecto.datosTemporales && (proyecto.datosTemporales.progreso = $event)"
+                 class="edit-range">
+          <span class="progress-text">
+            {{proyecto.editando ? (proyecto.datosTemporales?.progreso ?? 0) : proyecto.progreso}}%
+          </span>
+        </div>
+
+<div class="project-actions">
+  <!-- Botón Editar -->
+  <button *ngIf="proyecto.puedeEditar && !proyecto.editando" 
+          class="btn-participate" 
+          (click)="habilitarEdicion(proyecto)">
+    <span class="material-icons">edit</span>
+    Editar
+  </button>
+
+  
+  <!-- Botón Guardar -->
+  <button *ngIf="proyecto.editando" 
+          class="btn-save" 
+          (click)="guardarCambios(proyecto)">
+    <span class="material-icons">save</span>
+    <!-- Guardar -->
+  </button>
+  
+  <!-- Botón Cancelar -->
+  <button *ngIf="proyecto.editando" 
+          (click)="cancelarEdicion(proyecto)" 
+          class="btn-cancel">
+    <span class="material-icons">cancel</span>
+  </button>
+  
+  <!-- Boton borrar -->
+<button *ngIf="proyecto.editando" 
+        class="btn-delete" 
+        (click)="openDeleteModal(proyecto)"
+        matTooltip="Eliminar proyecto">
+  <span class="material-icons">delete</span>
+</button>
+
+
+  <!-- Botón Ver Integrantes -->
+  <button class="btn-details" (click)="openMemberModal(proyecto)">
+    <span class="material-icons">visibility</span>
+    Integrantes
+    <span 
+      *ngIf="proyecto.solicitudes && proyecto.solicitudes.length > 0" 
+      class="badge badge-solicitudes">
+      {{ proyecto.solicitudes.length }}
+    </span>
+  </button>
+        </div>
+      </div>
+      <div *ngIf="showMemberModal" >
+                <ng-container *ngTemplateOutlet="integrantesModal"></ng-container>
+      </div>
+    </div>
+  </div>
+</div>
         <!-- Pestaña Pasados -->
         <div class="tab-pane" [class.active]="activeTab === 'pasados'">
           <div class="projects-container">
@@ -212,8 +319,8 @@
                     <span class="chip-finalizado">Finalizado</span>
                   </div>
                 </div>
-                
                 <div class="project-dates">
+                  <span> <strong>Delivery lead: </strong> {{proyecto.delivery_lead?.nombre || 'No asignado'}}</span>
                   <div class="date-label">
                     <strong>Inicio:</strong> {{proyecto.fecha_inicio | date:'dd/MM/yyyy'}}
                   </div>
@@ -240,5 +347,96 @@
       </div>
     </div>
   </main>
+  <div #toast class="toast"></div>
 </div>
 <!-- </body> -->
+
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <h3>Confirmar eliminación</h3>
+    <p>¿Estás seguro que deseas eliminar el proyecto "{{projectToDelete?.nombre}}"?</p>
+    <p class="warning-text">Esta acción no se puede deshacer.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="closeDeleteModal()">Cancelar</button>
+      <button class="btn-delete-confirm" (click)="confirmDelete()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Definición del template reutilizable -->
+<ng-template #integrantesModal>
+  <div class="modal-overlay" (click)="closeMemberModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{ selectedProject?.nombre }}</h3>
+      <div class="project-title">Integrantes: </div>
+    </div>
+      
+      <div class="modal-content">
+        <div *ngIf="loadingMembers" class="loading-members">
+          Cargando miembros...
+        </div>
+        <div *ngIf="errorLoadingMembers" class="error-members">
+          {{ errorLoadingMembers }}
+        </div>
+        <ul class="member-list" *ngIf="!loadingMembers && !errorLoadingMembers">
+          <li *ngIf="selectedProject && selectedProject.members && selectedProject.members.length > 0; else noMembers">
+            <div *ngFor="let grupo of getMembersGroupedAndSorted() | keyvalue: sortKeys">
+              <h4>{{ grupo.key }}</h4>
+              <ul>
+                <li *ngFor="let member of grupo.value">
+                  <div class="member-info">
+                    <span class="member-name">{{ member.nombre }}</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+
+          <ng-template #noMembers>
+            <li class="no-members">No hay miembros asignados a este proyecto</li>
+          </ng-template>
+        </ul>
+      </div>
+
+      <div *ngIf="selectedProject?.puedeEditar" class="modal-content">
+        <hr>
+        <div *ngIf="loadingRequests" class="loading-members">
+          Cargando solicitudes...
+        </div>
+        <div *ngIf="errorLoadingRequests" class="error-members">
+          {{ errorLoadingRequests }}
+        </div>
+        Solicitudes:
+        <ul class="member-list" *ngIf="!loadingRequests && !errorLoadingRequests">
+          <li *ngIf="selectedProject && selectedProject.solicitudes && selectedProject.solicitudes.length > 0; else noRequests">
+            <div *ngFor="let grupo of getRequestsGroupedAndSorted() | keyvalue: sortKeys">
+              <h4>{{ grupo.key }}</h4>
+              <ul>
+                <li *ngFor="let solicitud of grupo.value">
+                  <div class="member-info">
+                    <span class="member-name">{{ solicitud.solicitante_nombre }}</span>
+                    <button class="btn-reject" (click)="rechazarSolicitud(solicitud)" title="Rechazar">
+                      <span class="material-icons">cancel</span>
+                    </button>
+                      <button class="btn-accept" (click)="aceptarSolicitud(solicitud)" title="Aceptar">
+                        <span class="material-icons">check_circle</span>
+                      </button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+
+          <ng-template #noRequests>
+            <li class="no-members">No hay solicitudes para este proyecto</li>
+          </ng-template>
+        </ul>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="closeMemberModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

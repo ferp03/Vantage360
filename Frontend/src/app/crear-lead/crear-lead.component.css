@@ -1,16 +1,14 @@
 .login-container {
     display: flex;
     justify-content: center;
-    align-items: flex-start; 
+    align-items: center;
     position: absolute;
     top: 0;
     left: 0;
     height: 100vh;
     width: 100vw;
     background: var(--accenture-gray-50);
-    padding-top: 50px; 
 }
-
 
 .box {
     background: var(--accenture-white);
@@ -41,11 +39,13 @@ button:hover {
     background: #5f0096;
 }
 
-.signup-box {
-    width: 380px;
+.createlead-box {
+    width: 380px; /* Mismo ancho que sign-up */
+    max-height: calc(100vh - 120px); /* Altura máxima considerando barra */
 }
 
-.signup-form {
+
+.createlead-form {
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -140,7 +140,6 @@ button:hover {
 
 .capability-wrapper {
     width: 100%;
-    margin-top: 15px;
 }
 
 .full-width {

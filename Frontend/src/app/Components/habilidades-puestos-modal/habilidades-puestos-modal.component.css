@@ -1,0 +1,126 @@
+/* Contenedor principal mejorado */
+.chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding: 12px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  min-height: auto; /* Elimina espacio innecesario */
+}
+
+/* Chips más compactos */
+.custom-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px; /* Más compacto */
+  border-radius: 16px;
+  background-color: #B998F7;
+  color: #000;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Contenedores de formulario más ajustados */
+.nuevo-puesto{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end; /* Alínea los campos y botón por la base */
+  margin: 10px 0;
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.nueva-habilidad {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 12px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    max-width: 100%;
+    width: fit-content; /* Asegura que el formulario de habilidades no crezca más de lo necesario */
+}
+
+/* Campos de formulario optimizados */
+mat-form-field {
+  margin-bottom: 0;
+  margin: 0;
+}
+
+/* Campo de número compacto */
+.nuevo-puesto mat-form-field.numero-field {
+  flex: none;
+  max-width: 80px;
+  min-width: 80px;
+}
+
+/* Input centrado y compacto */
+mat-form-field .mat-input-element {
+  text-align: center;
+  padding: 8px 4px !important;
+  /* margin: 0; */
+}
+
+/* Botón de añadir más compacto */
+.nuevo-puesto button[mat-icon-button],
+.nueva-habilidad button[mat-icon-button] {
+  align-self: flex-end; /* garantiza que esté alineado con los campos */
+  height: 56px; /* igual a la altura de mat-form-field outline */
+  margin: 0;
+  padding: 0;
+  width: 56px;
+}
+
+/* Títulos más ajustados */
+h3 {
+  margin: 5px 0 8px 0;
+  color: #3c065f;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Diálogo más compacto */
+mat-dialog-content {
+  padding: 16px;
+  max-height: 65vh;
+}
+
+/* editar puesto */
+
+.edicion-puesto {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.chip-edit {
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 4px;
+  color: #555;
+}
+
+.chip-edit:hover {
+  color: #2196F3;
+}
+
+.custom-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background: #e0e0e0;
+  border-radius: 16px;
+  margin: 4px;
+}

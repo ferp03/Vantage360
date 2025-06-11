@@ -49,6 +49,12 @@ export class RegistroHabilidadesComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.userSkills = res.data;
+          this.userSkills.sort((a: any, b: any) => {
+            if (a.nombre && b.nombre) {
+              return a.nombre.localeCompare(b.nombre);
+            }
+            return 0;
+          });
         }
       },
       error: (err) => {
