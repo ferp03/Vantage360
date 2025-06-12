@@ -45,9 +45,7 @@ router.get('/empleado/info/:id', async (req, res) => {
       lead_usuario: data.lead_usuario,
       lead_id: data.lead_id,
       ubicacion: data.ubicacion,
-      titulo_proyecto: data.titulo_proyecto,
-      fecha_inicio: data.fecha_inicio,
-      capability_proyecto: data.capability_proyecto,
+      proyectos_actuales: data.puestos_actuales
     }
   });
 });

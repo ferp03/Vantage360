@@ -104,7 +104,7 @@ router.put('/update-excel', upload.single('archivo'), async (req, res) => {
             _ytd_recovery: (existingData.ytd_recovery === null || existingData.ytd_recovery === 0) && empleado.ytd_recovery ? empleado.ytd_recovery : null,
             _bd: (existingData.bd === null || existingData.bd === 0) && empleado.bd ? empleado.bd : null,
             _estado_laboral: !existingData.estado_laboral && empleado.estado_laboral ? (
-              empleado.estado_laboral === 'Unasigned' ? 'banca' :
+              empleado.estado_laboral === 'Unassigned' ? 'banca' :
               (empleado.estado_laboral === 'Active' || empleado.estado_laboral === 'Assigned') ? 'activo' :
               'vacaciones'
             ) : null
@@ -142,7 +142,7 @@ router.put('/update-excel', upload.single('archivo'), async (req, res) => {
           const newUserId = authUser.user.id;
 
           let _estado_laboral = 'vacaciones';
-          if (empleado.estado_laboral === 'Unasigned') _estado_laboral = 'banca';
+          if (empleado.estado_laboral === 'Unassigned') _estado_laboral = 'banca';
           if (empleado.estado_laboral === 'Active' || empleado.estado_laboral === 'Assigned') _estado_laboral = 'activo';
 
           const { error: insertError } = await supabase.rpc('new_empleado', {
