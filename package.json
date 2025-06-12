@@ -1,7 +1,11 @@
 {
   "dependencies": {
+    "chart.js": "^4.4.9",
     "jspdf": "^3.0.1",
-    "jspdf-autotable": "^5.0.2",
-    "chart.js": "^4.4.9"
+    "jspdf-autotable": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "playwright-qase-reporter": "^2.1.2"
   }
 }
