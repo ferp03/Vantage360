@@ -20,6 +20,25 @@ const upload = multer({
   }
 });
 
+async function getAllUsers(supabase) {
+  let allUsers = [];
+  let page = 1;
+  let perPage = 1000;
+  let more = true;
+
+  while (more) {
+    const { data, error } = await supabase.auth.admin.listUsers({ page, perPage });
+    if (error) throw new Error(error.message);
+    allUsers = allUsers.concat(data.users);
+    if (data.users.length < perPage) {
+      more = false;
+    } else {
+      page++;
+    }
+  }
+  return allUsers;
+}
+
 router.put('/update-excel', upload.single('archivo'), async (req, res) => {
   try {
     const datos = [];
@@ -67,16 +86,16 @@ router.put('/update-excel', upload.single('archivo'), async (req, res) => {
       return res.status(400).json({ success: false, mensaje: 'Error al procesar el archivo', error: readError.message });
     }
 
-    const { data: listData, error: listError } = await supabase.auth.admin.listUsers();
-    if (listError) return res.status(500).json({ success: false, error: listError.message });
-
+    const allUsers = await getAllUsers(supabase);
     const userMap = new Map();
-    listData.users.forEach(u => {
+    allUsers.forEach(u => {
+      console.log(u, u.email);
       userMap.set(u.email.toLowerCase(), u.id);
     });
 
     for (let empleado of datos) {
       try {
+        console.log('correo emp', empleado.correo);
         const userId = userMap.get(empleado.correo.toLowerCase());
 
         if (userId) {
