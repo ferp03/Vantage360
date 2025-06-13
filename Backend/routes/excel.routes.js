@@ -41,10 +41,14 @@ router.put('/update-excel', upload.single('archivo'), async (req, res) => {
           apellido_paterno: celda[1],
           apellido_materno: celda[2],
           usuario: celda[3],
-          correo: celda[4] || (celda[0] + celda[1] + '@gmail.com')
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase(),
+          correo: celda[4] || (
+            (celda[0] + celda[1])
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')
+              .replace(/[^a-zA-Z0-9._-]/g, '') // Remove invalid email chars
+              .toLowerCase() +
+            '@gmail.com'
+          ),
           ciudad: celda[5],
           capability: celda[6],
           people_lead: celda[7],
@@ -137,7 +141,7 @@ router.put('/update-excel', upload.single('archivo'), async (req, res) => {
             email_confirm: true
           });
 
-          if (authError) return res.status(400).json({ success: false, error: authError.message });
+          if (authError) return res.status(400).json({ success: false, mensaje: empleado.correo, error: authError.message });
 
           const newUserId = authUser.user.id;
 
